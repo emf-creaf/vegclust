@@ -1,0 +1,89 @@
+\encoding{UTF-8}
+\name{CAS}
+\alias{CAS}
+\alias{CASmargin}
+\alias{CAS2matrix}
+\alias{CAScenters}
+\alias{CASquantile}
+%- Also NEED an '\alias' for EACH other topic documented here.
+\title{
+Cumulative abundance surface (CAS)
+}
+\description{
+Functions to calculate cumulative abundance surfaces (CASs), to build matrices from them, and to summarize several CASs.
+}
+\usage{
+CAS(x, transform=NULL, verbose=FALSE)
+CASmargin(CAS, margin=1, verbose=FALSE)
+CAS2matrix(CAS, type="cumulative",classWeights=NULL)
+CAScenters(CAS, y=NULL)
+CASquantile(CAS, q = 0.5, y = NULL)
+}
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{x}{An object of class 'doublestratifiedvegdata' (see function \code{\link{stratifyvegdata}}).}
+  \item{transform}{A function or the name of a function to be applied to each cumulative abundance value.}
+  \item{verbose}{A logical flag to indicate extra output.}
+  \item{CAS}{An object of class '\code{CAS}'.}
+  \item{margin}{Indicates whether marginalization should be done in primary (\code{margin = 1}) or secondary (\code{margin = 2}) size classes.}
+  \item{type}{The type of information that the resulting matrix should contain (either \code{"cummulative"} or \code{"total"}).}
+  \item{classWeights}{A numerical matrix containing the weight for each combination of size classes. If \code{NULL}, then all classes are assumed to have the same weight.}
+  \item{y}{A vector used as a factor to calculate average or quantile surfaces per each level. Alternatively, an object of class \code{\link{vegclust}} for which CAS centroids or medoids are desired.}
+  \item{q}{Probability value for which the quantile is desired. By default the median is given.}
+}
+\details{
+Function \code{CAS} replaces the abundance value of each combination of size classes by the sum of abundances in this and larger size classes. This creates a cumulative abundance surface (similar to a bivariant cummulative distribution function). Function \code{CASmargin} takes an object of class '\code{CAS}' and returns an object of class '\code{CAP}' that corresponds marginal profile in either the primary or the secondary size classes. Function \code{CAS2matrix} takes an object of class '\code{CAS}' and returns a data matrix, where values differ depending on parameter \code{type}: (1) \code{type="cummulative"} simply reshapes the '\code{CAS}' object (a list) into a matrix with as many rows as plot records and where columns are organized in blocks (there are as many blocks as species and each block has as many columns as combinations of size classes); (2) \code{type="total"} returns a plot-by-species matrix where each value is the total abundance of the species in the plot (i.e. the CAS value at the ground level). When provided, \code{classWeights} are used to weight size classes of the cumulative abundance surfaces (for (1) only). Function \code{CAScenters} calculates the average abundance surface for a set of plot records. If \code{y} is a factor, it is used to speficy groups of samples for which average profiles are to be calculated. If \code{y} is an object of class '\code{\link{vegclust}}' then the function returns the CAS centroids or medoids corresponding to the clustering result. Function \code{CASquantile} calculates a quantile surface for a set of CASs. The usage of \code{y} is the same as for \code{CAScenters}.
+}
+\value{
+Function \code{CAS} returns an object of class '\code{CAS}', similar to objects of class '\code{doublestratifiedvegdata}' but where abundance values of upper size classes have beed added to those of lower size classes. Function \code{CAS2matrix} returns a matrix with species as rows (columns depend on the value of \code{type}). Functions \code{CAScenters} and \code{CASquantile} return an object of class '\code{CAS}'.
+}
+\references{
+De \enc{Cáceres}{Caceres}, M., Legendre, P. & He, F. (2013) Dissimilarity measurements and the size structure of ecological communities. Methods in Ecology and Evolution 4: 1167-1177.
+
+De \enc{Cáceres}{Caceres}, M., Coll, L., \enc{Martín-Alcón}{Martin-Alcon}, S., \enc{González-Olabarria}{Gonzalez-Olabarria}, J.R. (submitted) A general method for the classification of forest stands using structure and composition.
+}
+\author{
+Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia.
+}
+\seealso{
+  \code{\link{stratifyvegdata}}, \code{\link{plot.CAS}}, \code{\link{vegdiststruct}}
+}
+\examples{
+## Load tree data
+data(treedata)
+
+## Define stratum thresholds (4 strata)
+heights = seq(0,4, by=0.5)
+diameters = seq(0,2, by=0.5)
+
+
+## Stratify tree data using heights and diameters as structural variables
+X = stratifyvegdata(treedata, sizes1=heights, sizes2=diameters, plotColumn="plotID",
+                    speciesColumn="species", size1Column="height", size2Column="diam",
+                    counts=TRUE)
+X[[2]]
+
+## Build cummulative abundance surface
+Y = CAS(X)
+
+Y[[2]]
+
+##  Extracts the first and second marginal (i.e. CAP on heights or diameters respectively)
+Y.M1 = CASmargin(Y, margin = 1)
+Y.M1[[2]]
+
+Y.M2 = CASmargin(Y, margin = 2)
+Y.M2[[2]]
+
+##  For comparison we calculate the same profiles using the stratifyvegdata and CAP functions
+Y1 = CAP(stratifyvegdata(treedata, sizes1=heights, plotColumn="plotID",
+                    speciesColumn="species", size1Column="height",
+                    counts=TRUE))                   
+Y1[[2]]
+Y2 = CAP(stratifyvegdata(treedata, sizes1=diameters, plotColumn="plotID",
+                    speciesColumn="species", size1Column="diam",
+                    counts=TRUE))                   
+Y2[[2]]
+
+##  Compare Y.M1[[2]] with Y1[[2]] and Y.M2[[2]] with Y2[[2]]
+}
