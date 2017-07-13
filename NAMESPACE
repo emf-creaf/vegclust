@@ -1,0 +1,14 @@
+# Default NAMESPACE created by R
+# Remove the previous line if you edit this file
+import(vegan,sp)
+importFrom("grDevices", "colorRampPalette")
+importFrom("graphics", "abline", "axis", "legend", "lines", "matlines",
+             "persp")
+importFrom("stats", "as.dist", "cutree", "dist", "quantile", "var")
+# Export all names
+exportPattern(".")
+S3method(plot,CAP)
+S3method(plot,stratifiedvegdata)
+S3method(plot,CAS)
+S3method(summary,clustconst)
+S3method(plot,mvegclust)
