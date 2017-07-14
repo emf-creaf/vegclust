@@ -20,6 +20,16 @@
   }
   return(p)
 }
+#Hausdorff distance between a point and a trajectory
+.pointHausdorffDistanceToTrajectory<-function(dsteps, d2target) {
+  nseg = length(dsteps)
+  dseg = numeric(nseg)
+  for(i in 1:nseg) {
+    dseg[i] = .distanceToSegment(dsteps[i], d2target[i], d2target[i+1])[3]
+  }
+  return(min(dseg))
+}
+
 .triangleinequality<-function(d1,d2,d3, tol=0.0001) {
   if((d1+d2)<d3*(1-tol)) return(FALSE)
   else if((d1+d3)<d2*(1-tol)) return(FALSE)

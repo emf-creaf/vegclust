@@ -10,16 +10,19 @@ Distance between directed segments or community trajectories
 Given a distance matrix between community states, functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively.
 }
 \usage{
-segmentDistances(d, surveys, distance.type ="directed-segment")
-trajectoryDistances(d, surveys, distance.type="DSPD")
+segmentDistances(d, sites,surveys, distance.type ="directed-segment")
+trajectoryDistances(d, sites,surveys, distance.type="DSPD")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{d}{
-	A site-by-site symmetric matrix or an object of class \code{\link{dist}} containing the distance values between pairs of community states corresponding to the same sites sampled \code{surveys} times. Rows/columns correspond to blocks of surveys: If there are \code{n} sites, then rows/columns are \code{{1 ... n}} for the first survey, \code{{1 ... n}} for the second survey, and so on.
+	A site-by-site symmetric matrix or an object of class \code{\link{dist}} containing the distance values between pairs of community states. 
+   }
+   \item{sites}{
+     A vector indicating the site corresponding to each community state.
    }
   \item{surveys}{
-	Number of sampling surveys.
+     A vector indicating the survey corresponding to each community state (optional).
    }
 \item{distance.type}{
 The type of distance index to be calculated (De Cáceres et al. in prep). For \code{segmentDistances} the available indices are:
@@ -51,5 +54,13 @@ Function \code{trajectoryDistances} returns an object of class \code{\link{dist}
 Miquel De \enc{Cáceres}{Caceres}, Forest Sciences Center of Catalonia
 }
 \examples{
-##TO BE DONE##
+xy<-matrix(0, nrow=6, ncol=2)
+xy[2,2]<-1
+xy[3,2]<-2
+xy[4:6,1] <- 0.5
+xy[4:6,2] <- xy[1:3,2]
+xy[6,1]<-1
+d = dist(xy)
+sites = c(1,1,1,2,2,2)
+surveys=c(1,2,3,1,2,3)
 }

@@ -49,98 +49,191 @@
   } 
   stop("Wrong distance type")
 }
-segmentDistances<-function(d, surveys, distance.type ="directed-segment") {
+
+segmentDistances<-function(d, sites, surveys=NULL, distance.type ="directed-segment") {
+  distance.type <- match.arg(distance.type, c("directed-segment", "Hausdorff", "PPA"))
+  if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
+  if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
+  
+  siteIDs = unique(sites)
+  nsite = length(siteIDs)
+  nsurveysite<-numeric(nsite)
+  for(i in 1:nsite) {
+    nsurveysite[i] = sum(sites==siteIDs[i])
+  }
+  if(sum(nsurveysite==1)>0) stop("All sites need to be surveyed at least twice")
   dmat = as.matrix(d)
   n = nrow(dmat)
-  nobj = n/surveys
-  nseg = nobj*(surveys-1)
+  nseg = sum(nsurveysite)-nsite
+  segnames = character(nseg)
+  cnt=1
+  for(i in 1:nsite) {
+    if(!is.null(surveys)) surv = surveys[sites==siteIDs[i]]
+    else surv = 1:nsurveysite[i]
+    for(j in 1:(nsurveysite[i]-1)) {
+      segnames[cnt] = paste0(siteIDs[i],"[",surv[j],"-",surv[j+1],"]")
+      cnt = cnt+1
+    }
+  }
   dsegmat = matrix(0, nseg, nseg)
-  rownames(dsegmat) =paste0(rep(1:nobj,surveys-1),"_",gl(surveys-1,nobj))
-  colnames(dsegmat) =rownames(dsegmat)
+  rownames(dsegmat) =segnames
+  colnames(dsegmat) =segnames
   dinisegmat = dsegmat
   dfinsegmat = dsegmat
   dinifinsegmat = dsegmat
-  dfininisegmat = dsegmat
-  for(t1 in 1:(surveys-1)) {
-    for(o1 in 1:nobj) {
-      istart1 = (t1-1)*nobj + o1
-      ifin1 = (t1)*nobj + o1
-      for(t2 in 1:(surveys-1)) {
-        for(o2 in 1:nobj) {
-          istart2 = (t2-1)*nobj + o2
-          ifin2 = (t2)*nobj + o2
-          dmat12 = dmat[c(istart1,ifin1,istart2, ifin2),c(istart1,ifin1,istart2, ifin2)]
-          # print(dmat12)
-          dsegmat[istart1,istart2] <- .twoSegmentDistance(dmat12, type=distance.type)
-          dsegmat[istart2,istart1] <- dsegmat[istart1,istart2]
-          # print(c(istart1, istart2, dsegmat[istart1,istart2]))
-          dinisegmat[istart2,istart1] <- dinisegmat[istart1,istart2]<-dmat[istart1,istart2]
-          dfinsegmat[istart2,istart1] <- dfinsegmat[istart1,istart2] <- dmat[ifin1,ifin2]
-          dinifinsegmat[istart1,istart2] <- dmat[istart1,ifin2]
-          dinifinsegmat[istart2,istart1] <- dmat[istart2,ifin1]
-          dfininisegmat[istart1,istart2] <- dmat[ifin1,istart2]
-          dfininisegmat[istart2,istart1] <- dmat[ifin2,istart1]
-          # print(c(istart1,ifin1,istart2, ifin2, dinifinsegmat[istart1,istart2],dfininisegmat[istart1,istart2]))
+
+  os1 = 1
+  for(i1 in 1:nsite) {
+    ind_surv1 = which(sites==siteIDs[i1])
+    for(s1 in 1:(nsurveysite[i1]-1)) {
+      os2 = 1
+      for(i2 in 1:nsite) {
+        ind_surv2 = which(sites==siteIDs[i2])
+        for(s2 in 1:(nsurveysite[i2]-1)) {
+          # os2 = sum(nsurveysite[1:(i2-1)]-1)+s2 #Output index of segment 2
+          #Select submatrix from dmat
+          ind12 = c(ind_surv1[s1],ind_surv1[s1+1],ind_surv2[s2],ind_surv2[s2+1])
+          # print(ind12)
+          # print(c(os1, os2))
+          dmat12 = dmat[c(ind_surv1[s1],ind_surv1[s1+1],ind_surv2[s2],ind_surv2[s2+1]),
+                        c(ind_surv1[s1],ind_surv1[s1+1],ind_surv2[s2],ind_surv2[s2+1])]
+          dsegmat[os1,os2] <- .twoSegmentDistance(dmat12, type=distance.type)
+          dsegmat[os2,os1] <- dsegmat[os1,os2]
+          dinisegmat[os2,os1] <- dinisegmat[os1,os2]<-dmat[ind_surv1[s1],ind_surv2[s2]]
+          dfinsegmat[os2,os1] <- dfinsegmat[os1,os2]<-dmat[ind_surv1[s1+1],ind_surv2[s2+1]]
+          dinifinsegmat[os1,os2] <- dmat[ind_surv1[s1],ind_surv2[s2+1]]
+          dinifinsegmat[os2,os1] <- dmat[ind_surv1[s1+1],ind_surv2[s2]]
+          os2 = os2+1
         }
       }
+      os1 = os1+1
     }
   }
+
   return(list(Dseg = as.dist(dsegmat), Dini=as.dist(dinisegmat), Dfin = as.dist(dfinsegmat),
-              Dinifin=dinifinsegmat, Dfinini = dfininisegmat))
+              Dinifin=dinifinsegmat))
 }
-trajectoryDistances<-function(d, surveys, distance.type="DSPD") {
+
+trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD") {
+  distance.type <- match.arg(distance.type, c("DSPD", "SPD", "Hausdorff"))
+  if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
+  if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
+  siteIDs = unique(sites)
+  nsite = length(siteIDs)
+  nsurveysite<-numeric(nsite)
+  for(i in 1:nsite) nsurveysite[i] = sum(sites==siteIDs[i])
+  if(sum(nsurveysite==1)>0) stop("All sites need to be surveyed at least twice")
+  n = nrow(as.matrix(d))
+  nseg = sum(nsurveysite)-nsite
+  
+  #Init output
+  dtraj = matrix(0, nrow=nsite, ncol = nsite)
+  rownames(dtraj) = siteIDs
+  colnames(dtraj) = siteIDs
   if(distance.type=="DSPD"){
-    lsd = segmentDistances(d,surveys,distance.type="directed-segment")
-  } else if(distance.type=="SPD" || distance.type=="Hausdorff") {
-    lsd = segmentDistances(d,surveys,distance.type="Hausdorff")
-  }
-  dmat = as.matrix(lsd$Dseg)
-  nseg = nrow(dmat)
-  nobj = nseg/(surveys-1)
-  dtraj = matrix(0, nrow=nobj, ncol = nobj)
-  if(distance.type=="SPD" || distance.type=="DSPD") {
-    for(i1 in 1:nobj) {
-      for(i2 in i1:nobj) {
+    lsd = segmentDistances(d,sites, surveys,distance.type="directed-segment")
+    dsegmat = as.matrix(lsd$Dseg)
+    for(i1 in 1:nsite) {
+      for(i2 in 1:nsite) {
         dt12 = 0
-        for(t1 in 1:(surveys-1)) {
+        for(s1 in 1:(nsurveysite[i1]-1)) {
           dt12ivec = numeric(0)
-          iseg1 = i1+(t1-1)*nobj
-          for(t2 in 1:(surveys-1)) {
-            iseg2 = i2+(t2-1)*nobj
-            dt12ivec = c(dt12ivec, dmat[iseg1, iseg2])
+          iseg1 = sum(nsurveysite[1:i1]-1)-(nsurveysite[i1]-1)+s1
+          for(s2 in 1:(nsurveysite[i2]-1)) {
+            iseg2 = sum(nsurveysite[1:i2]-1)-(nsurveysite[i2]-1)+s2
+            dt12ivec = c(dt12ivec, dsegmat[iseg1, iseg2])
           }
           dt12 = dt12 + min(dt12ivec)
         }
+        dt12 = dt12/(nsurveysite[i1]-1) #Average of distances between segments of T1 and trajectory T2
         dt21 = 0 
-        for(t2 in 1:(surveys-1)) {
+        for(s2 in 1:(nsurveysite[i2]-1)) {
           dt21ivec = numeric(0)
-          iseg2 = i2+(t2-1)*nobj
-          for(t1 in 1:(surveys-1)) {
-            iseg1 = i1+(t1-1)*nobj
-            dt21ivec = c(dt21ivec, dmat[iseg1, iseg2])
+          iseg2 = sum(nsurveysite[1:i2]-1)-(nsurveysite[i2]-1)+s2
+          for(s1 in 1:(nsurveysite[i1]-1)) {
+            iseg1 = sum(nsurveysite[1:i1]-1)-(nsurveysite[i1]-1)+s1
+            dt21ivec = c(dt21ivec, dsegmat[iseg1, iseg2])
           }
           dt21 = dt21 + min(dt21ivec)
         }
-        dtraj[i1,i2] = (dt12+dt21)/2
-        dtraj[i2,i1] = dtraj[i1,i2]
-      }
-    }
-  } else if(distance.type=="Hausdorff") {
-    for(i1 in 1:nobj) {
-      for(i2 in i1:nobj) {
-        dt12ivec = numeric(0)
-        for(t1 in 1:(surveys-1)) {
-          iseg1 = i1+(t1-1)*nobj
-          for(t2 in 1:(surveys-1)) {
-            iseg2 = i2+(t2-1)*nobj
-            dt12ivec = c(dt12ivec, dmat[iseg1, iseg2])
-          }
-        }
-        dtraj[i1,i2] = max(dt12ivec)
+        dt21 = dt21/(nsurveysite[i2]-1) #Average of distances between segments of T2 and trajectory T1
+        
+        dtraj[i1,i2] = (dt12+dt21)/2 #Symmetrization
         dtraj[i2,i1] = dtraj[i1,i2]
       }
     }
     
+  } 
+  else if(distance.type=="SPD") {
+    dmat = as.matrix(d)
+    for(i1 in 1:nsite) {
+      ind_surv1 = which(sites==siteIDs[i1])
+      for(i2 in 1:nsite) {
+        ind_surv2 = which(sites==siteIDs[i2])
+        dt12 = 0
+        for(p1 in 1:nsurveysite[i1]) {
+          dt12ivec = numeric(0)
+          ip1 = ind_surv1[p1]
+          for(s2 in 1:(nsurveysite[i2]-1)) {
+            ipi2 = ind_surv2[s2] #initial point
+            ipe2 = ind_surv2[s2+1] #end point
+            dt12ivec = c(dt12ivec, .distanceToSegment(dmat[ipi2,ipe2], dmat[ip1, ipi2], dmat[ip1,ipe2])[3])
+          }
+          dt12 = dt12 + min(dt12ivec)
+        }
+        dt12 = dt12/nsurveysite[i1] #Average of distances between points of T1 and trajectory T2
+        dt21 = 0 
+        for(p2 in 1:nsurveysite[i2]) {
+          dt21ivec = numeric(0)
+          ip2 = ind_surv2[p2]
+          for(s1 in 1:(nsurveysite[i1]-1)) {
+            ipi1 = ind_surv1[s1] #initial point
+            ipe1 = ind_surv1[s1+1] #end point
+            dt21ivec = c(dt21ivec, .distanceToSegment(dmat[ipi1,ipe1], dmat[ip2, ipi1], dmat[ip2,ipe1])[3])
+          }
+          dt21 = dt21 + min(dt21ivec)
+        }
+        dt21 = dt21/nsurveysite[i2] #Average of distances between points of T2 and trajectory T1
+        
+        dtraj[i1,i2] = (dt12+dt21)/2 #Symmetrization
+        dtraj[i2,i1] = dtraj[i1,i2]
+      }
+    }
   }
+  else if(distance.type=="Hausdorff") {
+    dmat = as.matrix(d)
+    for(i1 in 1:nsite) {
+      ind_surv1 = which(sites==siteIDs[i1])
+      for(i2 in 1:nsite) {
+        ind_surv2 = which(sites==siteIDs[i2])
+        dt12 = 0
+        dt12vec = numeric(0)
+        for(p1 in 1:nsurveysite[i1]) {
+          ip1 = ind_surv1[p1]
+          for(s2 in 1:(nsurveysite[i2]-1)) {
+            ipi2 = ind_surv2[s2] #initial point
+            ipe2 = ind_surv2[s2+1] #end point
+            dt12vec = c(dt12vec, .distanceToSegment(dmat[ipi2,ipe2], dmat[ip1, ipi2], dmat[ip1,ipe2])[3])
+          }
+        }
+        dt12 = max(dt12vec) #Maximum of distances between points of T1 and segments of T2
+        dt21 = 0 
+        dt21vec = numeric(0)
+        for(p2 in 1:nsurveysite[i2]) {
+          ip2 = ind_surv2[p2]
+          for(s1 in 1:(nsurveysite[i1]-1)) {
+            ipi1 = ind_surv1[s1] #initial point
+            ipe1 = ind_surv1[s1+1] #end point
+            dt21vec = c(dt21vec, .distanceToSegment(dmat[ipi1,ipe1], dmat[ip2, ipi1], dmat[ip2,ipe1])[3])
+          }
+        }
+        dt21 = max(dt21vec) #Maximum of distances between points of T2 and segments of T1
+        
+        dtraj[i1,i2] = max(dt12, dt21) #maximum of maximums
+        dtraj[i2,i1] = dtraj[i1,i2]
+      }
+    }
+  } 
+  else stop("Wrong distance type")
   return(as.dist(dtraj))
 }
