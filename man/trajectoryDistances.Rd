@@ -37,7 +37,15 @@ The type of distance index to be calculated (De Cáceres et al. in prep). For \c
   }
 }
 \value{
-Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories. Function \code{trajectorySegments} returns a  
+Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories. Function \code{trajectorySegments} returns a list with the following elements:
+     \itemize{
+       \item{\code{Dseg}: Distance matrix between segments.}
+       \item{\code{Dini}: Distance matrix between initial points of segments.}
+       \item{\code{Dfin}: Distance matrix between final points of segments.}
+       \item{\code{Dinifin}: Distance matrix between initial points of one segment and the final point of the other.}
+       \item{\code{Dfinini}: Distance matrix between final points of one segment and the initial point of the other.}
+     }
+
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres}, Forest Sciences Center of Catalonia

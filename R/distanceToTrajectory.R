@@ -43,8 +43,7 @@
   d2 = ((-1)*bx + sqrt(z))/(2*ax)
   return(sqrt(d2))
 }
-
-is.metric<-function(D, tol=0.0001) {
+.is.metric<-function(D, tol=0.0001) {
   dmat = as.matrix(D)
   n = nrow(dmat)
   for(i in 1:n) {
@@ -61,7 +60,7 @@ is.metric<-function(D, tol=0.0001) {
 }
 
 #Calculates Hausdorff distance between two line segments
-distanceToTrajectory<-function(dsteps, d2ref, eps) {
+.distanceToTrajectory<-function(dsteps, d2ref, eps) {
   
   nsteps = length(dsteps)
   npoints = nrow(d2ref)

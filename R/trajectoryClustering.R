@@ -1,4 +1,4 @@
-representativeTrajectory2<-function(lsd, clcore, eps) {
+.representativeTrajectory2<-function(lsd, clcore, eps) {
   D_core = as.matrix(lsd$Dseg)[clcore,clcore, drop=FALSE]
   nameseg = row.names(D_core)
   Dini_core = as.matrix(lsd$Dini)[clcore,clcore, drop=FALSE]
@@ -180,8 +180,8 @@ representativeTrajectory2<-function(lsd, clcore, eps) {
   return(res)
 }
 
-trajectoryClustering<-function(d, nt, eps, minlns, distance.type = "directed-segment") {
-  lsd = .segmentDistances(d,nt,distance.type)
+.trajectoryClustering<-function(d, nt, eps, minlns, distance.type = "directed-segment") {
+  lsd = segmentDistances(d,nt,distance.type)
   dmat = as.matrix(lsd$Dseg)
   nb = apply(dmat<=eps,1,which)
   nseg = length(nb)
@@ -235,7 +235,7 @@ trajectoryClustering<-function(d, nt, eps, minlns, distance.type = "directed-seg
   return(res)
 }
 
-plot.trajclust<-function(object, cmdscale.add=TRUE, draw.representatives = TRUE, exclude.unclassified=FALSE, ...) {
+.plot.trajclust<-function(object, cmdscale.add=TRUE, draw.representatives = TRUE, exclude.unclassified=FALSE, ...) {
   
   D_points = object$pointDistances
   D_segments = object$segmentDistances$Dseg
