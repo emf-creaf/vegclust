@@ -68,7 +68,10 @@ segmentDistances<-function(d, sites, surveys=NULL, distance.type ="directed-segm
   segnames = character(nseg)
   cnt=1
   for(i in 1:nsite) {
-    if(!is.null(surveys)) surv = surveys[sites==siteIDs[i]]
+    if(!is.null(surveys)) {
+      surv = surveys[sites==siteIDs[i]]
+      surv = sort(surv) #Surveys may not be in order
+    }
     else surv = 1:nsurveysite[i]
     for(j in 1:(nsurveysite[i]-1)) {
       segnames[cnt] = paste0(siteIDs[i],"[",surv[j],"-",surv[j+1],"]")
@@ -83,14 +86,21 @@ segmentDistances<-function(d, sites, surveys=NULL, distance.type ="directed-segm
   dinifinsegmat = dsegmat
 
   os1 = 1
-  if(verbose) tb = txtProgressBar(1, nsite, style=3)
+  if(verbose) {
+    cat("Calculating segment distances...\n")
+    tb = txtProgressBar(1, nsite, style=3)
+  }
   for(i1 in 1:nsite) {
     if(verbose) setTxtProgressBar(tb, i1)
     ind_surv1 = which(sites==siteIDs[i1])
+    #Surveys may not be in order
+    if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
     for(s1 in 1:(nsurveysite[i1]-1)) {
       os2 = 1
       for(i2 in 1:nsite) {
         ind_surv2 = which(sites==siteIDs[i2])
+        #Surveys may not be in order
+        if(!is.null(surveys)) ind_surv2 = ind_surv2[order(surveys[sites==siteIDs[i2]])]
         for(s2 in 1:(nsurveysite[i2]-1)) {
           # os2 = sum(nsurveysite[1:(i2-1)]-1)+s2 #Output index of segment 2
           #Select submatrix from dmat
@@ -135,7 +145,10 @@ trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", verb
   if(distance.type=="DSPD"){
     lsd = segmentDistances(d,sites, surveys,distance.type="directed-segment", verbose)
     dsegmat = as.matrix(lsd$Dseg)
-    if(verbose) tb = txtProgressBar(1, nsite, style=3)
+    if(verbose) {
+      cat("Calculating trajectory distances...\n")
+      tb = txtProgressBar(1, nsite, style=3)
+    }
     for(i1 in 1:nsite) {
       if(verbose) setTxtProgressBar(tb, i1)
       for(i2 in 1:nsite) {
@@ -172,8 +185,12 @@ trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", verb
     dmat = as.matrix(d)
     for(i1 in 1:nsite) {
       ind_surv1 = which(sites==siteIDs[i1])
+      #Surveys may not be in order
+      if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
       for(i2 in 1:nsite) {
         ind_surv2 = which(sites==siteIDs[i2])
+        #Surveys may not be in order
+        if(!is.null(surveys)) ind_surv2 = ind_surv2[order(surveys[sites==siteIDs[i2]])]
         dt12 = 0
         for(p1 in 1:nsurveysite[i1]) {
           dt12ivec = numeric(0)
@@ -208,8 +225,12 @@ trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", verb
     dmat = as.matrix(d)
     for(i1 in 1:nsite) {
       ind_surv1 = which(sites==siteIDs[i1])
+      #Surveys may not be in order
+      if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
       for(i2 in 1:nsite) {
         ind_surv2 = which(sites==siteIDs[i2])
+        #Surveys may not be in order
+        if(!is.null(surveys)) ind_surv2 = ind_surv2[order(surveys[sites==siteIDs[i2]])]
         dt12 = 0
         dt12vec = numeric(0)
         for(p1 in 1:nsurveysite[i1]) {
@@ -240,4 +261,40 @@ trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", verb
   } 
   else stop("Wrong distance type")
   return(as.dist(dtraj))
+}
+
+trajectoryLengths<-function(d, sites, surveys=NULL, verbose= FALSE) {
+  if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
+  if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
+  
+  siteIDs = unique(sites)
+  nsite = length(siteIDs)
+  nsurveysite<-numeric(nsite)
+  for(i in 1:nsite) {
+    nsurveysite[i] = sum(sites==siteIDs[i])
+  }
+  if(sum(nsurveysite==1)>0) stop("All sites need to be surveyed at least twice")
+  dmat = as.matrix(d)
+  n = nrow(dmat)
+
+  maxnsurveys = max(nsurveysite)
+
+  lengths = as.data.frame(matrix(NA, nrow=nsite, ncol=maxnsurveys))
+  row.names(lengths)<-siteIDs
+  names(lengths)<-c(paste0("Segment",as.character(1:(maxnsurveys-1))),"Trajectory")
+  speeds = lengths
+  os1 = 1
+  if(verbose) tb = txtProgressBar(1, nsite, style=3)
+  for(i1 in 1:nsite) {
+    if(verbose) setTxtProgressBar(tb, i1)
+    ind_surv1 = which(sites==siteIDs[i1])
+    #Surveys may not be in order
+    if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
+    for(s1 in 1:(nsurveysite[i1]-1)) {
+      lengths[i1,s1] = dmat[ind_surv1[s1], ind_surv1[s1+1]]
+      os1 = os1+1
+    }
+    lengths[i1, maxnsurveys] = sum(lengths[i1,], na.rm=T)
+  }
+  return(lengths)
 }

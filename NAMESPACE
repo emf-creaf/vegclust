@@ -5,6 +5,7 @@ importFrom("grDevices", "colorRampPalette", "rainbow")
 importFrom("graphics", "abline", "axis", "legend", "lines", "matlines",
              "persp", "arrows")
 importFrom("stats", "as.dist", "cutree", "dist", "quantile", "var", "cmdscale")
+importFrom("utils", "setTxtProgressBar", "txtProgressBar")
 # Export all names
 exportPattern(".")
 S3method(plot,CAP)

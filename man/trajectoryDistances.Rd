@@ -2,16 +2,20 @@
 \name{trajectories}
 \alias{segmentDistances}
 \alias{trajectoryDistances}
+\alias{trajectoryLengths}
+
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Distance between directed segments or community trajectories 
+Community trajectory analysis 
 }
 \description{
-Given a distance matrix between community states, functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively.
+Given a distance matrix between community states, functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively. Function \code{trajectoryLengths} calculates lengths of directed segments and complete trajectories.
 }
 \usage{
-segmentDistances(d, sites,surveys, distance.type ="directed-segment")
-trajectoryDistances(d, sites,surveys, distance.type="DSPD")
+segmentDistances(d, sites, surveys = NULL, distance.type ="directed-segment", 
+                 verbose=FALSE)
+trajectoryDistances(d, sites, surveys = NULL, distance.type="DSPD", verbose=FALSE)
+trajectoryLengths(d, sites, surveys = NULL, verbose=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -38,6 +42,7 @@ The type of distance index to be calculated (De Cáceres et al. in prep). For \c
        \item{\code{DSPD}: Directed segment path distance (default).}
      }
   }
+  \item{verbose}{Provides console output informing about process (useful for large dataset).}
 }
 \value{
 Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories. Function \code{trajectorySegments} returns a list with the following elements:
@@ -48,19 +53,43 @@ Function \code{trajectoryDistances} returns an object of class \code{\link{dist}
        \item{\code{Dinifin}: Distance matrix between initial points of one segment and the final point of the other.}
        \item{\code{Dfinini}: Distance matrix between final points of one segment and the initial point of the other.}
      }
-
+Function \code{trajectoryLengths} returns a data frame with the length of each segment on each trajectory and the total length of all trajectories.
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres}, Forest Sciences Center of Catalonia
 }
 \examples{
+#Description of sites and surveys
+sites = c(1,1,1,2,2,2)
+surveys=c(1,2,3,1,2,3)
+
+#Raw data table
 xy<-matrix(0, nrow=6, ncol=2)
 xy[2,2]<-1
 xy[3,2]<-2
 xy[4:6,1] <- 0.5
 xy[4:6,2] <- xy[1:3,2]
 xy[6,1]<-1
+
+#Distance matrix
 d = dist(xy)
-sites = c(1,1,1,2,2,2)
-surveys=c(1,2,3,1,2,3)
+d
+
+trajectoryLengths(d, sites, surveys)
+segmentDistances(d, sites, surveys)$Dseg
+trajectoryDistances(d, sites, surveys, distance.type = "Hausdorff")
+trajectoryDistances(d, sites, surveys, distance.type = "DSPD")
+
+#Should give the same results if surveys are not in order 
+#(here we switch surveys for site 2)
+temp = xy[5,]
+xy[5,] = xy[6,]
+xy[6,] = temp
+surveys[5] = 3
+surveys[6] = 2
+trajectoryLengths(dist(xy), sites, surveys)
+segmentDistances(dist(xy), sites, surveys)$Dseg
+trajectoryDistances(dist(xy), sites, surveys, distance.type = "Hausdorff")
+trajectoryDistances(dist(xy), sites, surveys, distance.type = "DSPD")
+
 }
