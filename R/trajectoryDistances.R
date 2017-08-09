@@ -50,7 +50,7 @@
   stop("Wrong distance type")
 }
 
-segmentDistances<-function(d, sites, surveys=NULL, distance.type ="directed-segment") {
+segmentDistances<-function(d, sites, surveys=NULL, distance.type ="directed-segment", verbose=FALSE) {
   distance.type <- match.arg(distance.type, c("directed-segment", "Hausdorff", "PPA"))
   if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
   if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
@@ -83,7 +83,9 @@ segmentDistances<-function(d, sites, surveys=NULL, distance.type ="directed-segm
   dinifinsegmat = dsegmat
 
   os1 = 1
+  if(verbose) tb = txtProgressBar(1, nsite, style=3)
   for(i1 in 1:nsite) {
+    if(verbose) setTxtProgressBar(tb, i1)
     ind_surv1 = which(sites==siteIDs[i1])
     for(s1 in 1:(nsurveysite[i1]-1)) {
       os2 = 1
@@ -114,7 +116,7 @@ segmentDistances<-function(d, sites, surveys=NULL, distance.type ="directed-segm
               Dinifin=dinifinsegmat))
 }
 
-trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD") {
+trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", verbose=FALSE) {
   distance.type <- match.arg(distance.type, c("DSPD", "SPD", "Hausdorff"))
   if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
   if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
@@ -131,9 +133,11 @@ trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD") {
   rownames(dtraj) = siteIDs
   colnames(dtraj) = siteIDs
   if(distance.type=="DSPD"){
-    lsd = segmentDistances(d,sites, surveys,distance.type="directed-segment")
+    lsd = segmentDistances(d,sites, surveys,distance.type="directed-segment", verbose)
     dsegmat = as.matrix(lsd$Dseg)
+    if(verbose) tb = txtProgressBar(1, nsite, style=3)
     for(i1 in 1:nsite) {
+      if(verbose) setTxtProgressBar(tb, i1)
       for(i2 in 1:nsite) {
         dt12 = 0
         for(s1 in 1:(nsurveysite[i1]-1)) {
