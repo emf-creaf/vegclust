@@ -87,7 +87,7 @@ segmentDistances<-function(d, sites, surveys=NULL, distance.type ="directed-segm
 
   os1 = 1
   if(verbose) {
-    cat("Calculating segment distances...\n")
+    cat("\nCalculating segment distances...\n")
     tb = txtProgressBar(1, nsite, style=3)
   }
   for(i1 in 1:nsite) {
@@ -146,7 +146,7 @@ trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", verb
     lsd = segmentDistances(d,sites, surveys,distance.type="directed-segment", verbose)
     dsegmat = as.matrix(lsd$Dseg)
     if(verbose) {
-      cat("Calculating trajectory distances...\n")
+      cat("\nCalculating trajectory distances...\n")
       tb = txtProgressBar(1, nsite, style=3)
     }
     for(i1 in 1:nsite) {
@@ -284,7 +284,10 @@ trajectoryLengths<-function(d, sites, surveys=NULL, verbose= FALSE) {
   names(lengths)<-c(paste0("Segment",as.character(1:(maxnsurveys-1))),"Trajectory")
   speeds = lengths
   os1 = 1
-  if(verbose) tb = txtProgressBar(1, nsite, style=3)
+  if(verbose) {
+    cat("\nCalculating trajectory lengths...\n")
+    tb = txtProgressBar(1, nsite, style=3)
+  }
   for(i1 in 1:nsite) {
     if(verbose) setTxtProgressBar(tb, i1)
     ind_surv1 = which(sites==siteIDs[i1])
