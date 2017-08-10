@@ -3,19 +3,22 @@
 \alias{segmentDistances}
 \alias{trajectoryDistances}
 \alias{trajectoryLengths}
+\alias{trajectoryPCoA}
 
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Community trajectory analysis 
 }
 \description{
-Given a distance matrix between community states, functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively. Function \code{trajectoryLengths} calculates lengths of directed segments and complete trajectories.
+Given a distance matrix between community states, functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively. Function \code{trajectoryLengths} calculates lengths of directed segments and complete trajectories. Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\link{cmdscale}}) and draws trajectories in the ordination scatterplot.
 }
 \usage{
 segmentDistances(d, sites, surveys = NULL, distance.type ="directed-segment", 
                  verbose=FALSE)
 trajectoryDistances(d, sites, surveys = NULL, distance.type="DSPD", verbose=FALSE)
 trajectoryLengths(d, sites, surveys = NULL, verbose=FALSE)
+trajectoryPCoA(d, sites, surveys = NULL, selection = NULL, traj.colors = NULL, 
+               axes=c(1,2), ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -26,7 +29,7 @@ trajectoryLengths(d, sites, surveys = NULL, verbose=FALSE)
      A vector indicating the site corresponding to each community state.
    }
   \item{surveys}{
-     A vector indicating the survey corresponding to each community state (optional).
+     A vector indicating the survey corresponding to each community state (only necessary when surveys are not in order).
    }
 \item{distance.type}{
 The type of distance index to be calculated (De Cáceres et al. in prep). For \code{segmentDistances} the available indices are:
@@ -43,6 +46,10 @@ The type of distance index to be calculated (De Cáceres et al. in prep). For \c
      }
   }
   \item{verbose}{Provides console output informing about process (useful for large dataset).}
+  \item{selection}{A numeric or logical vector of the same length as \code{sites}, indicating a subset of site trajectories to be plotted.}
+  \item{traj.colors}{A vector of colors (one per site). If \code{selection != NULL} the length of the color vector should be equal to the number of sites selected.}
+  \item{axes}{The pair of principal coordinates to be plotted.}
+  \item{...}{Additional parameters for function \code{\link{arrows}}.}
 }
 \value{
 Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories. Function \code{trajectorySegments} returns a list with the following elements:
@@ -53,7 +60,7 @@ Function \code{trajectoryDistances} returns an object of class \code{\link{dist}
        \item{\code{Dinifin}: Distance matrix between initial points of one segment and the final point of the other.}
        \item{\code{Dfinini}: Distance matrix between final points of one segment and the initial point of the other.}
      }
-Function \code{trajectoryLengths} returns a data frame with the length of each segment on each trajectory and the total length of all trajectories.
+Function \code{trajectoryLengths} returns a data frame with the length of each segment on each trajectory and the total length of all trajectories. Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres}, Forest Sciences Center of Catalonia
@@ -79,6 +86,10 @@ trajectoryLengths(d, sites, surveys)
 segmentDistances(d, sites, surveys)$Dseg
 trajectoryDistances(d, sites, surveys, distance.type = "Hausdorff")
 trajectoryDistances(d, sites, surveys, distance.type = "DSPD")
+
+#Draw trajectories
+trajectoryPCoA(d, sites, traj.colors = c("black","red"), lwd = 2)
+
 
 #Should give the same results if surveys are not in order 
 #(here we switch surveys for site 2)
