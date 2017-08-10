@@ -23,7 +23,7 @@ trajectoryPCoA(d, sites, surveys = NULL, selection = NULL, traj.colors = NULL,
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{d}{
-	A site-by-site symmetric matrix or an object of class \code{\link{dist}} containing the distance values between pairs of community states. 
+	A symmetric \code{\link{matrix}} or an object of class \code{\link{dist}} containing the distance values between pairs of community states. 
    }
    \item{sites}{
      A vector indicating the site corresponding to each community state.
@@ -51,6 +51,9 @@ The type of distance index to be calculated (De Cáceres et al. in prep). For \c
   \item{axes}{The pair of principal coordinates to be plotted.}
   \item{...}{Additional parameters for function \code{\link{arrows}}.}
 }
+\details{
+These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. Details of calculations are given in De \enc{Cáceres}{Caceres} et al (in prep.)
+}
 \value{
 Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories. Function \code{trajectorySegments} returns a list with the following elements:
      \itemize{
@@ -64,6 +67,15 @@ Function \code{trajectoryLengths} returns a data frame with the length of each s
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres}, Forest Sciences Center of Catalonia
+}
+\references{
+Besse, P., Guillouet, B., Loubes, J.-M. & François, R. (2016). Review and perspective for distance based trajectory clustering. IEEE Trans. Intell. Transp. Syst., 17, 3306–3317.
+
+De Cáceres M, Coll L, Legendre P, Allen RB, Wiser SK, Fortin MJ, Condit R & Hubbell S. (in preparation). Trajectory analysis in community ecology.
+}
+
+\seealso{
+\code{\link{cmdscale}}
 }
 \examples{
 #Description of sites and surveys
