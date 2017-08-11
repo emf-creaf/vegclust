@@ -91,7 +91,7 @@ bool triangleinequality(double d1, double d2, double d3, double tol=0.0001){
   return(true);
 }
 
-// [[Rcpp::export(".is.metricC")]]
+// [[Rcpp::export(".ismetricC")]]
 bool ismetric(NumericMatrix dmat, double tol=0.0001) {
   int n = dmat.nrow();
   for(int i=0; i<n;i++) {
@@ -103,5 +103,19 @@ bool ismetric(NumericMatrix dmat, double tol=0.0001) {
     }
   }
   return(true);
+}
+
+double pt(double dIT, double dXT, double dPX, double dPI) {
+  if(dPI==0) return(dIT);
+  else if(dPX==0) return(dXT);
+  double A = pow(dXT,2.0)- pow(dPX,2.0);
+  double B = pow(dIT,2.0)- pow(dPI,2.0);
+    
+  double ax =pow(dXT,2.0)+pow(dIT,2.0);
+  double bx = (pow(dXT,2.0)*2.0*B) + (pow(dIT,2.0)*2.0*A) - (4.0*pow(dIT,2.0)*pow(dXT,2.0));
+  double cx = pow(dXT,2.0)*pow(B,2.0) + pow(dIT,2.0)*pow(A,2.0);
+  double z = pow(bx,2.0)-(4.0*ax*cx);
+  double d2 = ((-1.0)*bx + sqrt(z))/(2.0*ax);
+  return(sqrt(d2));
 }
 

@@ -44,6 +44,7 @@
 #' 
 #' @references
 #' Besse, P., Guillouet, B., Loubes, J.-M. & François, R. (2016). Review and perspective for distance based trajectory clustering. IEEE Trans. Intell. Transp. Syst., 17, 3306–3317.
+#' 
 #' De \enc{Cáceres}{Caceres} M, Coll L, Legendre P, Allen RB, Wiser SK, Fortin MJ, Condit R & Hubbell S. (in preparation). Trajectory analysis in community ecology.
 #' 
 #' @seealso \code{\link{cmdscale}}
@@ -380,5 +381,4 @@ trajectoryPCoA<-function(d, sites, surveys = NULL, selection = NULL, traj.colors
   #Draw legend
   invisible(cmd_D2)
 }
-
 

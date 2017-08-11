@@ -17,7 +17,7 @@
     .Call('vegclust_triangleinequality', PACKAGE = 'vegclust', d1, d2, d3, tol)
 }
 
-.is.metricC <- function(dmat, tol = 0.0001) {
+.ismetricC <- function(dmat, tol = 0.0001) {
     .Call('vegclust_ismetric', PACKAGE = 'vegclust', dmat, tol)
 }
 
