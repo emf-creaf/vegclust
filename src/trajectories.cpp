@@ -1,19 +1,18 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-/**
- * Functions for trajectory analysis
- * 
- * Besse, P., Guillouet, B., Loubes, J.-M. & François, R. (2016). Review and perspective for distance based trajectory clustering. IEEE Trans. Intell. Transp. Syst., 17, 3306–3317.
- * 
- * De Caceres M, Coll L, Legendre P, Allen RB, Wiser SK, Fortin MJ, Condit R & Hubbell S. (in preparation). Trajectory analysis in community ecology.
- */
-
-
-
-/**
- * Projection of one point into a segment
- */
+//'
+//' Functions for trajectory analysis
+//' 
+//' Besse, P., Guillouet, B., Loubes, J.-M. & François, R. (2016). Review and perspective for distance based trajectory clustering. IEEE Trans. Intell. Transp. Syst., 17, 3306–3317.
+//'
+//' De Caceres M, Coll L, Legendre P, Allen RB, Wiser SK, Fortin MJ, Condit R & Hubbell S. (in preparation). Trajectory analysis in community ecology.
+//'
+//' Projection of one point into a (directed) segment
+//'
+//' @param dref Distance between the two segment endpoints
+//' @param d1 Distance from the target point to the initial segment endpoint
+//' @param d2 Distance from the target point to the final segment endpoint
 // [[Rcpp::export(".projectionC")]]
 NumericVector projection(double dref, double d1, double d2) {
   double a1 = (pow(d1,2.0)+pow(dref,2.0)-pow(d2,2.0))/(2.0*dref);
@@ -24,9 +23,9 @@ NumericVector projection(double dref, double d1, double d2) {
   return(NumericVector::create(a1,a2,h));
 }
 
-/**
- * Distance from one point to one segment
- */
+//'
+//' Distance from one point to one segment
+//'
 // [[Rcpp::export(".distanceToSegmentC")]]
 NumericVector distanceToSegment(double dref, double d1, double d2) {
   NumericVector p = projection(dref,d1, d2);
@@ -44,9 +43,9 @@ NumericVector distanceToSegment(double dref, double d1, double d2) {
   return(p);
 }
 
-/**
- * Distance between two segments
- */
+//'
+//' Distance between two segments
+//'
 // [[Rcpp::export(".twoSegmentDistanceC")]]
 double twoSegmentDistance(NumericMatrix dmat12, String type="directed-segment") {
   double ds1e1 = dmat12(0,1);
@@ -101,9 +100,9 @@ double twoSegmentDistance(NumericMatrix dmat12, String type="directed-segment") 
   return(Ds);
 }
 
-/**
- * Triangle inequality for one triplet
- */
+//'
+//' Triangle inequality for one triplet
+//'
 // [[Rcpp::export(".triangleinequalityC")]]
 bool triangleinequality(double d1, double d2, double d3, double tol=0.0001){
   if((d1+d2)<d3*(1.0-tol)) return(false);
@@ -112,9 +111,9 @@ bool triangleinequality(double d1, double d2, double d3, double tol=0.0001){
   return(true);
 }
 
-/**
- * Determines if the matrix fulfills the triangle inequality
- */
+//'
+//' Determines if the matrix fulfills the triangle inequality
+//'
 // [[Rcpp::export(".ismetricC")]]
 bool ismetric(NumericMatrix dmat, double tol=0.0001) {
   int n = dmat.nrow();
