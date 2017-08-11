@@ -162,6 +162,7 @@ segmentDistances<-function(d, sites, surveys=NULL, distance.type ="directed-segm
   return(list(Dseg = as.dist(dsegmat), Dini=as.dist(dinisegmat), Dfin = as.dist(dfinsegmat),
               Dinifin=dinifinsegmat))
 }
+
 #' @rdname trajectories
 trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", verbose=FALSE) {
   distance.type <- match.arg(distance.type, c("DSPD", "SPD", "Hausdorff"))
