@@ -1,55 +1,91 @@
-
-.twoSegmentDistance<-function(dmat12, type="directed-segment") {
-  ds1e1 = dmat12[1,2]
-  ds1s2 = dmat12[1,3]
-  ds1e2 = dmat12[1,4]
-  de1s2 = dmat12[2,3]
-  de1e2 = dmat12[2,4]
-  ds2e2 = dmat12[3,4]
-  if(type=="Hausdorff" || type == "directed-segment") {
-    ps1_2 =.distanceToSegment(ds2e2,ds1s2, ds1e2)
-    pe1_2 =.distanceToSegment(ds2e2,de1s2, de1e2)
-    ps2_1 =.distanceToSegment(ds1e1,ds1s2, de1s2)
-    pe2_1 =.distanceToSegment(ds1e1,ds1e2, de1e2)
-    ds1_2 = ps1_2[3]
-    de1_2 = pe1_2[3]
-    ds2_1 = ps2_1[3]
-    de2_1 = pe2_1[3]
-    if(type == "directed-segment") { #Modifications for directionality of segments
-      if(ps1_2[1]>pe1_2[1]) {
-        de1_2 = min(ds1e1+ps1_2[3], ds1e1+pe1_2[3])
-      }
-      if(ps2_1[1]>pe2_1[1]) {
-        de2_1 = min(ds2e2+ps2_1[3],ds2e2+pe2_1[3])
-      }
-    }
-    return(max(ds1_2, de1_2,ds2_1, de2_1))
-  } else if (type=="PPA"){ #Perpendicular/Parallel/Angle
-    if(ds1e1 > ds2e2) { # Switch roles if longest segment is 1
-      ds2e2 = dmat12[1,2]
-      ds2s1 = dmat12[1,3]
-      ds2e1 = dmat12[1,4]
-      de2s1 = dmat12[2,3]
-      de2e1 = dmat12[2,4]
-      ds1e1 = dmat12[3,4]
-    }
-    #Assumes longer segment is 2
-    ps1_2 =.distanceToSegment(ds2e2,ds1s2, ds1e2)
-    pe1_2 =.distanceToSegment(ds2e2,de1s2, de1e2)
-    lp1 = ps1_2[3]
-    lp2 = pe1_2[3]
-    dperpendicular = (lp1^2+lp2^2)/(lp1+lp2)
-    lpar1 = min(ps1_2[1],ps1_2[2])
-    lpar2 = min(pe1_2[1],pe1_2[2])
-    dparallel = min(lpar1,lpar2)
-    if(ps1_2[1]>pe1_2[1]) dangle = ds1e1
-    else dangle = (max(lp2,lp1)-min(lp2,lp1))
-    
-    return(dperpendicular+dparallel+dangle)
-  } 
-  stop("Wrong distance type")
-}
-
+#' Community trajectory analysis
+#' 
+#' Given a distance matrix between community states, functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively. 
+#' Function \code{trajectoryLengths} calculates lengths of directed segments and complete trajectories. 
+#' Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\link{cmdscale}}) and draws trajectories in the ordination scatterplot.
+#' 
+#' These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
+#' By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
+#' Details of calculations are given in De \enc{Cáceres}{Caceres} et al (in prep.)
+#' 
+#' @encoding UTF-8
+#' @name trajectories
+#' @aliases segmentDistances trajectoryDistances trajectoryLengths trajectoryPCoA
+#' 
+#' @param d A symmetric \code{\link{matrix}} or an object of class \code{\link{dist}} containing the distance values between pairs of community states.
+#' @param sites A vector indicating the site corresponding to each community state.
+#' @param surveys A vector indicating the survey corresponding to each community state (only necessary when surveys are not in order).
+#' @param distance.type 
+#' The type of distance index to be calculated (De Cáceres et al. in prep). For \code{segmentDistances} the available indices are:
+#'   \itemize{
+#'     \item{\code{Hausdorff}: Hausdorff distance between two segments.}
+#'     \item{\code{directed-segment}: Directed segment distance (default).}
+#'     \item{\code{PPA}: Perpendicular-parallel-angle distance.}
+#'   }
+#' whereas for \code{trajectoryDistances} the available indices are:
+#'   \itemize{
+#'     \item{\code{Hausdorff}: Hausdorff distance between two trajectories.}
+#'     \item{\code{SPD}: Segment path distance.}
+#'     \item{\code{DSPD}: Directed segment path distance (default).}
+#'   }
+#' @param verbose Provides console output informing about process (useful for large dataset).
+#' 
+#' @return Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories. Function \code{trajectorySegments} returns a list with the following elements:
+#' \itemize{
+#'   \item{\code{Dseg}: Distance matrix between segments.}
+#'   \item{\code{Dini}: Distance matrix between initial points of segments.}
+#'   \item{\code{Dfin}: Distance matrix between final points of segments.}
+#'   \item{\code{Dinifin}: Distance matrix between initial points of one segment and the final point of the other.}
+#'   \item{\code{Dfinini}: Distance matrix between final points of one segment and the initial point of the other.}
+#' }
+#' Function \code{trajectoryLengths} returns a data frame with the length of each segment on each trajectory and the total length of all trajectories. Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
+#' 
+#' @author Miquel De \enc{Cáceres}{Caceres}, Forest Sciences Center of Catalonia
+#' 
+#' @references
+#' Besse, P., Guillouet, B., Loubes, J.-M. & François, R. (2016). Review and perspective for distance based trajectory clustering. IEEE Trans. Intell. Transp. Syst., 17, 3306–3317.
+#' De \enc{Cáceres}{Caceres} M, Coll L, Legendre P, Allen RB, Wiser SK, Fortin MJ, Condit R & Hubbell S. (in preparation). Trajectory analysis in community ecology.
+#' 
+#' @seealso \code{\link{cmdscale}}
+#' 
+#' @examples 
+#'   #Description of sites and surveys
+#'   sites = c(1,1,1,2,2,2)
+#'   surveys=c(1,2,3,1,2,3)
+#'   
+#'   #Raw data table
+#'   xy<-matrix(0, nrow=6, ncol=2)
+#'   xy[2,2]<-1
+#'   xy[3,2]<-2
+#'   xy[4:6,1] <- 0.5
+#'   xy[4:6,2] <- xy[1:3,2]
+#'   xy[6,1]<-1
+#'   
+#'   #Distance matrix
+#'   d = dist(xy)
+#'   d
+#'   
+#'   trajectoryLengths(d, sites, surveys)
+#'   segmentDistances(d, sites, surveys)$Dseg
+#'   trajectoryDistances(d, sites, surveys, distance.type = "Hausdorff")
+#'   trajectoryDistances(d, sites, surveys, distance.type = "DSPD")
+#'   
+#'   #Draw trajectories
+#'   trajectoryPCoA(d, sites, traj.colors = c("black","red"), lwd = 2)
+#'   
+#'   
+#'   #Should give the same results if surveys are not in order 
+#'   #(here we switch surveys for site 2)
+#'   temp = xy[5,]
+#'   xy[5,] = xy[6,]
+#'   xy[6,] = temp
+#'   surveys[5] = 3
+#'   surveys[6] = 2
+#'   trajectoryLengths(dist(xy), sites, surveys)
+#'   segmentDistances(dist(xy), sites, surveys)$Dseg
+#'   trajectoryDistances(dist(xy), sites, surveys, distance.type = "Hausdorff")
+#'   trajectoryDistances(dist(xy), sites, surveys, distance.type = "DSPD")
+#'  
 segmentDistances<-function(d, sites, surveys=NULL, distance.type ="directed-segment", verbose=FALSE) {
   distance.type <- match.arg(distance.type, c("directed-segment", "Hausdorff", "PPA"))
   if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
@@ -109,7 +145,7 @@ segmentDistances<-function(d, sites, surveys=NULL, distance.type ="directed-segm
           # print(c(os1, os2))
           dmat12 = dmat[c(ind_surv1[s1],ind_surv1[s1+1],ind_surv2[s2],ind_surv2[s2+1]),
                         c(ind_surv1[s1],ind_surv1[s1+1],ind_surv2[s2],ind_surv2[s2+1])]
-          dsegmat[os1,os2] <- .twoSegmentDistance(dmat12, type=distance.type)
+          dsegmat[os1,os2] <- .twoSegmentDistanceC(dmat12, type=distance.type)
           dsegmat[os2,os1] <- dsegmat[os1,os2]
           dinisegmat[os2,os1] <- dinisegmat[os1,os2]<-dmat[ind_surv1[s1],ind_surv2[s2]]
           dfinsegmat[os2,os1] <- dfinsegmat[os1,os2]<-dmat[ind_surv1[s1+1],ind_surv2[s2+1]]
@@ -125,7 +161,7 @@ segmentDistances<-function(d, sites, surveys=NULL, distance.type ="directed-segm
   return(list(Dseg = as.dist(dsegmat), Dini=as.dist(dinisegmat), Dfin = as.dist(dfinsegmat),
               Dinifin=dinifinsegmat))
 }
-
+#' @rdname trajectories
 trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", verbose=FALSE) {
   distance.type <- match.arg(distance.type, c("DSPD", "SPD", "Hausdorff"))
   if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
@@ -198,7 +234,7 @@ trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", verb
           for(s2 in 1:(nsurveysite[i2]-1)) {
             ipi2 = ind_surv2[s2] #initial point
             ipe2 = ind_surv2[s2+1] #end point
-            dt12ivec = c(dt12ivec, .distanceToSegment(dmat[ipi2,ipe2], dmat[ip1, ipi2], dmat[ip1,ipe2])[3])
+            dt12ivec = c(dt12ivec, .distanceToSegmentC(dmat[ipi2,ipe2], dmat[ip1, ipi2], dmat[ip1,ipe2])[3])
           }
           dt12 = dt12 + min(dt12ivec)
         }
@@ -210,7 +246,7 @@ trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", verb
           for(s1 in 1:(nsurveysite[i1]-1)) {
             ipi1 = ind_surv1[s1] #initial point
             ipe1 = ind_surv1[s1+1] #end point
-            dt21ivec = c(dt21ivec, .distanceToSegment(dmat[ipi1,ipe1], dmat[ip2, ipi1], dmat[ip2,ipe1])[3])
+            dt21ivec = c(dt21ivec, .distanceToSegmentC(dmat[ipi1,ipe1], dmat[ip2, ipi1], dmat[ip2,ipe1])[3])
           }
           dt21 = dt21 + min(dt21ivec)
         }
@@ -238,7 +274,7 @@ trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", verb
           for(s2 in 1:(nsurveysite[i2]-1)) {
             ipi2 = ind_surv2[s2] #initial point
             ipe2 = ind_surv2[s2+1] #end point
-            dt12vec = c(dt12vec, .distanceToSegment(dmat[ipi2,ipe2], dmat[ip1, ipi2], dmat[ip1,ipe2])[3])
+            dt12vec = c(dt12vec, .distanceToSegmentC(dmat[ipi2,ipe2], dmat[ip1, ipi2], dmat[ip1,ipe2])[3])
           }
         }
         dt12 = max(dt12vec) #Maximum of distances between points of T1 and segments of T2
@@ -249,7 +285,7 @@ trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", verb
           for(s1 in 1:(nsurveysite[i1]-1)) {
             ipi1 = ind_surv1[s1] #initial point
             ipe1 = ind_surv1[s1+1] #end point
-            dt21vec = c(dt21vec, .distanceToSegment(dmat[ipi1,ipe1], dmat[ip2, ipi1], dmat[ip2,ipe1])[3])
+            dt21vec = c(dt21vec, .distanceToSegmentC(dmat[ipi1,ipe1], dmat[ip2, ipi1], dmat[ip2,ipe1])[3])
           }
         }
         dt21 = max(dt21vec) #Maximum of distances between points of T2 and segments of T1
@@ -263,6 +299,7 @@ trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", verb
   return(as.dist(dtraj))
 }
 
+#' @rdname trajectories
 trajectoryLengths<-function(d, sites, surveys=NULL, verbose= FALSE) {
   if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
   if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
@@ -301,3 +338,47 @@ trajectoryLengths<-function(d, sites, surveys=NULL, verbose= FALSE) {
   }
   return(lengths)
 }
+
+#' @rdname trajectories
+#' @param selection A numeric or logical vector of the same length as \code{sites}, indicating a subset of site trajectories to be plotted.
+#' @param traj.colors A vector of colors (one per site). If \code{selection != NULL} the length of the color vector should be equal to the number of sites selected.
+#' @param axes The pair of principal coordinates to be plotted.
+#' @param ... Additional parameters for function \code{\link{arrows}}.
+trajectoryPCoA<-function(d, sites, surveys = NULL, selection = NULL, traj.colors = NULL, axes=c(1,2), ...) {
+  siteIDs = unique(sites)
+  nsite = length(siteIDs)
+  
+  #Apply site selection
+  
+  if(is.null(selection)) selection = 1:nsite 
+  selIDs = siteIDs[selection]
+  
+  D2 =as.dist(as.matrix(d)[sites %in% selIDs, sites %in% selIDs])
+  cmd_D2<-cmdscale(D2,eig=TRUE, add=TRUE, k=nrow(as.matrix(D2))-1)
+  
+  x<-cmd_D2$points[,axes[1]]
+  y<-cmd_D2$points[,axes[2]]
+  plot(x,y, type="n", asp=1, xlab=paste0("PCoA ",axes[1]," (", round(100*cmd_D2$eig[axes[1]]/sum(cmd_D2$eig)),"%)"), 
+       ylab=paste0("PCoA ",axes[2]," (", round(100*cmd_D2$eig[axes[2]]/sum(cmd_D2$eig)),"%)"))
+  
+  sitesred = sites[sites %in% selIDs]
+  if(!is.null(surveys)) surveysred = surveys[sites %in% selIDs]
+  else surveysred = NULL
+  
+  #Draw arrows
+  for(i in 1:length(selIDs)) {
+    ind_surv = which(sitesred==selIDs[i])
+    #Surveys may not be in order
+    if(!is.null(surveysred)) ind_surv = ind_surv[order(surveysred[sitesred==siteIDs[i]])]
+    for(t in 1:(length(ind_surv)-1)) {
+      niini =ind_surv[t]
+      nifin =ind_surv[t+1]
+      if(!is.null(traj.colors)) arrows(x[niini],y[niini],x[nifin],y[nifin], col = traj.colors[i], ...)
+      else arrows(x[niini],y[niini],x[nifin],y[nifin], ...)
+    }
+  }
+  #Draw legend
+  invisible(cmd_D2)
+}
+
+

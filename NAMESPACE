@@ -1,11 +1,13 @@
 # Default NAMESPACE created by R
 # Remove the previous line if you edit this file
 import(vegan,sp)
+useDynLib(vegclust)
 importFrom("grDevices", "colorRampPalette", "rainbow")
 importFrom("graphics", "abline", "axis", "legend", "lines", "matlines",
              "persp", "arrows")
 importFrom("stats", "as.dist", "cutree", "dist", "quantile", "var", "cmdscale")
 importFrom("utils", "setTxtProgressBar", "txtProgressBar")
+importFrom(Rcpp, evalCpp)
 # Export all names
 exportPattern(".")
 S3method(plot,CAP)

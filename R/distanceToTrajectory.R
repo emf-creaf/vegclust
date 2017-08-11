@@ -1,40 +1,11 @@
-.projection<-function(dref, d1, d2) {
-  a1 = (d1^2+dref^2-d2^2)/(2*dref)
-  a2 = dref-a1
-  s = d1^2-a1^2
-  h = ifelse(s>=0, sqrt(s), NA)
-  return(c(a1,a2,h))
-}
-.distanceToSegment<-function(dref, d1,d2) {
-  p =.projection(dref,d1, d2)
-  if(is.na(p[3]) || p[1]<0 || p[2]<0) {
-    if(d1<d2) {
-      p[1] = 0
-      p[2] = dref
-      p[3] = d1
-    } else {
-      p[1] = dref
-      p[2] = 0
-      p[3] = d2
-    }
-  }
-  return(p)
-}
 #Hausdorff distance between a point and a trajectory
 .pointHausdorffDistanceToTrajectory<-function(dsteps, d2target) {
   nseg = length(dsteps)
   dseg = numeric(nseg)
   for(i in 1:nseg) {
-    dseg[i] = .distanceToSegment(dsteps[i], d2target[i], d2target[i+1])[3]
+    dseg[i] = .distanceToSegmentC(dsteps[i], d2target[i], d2target[i+1])[3]
   }
   return(min(dseg))
-}
-
-.triangleinequality<-function(d1,d2,d3, tol=0.0001) {
-  if((d1+d2)<d3*(1-tol)) return(FALSE)
-  else if((d1+d3)<d2*(1-tol)) return(FALSE)
-  else if((d2+d3)<d1*(1-tol)) return(FALSE)
-  return(TRUE)
 }
 .pt<-function(dIT, dXT, dPX, dPI) {
   if(dPI==0) return(dIT)
@@ -52,21 +23,6 @@
   }
   d2 = ((-1)*bx + sqrt(z))/(2*ax)
   return(sqrt(d2))
-}
-.is.metric<-function(D, tol=0.0001) {
-  dmat = as.matrix(D)
-  n = nrow(dmat)
-  for(i in 1:n) {
-    for(j in i:n) {
-      for(k in j:n) {
-        ti = .triangleinequality(dmat[i,j], dmat[i,k], dmat[j,k],tol)
-        if(!ti) {
-          return(FALSE)
-        }
-      }
-    }
-  }
-  return(TRUE)
 }
 
 #Calculates Hausdorff distance between two line segments
@@ -122,4 +78,8 @@
   res = cbind(dgrad, posgrad)
   row.names(res)<-row.names(d2ref)
   return(res)
+}
+
+.is.metric<-function(D, tol=0.0001) {
+  return(.ismetricC(as.matrix(D)))
 }
