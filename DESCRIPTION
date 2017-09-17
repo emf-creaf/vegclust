@@ -6,7 +6,7 @@ Date: 2017-09-17
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com'))
-Description: Contains functions used to perform fuzzy clustering of vegetation data [De Cáceres et al. (2010) <doi:10.1111/j.1654-1103.2010.01211.x>]. It also includes functions to measure community dissimilarity on the basis of structure and composition [De Cáceres et al. (2013): <doi:10.1111/2041-210X.12116>].
+Description: A set of functions to perform fuzzy clustering of vegetation data [De Cáceres et al. (2010) <doi:10.1111/j.1654-1103.2010.01211.x>] and to assess ecological community ressemblance on the basis of structure and composition [De Cáceres et al. (2013): <doi:10.1111/2041-210X.12116>].
 Depends: R (>= 3.4.1), vegan
 Imports: sp, Rcpp (>= 0.12.12)
 LinkingTo: Rcpp
