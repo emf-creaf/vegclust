@@ -6,7 +6,7 @@
 #' 
 #' These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
 #' By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
-#' Details of calculations are given in De \enc{Cáceres}{Caceres} et al (in prep.)
+#' Details of calculations are given in De \enc{Cáceres}{Caceres} et al (submitted)
 #' 
 #' @encoding UTF-8
 #' @name trajectories
@@ -16,7 +16,7 @@
 #' @param sites A vector indicating the site corresponding to each community state.
 #' @param surveys A vector indicating the survey corresponding to each community state (only necessary when surveys are not in order).
 #' @param distance.type 
-#' The type of distance index to be calculated (De Cáceres et al. in prep). For \code{segmentDistances} the available indices are:
+#' The type of distance index to be calculated (Besse et al. 2016; De Cáceres et al. submitted). For \code{segmentDistances} the available indices are:
 #'   \itemize{
 #'     \item{\code{Hausdorff}: Hausdorff distance between two segments.}
 #'     \item{\code{directed-segment}: Directed segment distance (default).}
@@ -28,6 +28,7 @@
 #'     \item{\code{SPD}: Segment path distance.}
 #'     \item{\code{DSPD}: Directed segment path distance (default).}
 #'   }
+#' @param symmetrization Function used to obtain a symmetric distance, so that DSPD(T1,T2) = DSPD(T2,T1) (e.g., \code{mean} or \code{min}).
 #' @param verbose Provides console output informing about process (useful for large dataset).
 #' 
 #' @return Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories. Function \code{trajectorySegments} returns a list with the following elements:
@@ -45,7 +46,7 @@
 #' @references
 #' Besse, P., Guillouet, B., Loubes, J.-M. & François, R. (2016). Review and perspective for distance based trajectory clustering. IEEE Trans. Intell. Transp. Syst., 17, 3306–3317.
 #' 
-#' De \enc{Cáceres}{Caceres} M, Coll L, Legendre P, Allen RB, Wiser SK, Fortin MJ, Condit R & Hubbell S. (in preparation). Trajectory analysis in community ecology.
+#' De \enc{Cáceres}{Caceres} M, Coll L, Legendre P, Allen RB, Wiser SK, Fortin MJ, Condit R & Hubbell S. (submitted). Trajectory analysis in community ecology.
 #' 
 #' @seealso \code{\link{cmdscale}}
 #' 
@@ -164,7 +165,7 @@ segmentDistances<-function(d, sites, surveys=NULL, distance.type ="directed-segm
 }
 
 #' @rdname trajectories
-trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", verbose=FALSE) {
+trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", symmetrization = "mean" , verbose=FALSE) {
   distance.type <- match.arg(distance.type, c("DSPD", "SPD", "Hausdorff"))
   if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
   if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
@@ -213,7 +214,7 @@ trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", verb
         }
         dt21 = dt21/(nsurveysite[i2]-1) #Average of distances between segments of T2 and trajectory T1
         
-        dtraj[i1,i2] = (dt12+dt21)/2 #Symmetrization
+        dtraj[i1,i2] = do.call(symmetrization, list(c(dt12,dt21))) #Symmetrization
         dtraj[i2,i1] = dtraj[i1,i2]
       }
     }

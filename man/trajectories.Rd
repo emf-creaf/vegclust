@@ -16,7 +16,7 @@ segmentDistances(d, sites, surveys = NULL,
   distance.type = "directed-segment", verbose = FALSE)
 
 trajectoryDistances(d, sites, surveys = NULL, distance.type = "DSPD",
-  verbose = FALSE)
+  symmetrization = "mean", verbose = FALSE)
 
 trajectoryLengths(d, sites, surveys = NULL, verbose = FALSE)
 
@@ -30,7 +30,7 @@ trajectoryPCoA(d, sites, surveys = NULL, selection = NULL,
 
 \item{surveys}{A vector indicating the survey corresponding to each community state (only necessary when surveys are not in order).}
 
-\item{distance.type}{The type of distance index to be calculated (De Cáceres et al. in prep). For \code{segmentDistances} the available indices are:
+\item{distance.type}{The type of distance index to be calculated (Besse et al. 2016; De Cáceres et al. submitted). For \code{segmentDistances} the available indices are:
   \itemize{
     \item{\code{Hausdorff}: Hausdorff distance between two segments.}
     \item{\code{directed-segment}: Directed segment distance (default).}
@@ -44,6 +44,8 @@ whereas for \code{trajectoryDistances} the available indices are:
   }}
 
 \item{verbose}{Provides console output informing about process (useful for large dataset).}
+
+\item{symmetrization}{Function used to obtain a symmetric distance, so that DSPD(T1,T2) = DSPD(T2,T1) (e.g., \code{mean} or \code{min}).}
 
 \item{selection}{A numeric or logical vector of the same length as \code{sites}, indicating a subset of site trajectories to be plotted.}
 
@@ -72,7 +74,7 @@ Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\l
 \details{
 These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
 By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
-Details of calculations are given in De \enc{Cáceres}{Caceres} et al (in prep.)
+Details of calculations are given in De \enc{Cáceres}{Caceres} et al (submitted)
 }
 \examples{
   #Description of sites and surveys
@@ -116,7 +118,7 @@ Details of calculations are given in De \enc{Cáceres}{Caceres} et al (in prep.)
 \references{
 Besse, P., Guillouet, B., Loubes, J.-M. & François, R. (2016). Review and perspective for distance based trajectory clustering. IEEE Trans. Intell. Transp. Syst., 17, 3306–3317.
 
-De \enc{Cáceres}{Caceres} M, Coll L, Legendre P, Allen RB, Wiser SK, Fortin MJ, Condit R & Hubbell S. (in preparation). Trajectory analysis in community ecology.
+De \enc{Cáceres}{Caceres} M, Coll L, Legendre P, Allen RB, Wiser SK, Fortin MJ, Condit R & Hubbell S. (submitted). Trajectory analysis in community ecology.
 }
 \seealso{
 \code{\link{cmdscale}}
