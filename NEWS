@@ -4,6 +4,10 @@
 
 __Version history__
 
+_Version 1.7.1, September 2017
+
+1. Package encoding. Changed package and author description.
+
 _Version 1.7.0, September 2017.
 
 1. NEW feature: Trajectory analysis. Functions 'trajectoryDistances', 'trajectoryLengths' and 'trajectoryPCoA.
