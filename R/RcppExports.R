@@ -14,34 +14,34 @@
 #' @param d1 Distance from the target point to the initial segment endpoint
 #' @param d2 Distance from the target point to the final segment endpoint
 .projectionC <- function(dref, d1, d2) {
-    .Call('vegclust_projection', PACKAGE = 'vegclust', dref, d1, d2)
+    .Call('_vegclust_projection', PACKAGE = 'vegclust', dref, d1, d2)
 }
 
 #'
 #' Distance from one point to one segment
 #'
 .distanceToSegmentC <- function(dref, d1, d2) {
-    .Call('vegclust_distanceToSegment', PACKAGE = 'vegclust', dref, d1, d2)
+    .Call('_vegclust_distanceToSegment', PACKAGE = 'vegclust', dref, d1, d2)
 }
 
 #'
 #' Distance between two segments
 #'
 .twoSegmentDistanceC <- function(dmat12, type = "directed-segment") {
-    .Call('vegclust_twoSegmentDistance', PACKAGE = 'vegclust', dmat12, type)
+    .Call('_vegclust_twoSegmentDistance', PACKAGE = 'vegclust', dmat12, type)
 }
 
 #'
 #' Triangle inequality for one triplet
 #'
 .triangleinequalityC <- function(d1, d2, d3, tol = 0.0001) {
-    .Call('vegclust_triangleinequality', PACKAGE = 'vegclust', d1, d2, d3, tol)
+    .Call('_vegclust_triangleinequality', PACKAGE = 'vegclust', d1, d2, d3, tol)
 }
 
 #'
 #' Determines if the matrix fulfills the triangle inequality
 #'
 .ismetricC <- function(dmat, tol = 0.0001) {
-    .Call('vegclust_ismetric', PACKAGE = 'vegclust', dmat, tol)
+    .Call('_vegclust_ismetric', PACKAGE = 'vegclust', dmat, tol)
 }
 

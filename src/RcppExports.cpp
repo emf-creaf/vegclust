@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // projection
 NumericVector projection(double dref, double d1, double d2);
-RcppExport SEXP vegclust_projection(SEXP drefSEXP, SEXP d1SEXP, SEXP d2SEXP) {
+RcppExport SEXP _vegclust_projection(SEXP drefSEXP, SEXP d1SEXP, SEXP d2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -20,7 +20,7 @@ END_RCPP
 }
 // distanceToSegment
 NumericVector distanceToSegment(double dref, double d1, double d2);
-RcppExport SEXP vegclust_distanceToSegment(SEXP drefSEXP, SEXP d1SEXP, SEXP d2SEXP) {
+RcppExport SEXP _vegclust_distanceToSegment(SEXP drefSEXP, SEXP d1SEXP, SEXP d2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -33,7 +33,7 @@ END_RCPP
 }
 // twoSegmentDistance
 double twoSegmentDistance(NumericMatrix dmat12, String type);
-RcppExport SEXP vegclust_twoSegmentDistance(SEXP dmat12SEXP, SEXP typeSEXP) {
+RcppExport SEXP _vegclust_twoSegmentDistance(SEXP dmat12SEXP, SEXP typeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -45,7 +45,7 @@ END_RCPP
 }
 // triangleinequality
 bool triangleinequality(double d1, double d2, double d3, double tol);
-RcppExport SEXP vegclust_triangleinequality(SEXP d1SEXP, SEXP d2SEXP, SEXP d3SEXP, SEXP tolSEXP) {
+RcppExport SEXP _vegclust_triangleinequality(SEXP d1SEXP, SEXP d2SEXP, SEXP d3SEXP, SEXP tolSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -59,7 +59,7 @@ END_RCPP
 }
 // ismetric
 bool ismetric(NumericMatrix dmat, double tol);
-RcppExport SEXP vegclust_ismetric(SEXP dmatSEXP, SEXP tolSEXP) {
+RcppExport SEXP _vegclust_ismetric(SEXP dmatSEXP, SEXP tolSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -68,4 +68,18 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(ismetric(dmat, tol));
     return rcpp_result_gen;
 END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_vegclust_projection", (DL_FUNC) &_vegclust_projection, 3},
+    {"_vegclust_distanceToSegment", (DL_FUNC) &_vegclust_distanceToSegment, 3},
+    {"_vegclust_twoSegmentDistance", (DL_FUNC) &_vegclust_twoSegmentDistance, 2},
+    {"_vegclust_triangleinequality", (DL_FUNC) &_vegclust_triangleinequality, 4},
+    {"_vegclust_ismetric", (DL_FUNC) &_vegclust_ismetric, 2},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_vegclust(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }

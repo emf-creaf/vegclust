@@ -382,4 +382,3 @@ trajectoryPCoA<-function(d, sites, surveys = NULL, selection = NULL, traj.colors
   #Draw legend
   invisible(cmd_D2)
 }
-
