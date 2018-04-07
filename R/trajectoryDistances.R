@@ -355,7 +355,7 @@ trajectoryAngles<-function(d, sites, surveys=NULL, verbose= FALSE) {
   n = nrow(dmat)
   
   maxnsurveys = max(nsurveysite)
-  angles = matrix(NA, nrow=nsite, ncol=maxnsurveys-1)
+  angles = matrix(NA, nrow=nsite, ncol=maxnsurveys)
   if(verbose) {
     cat("\nCalculating trajectory angles...\n")
     tb = txtProgressBar(1, nsite, style=3)
@@ -374,10 +374,11 @@ trajectoryAngles<-function(d, sites, surveys=NULL, verbose= FALSE) {
       # cat(paste(i1,s1,":", d12,d23,d13,angles[i1,s1],"\n"))
     }
     angles[i1, maxnsurveys-1] = mean(angles[i1,1:(nsurveysite[i1]-2)], na.rm=T)
+    angles[i1, maxnsurveys] = sd(angles[i1,1:(nsurveysite[i1]-2)], na.rm=T)
   }
   angles = as.data.frame(angles)
   row.names(angles)<-siteIDs
-  names(angles)<-c(paste0("S",as.character(1:(maxnsurveys-2)),"-S",as.character(2:(maxnsurveys-1))),"Average")
+  names(angles)<-c(paste0("S",as.character(1:(maxnsurveys-2)),"-S",as.character(2:(maxnsurveys-1))),"mean", "sd")
   return(angles)
 }
 
