@@ -321,9 +321,7 @@ trajectoryLengths<-function(d, sites, surveys=NULL, verbose= FALSE) {
 
   lengths = as.data.frame(matrix(NA, nrow=nsite, ncol=maxnsurveys))
   row.names(lengths)<-siteIDs
-  names(lengths)<-c(paste0("Segment",as.character(1:(maxnsurveys-1))),"Trajectory")
-  speeds = lengths
-  os1 = 1
+  names(lengths)<-c(paste0("S",as.character(1:(maxnsurveys-1))),"Trajectory")
   if(verbose) {
     cat("\nCalculating trajectory lengths...\n")
     tb = txtProgressBar(1, nsite, style=3)
@@ -335,7 +333,6 @@ trajectoryLengths<-function(d, sites, surveys=NULL, verbose= FALSE) {
     if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
     for(s1 in 1:(nsurveysite[i1]-1)) {
       lengths[i1,s1] = dmat[ind_surv1[s1], ind_surv1[s1+1]]
-      os1 = os1+1
     }
     lengths[i1, maxnsurveys] = sum(lengths[i1,], na.rm=T)
   }
@@ -359,13 +356,11 @@ trajectoryAngles<-function(d, sites, surveys=NULL, verbose= FALSE) {
   
   maxnsurveys = max(nsurveysite)
   
-  lengths = as.data.frame(matrix(NA, nrow=nsite, ncol=maxnsurveys))
-  row.names(lengths)<-siteIDs
-  names(lengths)<-c(paste0("Segment",as.character(1:(maxnsurveys-1))),"Trajectory")
-  speeds = lengths
-  os1 = 1
+  angles = as.data.frame(matrix(NA, nrow=nsite, ncol=maxnsurveys-1))
+  row.names(angles)<-siteIDs
+  names(angles)<-c(paste0("S",as.character(1:(maxnsurveys-2)),"-S",as.character(2:(maxnsurveys-1))),"Average")
   if(verbose) {
-    cat("\nCalculating trajectory lengths...\n")
+    cat("\nCalculating trajectory angles...\n")
     tb = txtProgressBar(1, nsite, style=3)
   }
   for(i1 in 1:nsite) {
@@ -373,13 +368,15 @@ trajectoryAngles<-function(d, sites, surveys=NULL, verbose= FALSE) {
     ind_surv1 = which(sites==siteIDs[i1])
     #Surveys may not be in order
     if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
-    for(s1 in 1:(nsurveysite[i1]-1)) {
-      lengths[i1,s1] = dmat[ind_surv1[s1], ind_surv1[s1+1]]
-      os1 = os1+1
+    for(s1 in 1:(nsurveysite[i1]-2)) {
+      d12 = dmat[ind_surv1[s1], ind_surv1[s1+1]]
+      d23 = dmat[ind_surv1[s1+1], ind_surv1[s1+2]]
+      d13 = dmat[ind_surv1[s1], ind_surv1[s1+2]]
+      angles[i1, s1] = .angleConsecutiveC(d12,d23,d13)
     }
-    lengths[i1, maxnsurveys] = sum(lengths[i1,], na.rm=T)
+    angles[i1, maxnsurveys-1] = mean(angles[i1,1:(nsurveysite[i1]-2)], na.rm=T)
   }
-  return(lengths)
+  return(angles)
 }
 
 #' @rdname trajectories

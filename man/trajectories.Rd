@@ -6,9 +6,11 @@
 \alias{segmentDistances}
 \alias{trajectoryDistances}
 \alias{trajectoryLengths}
+\alias{trajectoryAngles}
 \alias{trajectoryPCoA}
 \alias{trajectoryDistances}
 \alias{trajectoryLengths}
+\alias{trajectoryAngles}
 \alias{trajectoryPCoA}
 \title{Community trajectory analysis}
 \usage{
@@ -19,6 +21,8 @@ trajectoryDistances(d, sites, surveys = NULL, distance.type = "DSPD",
   symmetrization = "mean", verbose = FALSE)
 
 trajectoryLengths(d, sites, surveys = NULL, verbose = FALSE)
+
+trajectoryAngles(d, sites, surveys = NULL, verbose = FALSE)
 
 trajectoryPCoA(d, sites, surveys = NULL, selection = NULL,
   traj.colors = NULL, axes = c(1, 2), ...)

@@ -4,6 +4,10 @@
 
 __Version history__
 
+_Version 1.7.2, April 2018
+
+1. New function 'trajectoryAngles'.
+
 _Version 1.7.1, September 2017
 
 1. Package encoding. Changed package and author description.
