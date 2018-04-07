@@ -18,6 +18,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// angularAttributeConsecutive
+double angularAttributeConsecutive(double d12, double d23, double d13);
+RcppExport SEXP _vegclust_angularAttributeConsecutive(SEXP d12SEXP, SEXP d23SEXP, SEXP d13SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type d12(d12SEXP);
+    Rcpp::traits::input_parameter< double >::type d23(d23SEXP);
+    Rcpp::traits::input_parameter< double >::type d13(d13SEXP);
+    rcpp_result_gen = Rcpp::wrap(angularAttributeConsecutive(d12, d23, d13));
+    return rcpp_result_gen;
+END_RCPP
+}
 // distanceToSegment
 NumericVector distanceToSegment(double dref, double d1, double d2);
 RcppExport SEXP _vegclust_distanceToSegment(SEXP drefSEXP, SEXP d1SEXP, SEXP d2SEXP) {
@@ -72,6 +85,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_vegclust_projection", (DL_FUNC) &_vegclust_projection, 3},
+    {"_vegclust_angularAttributeConsecutive", (DL_FUNC) &_vegclust_angularAttributeConsecutive, 3},
     {"_vegclust_distanceToSegment", (DL_FUNC) &_vegclust_distanceToSegment, 3},
     {"_vegclust_twoSegmentDistance", (DL_FUNC) &_vegclust_twoSegmentDistance, 2},
     {"_vegclust_triangleinequality", (DL_FUNC) &_vegclust_triangleinequality, 4},

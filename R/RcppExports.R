@@ -5,6 +5,10 @@
     .Call('_vegclust_projection', PACKAGE = 'vegclust', dref, d1, d2)
 }
 
+.angleConsecutiveC <- function(d12, d23, d13) {
+    .Call('_vegclust_angularAttributeConsecutive', PACKAGE = 'vegclust', d12, d23, d13)
+}
+
 .distanceToSegmentC <- function(dref, d1, d2) {
     .Call('_vegclust_distanceToSegment', PACKAGE = 'vegclust', dref, d1, d2)
 }

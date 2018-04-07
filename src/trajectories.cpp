@@ -24,6 +24,23 @@ NumericVector projection(double dref, double d1, double d2) {
 }
 
 //
+// Angular attribute of a pair of consecutive segments 
+// Tripathi, P.K., Debnath, M., & Elmasri, R. 2016. A Direction Based Framework for Trajectory Data Analysis. Proceedings of the 9th ACM International Conference on PErvasive Technologies Related to Assistive Environments - PETRA ’16. 
+// doi: 10.1145/2910674.2910728
+//
+// param d12 Distance from p1 to p2
+// param d23 Distance from p2 to p3
+// param d13 Distance from p1 to p3
+// [[Rcpp::export(".angleConsecutiveC")]]
+double angularAttributeConsecutive(double d12, double d23, double d13) {
+  double a1 = (pow(d12,2.0)+pow(d13,2.0)-pow(d23,2.0))/(2.0*d13);
+  double a2 = d13-a1;
+  double alpha = acos(a1/d12)*(180.0/PI);
+  double beta = acos(a2/d23)*(180.0/PI);
+  return(180.0 - alpha - beta);
+}
+
+//
 // Distance from one point to one segment
 //
 // [[Rcpp::export(".distanceToSegmentC")]]

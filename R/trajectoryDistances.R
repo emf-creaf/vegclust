@@ -10,7 +10,7 @@
 #' 
 #' @encoding UTF-8
 #' @name trajectories
-#' @aliases segmentDistances trajectoryDistances trajectoryLengths trajectoryPCoA
+#' @aliases segmentDistances trajectoryDistances trajectoryLengths trajectoryAngles trajectoryPCoA
 #' 
 #' @param d A symmetric \code{\link{matrix}} or an object of class \code{\link{dist}} containing the distance values between pairs of community states.
 #' @param sites A vector indicating the site corresponding to each community state.
@@ -319,6 +319,46 @@ trajectoryLengths<-function(d, sites, surveys=NULL, verbose= FALSE) {
 
   maxnsurveys = max(nsurveysite)
 
+  lengths = as.data.frame(matrix(NA, nrow=nsite, ncol=maxnsurveys))
+  row.names(lengths)<-siteIDs
+  names(lengths)<-c(paste0("Segment",as.character(1:(maxnsurveys-1))),"Trajectory")
+  speeds = lengths
+  os1 = 1
+  if(verbose) {
+    cat("\nCalculating trajectory lengths...\n")
+    tb = txtProgressBar(1, nsite, style=3)
+  }
+  for(i1 in 1:nsite) {
+    if(verbose) setTxtProgressBar(tb, i1)
+    ind_surv1 = which(sites==siteIDs[i1])
+    #Surveys may not be in order
+    if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
+    for(s1 in 1:(nsurveysite[i1]-1)) {
+      lengths[i1,s1] = dmat[ind_surv1[s1], ind_surv1[s1+1]]
+      os1 = os1+1
+    }
+    lengths[i1, maxnsurveys] = sum(lengths[i1,], na.rm=T)
+  }
+  return(lengths)
+}
+
+#' @rdname trajectories
+trajectoryAngles<-function(d, sites, surveys=NULL, verbose= FALSE) {
+  if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
+  if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
+  
+  siteIDs = unique(sites)
+  nsite = length(siteIDs)
+  nsurveysite<-numeric(nsite)
+  for(i in 1:nsite) {
+    nsurveysite[i] = sum(sites==siteIDs[i])
+  }
+  if(sum(nsurveysite==1)>0) stop("All sites need to be surveyed at least twice")
+  dmat = as.matrix(d)
+  n = nrow(dmat)
+  
+  maxnsurveys = max(nsurveysite)
+  
   lengths = as.data.frame(matrix(NA, nrow=nsite, ncol=maxnsurveys))
   row.names(lengths)<-siteIDs
   names(lengths)<-c(paste0("Segment",as.character(1:(maxnsurveys-1))),"Trajectory")
