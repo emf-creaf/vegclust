@@ -49,36 +49,36 @@ cbind(sites,surveys,xy)
 The matrix of Euclidean distances $d$ between community states in $\Omega$ is then:
 ```{r} 
 #Distance matrix
-d = dist(xy)
-d
+D = dist(xy)
+D
 ```
 
 ### 2.2 Community trajectory analysis
 
-To begin our analysis of the two trajectories we display them in an ordination space, using function `trajectoryPCoA`. Since $\Omega$ has only two dimensions, the Principal Coordinates Analysis (PCoA) on $d$ displays the complete space.
+To begin our analysis of the two trajectories we display them in an ordination space, using function `trajectoryPCoA`. Since $\Omega$ has only two dimensions, the Principal Coordinates Analysis (PCoA) on $d$ displays the complete space:
 
-```{r pcoa, fig = TRUE, fig.height=4.5, fig.width=5, fig.align = "center"}
-trajectoryPCoA(d, sites, surveys, traj.colors = c("black","red"), lwd = 2)
+```{r pcoa, fig = TRUE, fig.height=4, fig.width=5, fig.align = "center"}
+trajectoryPCoA(D, sites, surveys, traj.colors = c("black","red"), lwd = 2)
 ```
 
- While trajectory of site '1' (black arrows) is made of two segments of the same length and direction, trajectory of site '2' (red arrows) has a second segment that bends and is longer than that of the segond segment of site '1'. We can obtain the length of trajectory segments using function `trajectoryLengths` and the angles between consecutive segments, using function `trajectoryAngles`:
+While trajectory of site '1' (black arrows) is made of two segments of the same length and direction, trajectory of site '2' (red arrows) has a second segment that bends and is longer than that of the segond segment of site '1'. We can obtain the length of trajectory segments using function `trajectoryLengths` and the angles between consecutive segments, using function `trajectoryAngles`:
 
 ```{r} 
-trajectoryLengths(d, sites, surveys)
-trajectoryAngles(d, sites, surveys)
+trajectoryLengths(D, sites, surveys)
+trajectoryAngles(D, sites, surveys)
 ```
 In this case, the same information could be obtained by inspecting the PCoA representation, but in a case of $\Omega$ having many dimensions, the PCoA representation will correspond to a reduced space and hence, angles and lengths will not correspond exactly to those of functions `trajectoryLengths` and `trajectoryAngles`, which take into account the full space.
 
 To start comparing trajectories between sites, one important step is the calculation of distances between directed segments, which can be obtained by calling function `segmentDistances`:
 ```{r} 
-segmentDistances(d, sites, surveys)$Dseg
+segmentDistances(D, sites, surveys)$Dseg
 ```  
 Distances between segments are affected by differences in both *position* and *direction*. Hence, among the four segments of this example, the distance is maximum between the first segment of trajectory '1' and the second segment of trajectory '2'.
 
 Distances between segments are internally calculated when comparing whole trajectories using function `trajectoryDistances`. Here we show the dissimilarity between the two trajectories as assessed using either the *Hausdorff* distance (equal to the maximum distance between directed segments) or the *directed segment path distance* (an average of distances between segments): 
 ```{r} 
-trajectoryDistances(d, sites, surveys, distance.type = "Hausdorff")
-trajectoryDistances(d, sites, surveys, distance.type = "DSPD")
+trajectoryDistances(D, sites, surveys, distance.type = "Hausdorff")
+trajectoryDistances(D, sites, surveys, distance.type = "DSPD")
 ```  
 
 ## 3. Structural dynamics in permanent plots
@@ -93,7 +93,7 @@ avoca_D_man = vegdiststruct(avoca_strat, method="manhattan", transform = functio
 ```
 
 ### 3.1 Display trajectories in PCoA
-```{r avoca pcoa, echo=T}
+```{r avoca pcoa, echo=T, fig=TRUE, fig.height=6, fig.width=6, fig.align = "center"}
 trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
                traj.colors = brewer.pal(8,"Accent"), 
                axes=c(1,2), length=0.1, lwd=2)
@@ -101,13 +101,13 @@ legend("topright", bty="n", legend = 1:8, col = brewer.pal(8,"Accent"), lwd=2)
 
 ```
 
-### Trajectory lengths
+### 3.2 Trajectory lengths and angles
 
 ```{r trajectory lengths, echo=T}
 trajectoryLengths(avoca_D_man, avoca_sites, avoca_surveys)
 ```
 
-### Trajectory angles
+
 ```{r int1, echo=FALSE}
 plotTrajDiamDist<-function(cli = 7) {
 l = colnames(avoca_strat[[1]])
@@ -152,25 +152,35 @@ legend("topright", bty="n", lwd=2,col=gray(seq(0.8,0, by=-0.1)), legend=c("1970/
 
 ```{r trajectory angles, echo=T}
 trajectoryAngles(avoca_D_man, avoca_sites, avoca_surveys)
-trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
-               selection= 7,
-               length=0.1, lwd=2)
-plotTrajDiamDist(7)
-trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
-               selection= 6,
-               length=0.1, lwd=2)
-plotTrajDiamDist(6)
 ```
 
 
-### Distances between trajectories
+```{r trajectory 3 DBH dist, echo=F, fig.height=4, fig.width=8, fig.align = "center"}
+par(mfrow=c(1,2))
+trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
+               selection= 3,
+               length=0.1, lwd=2)
+plotTrajDiamDist(3)
+```
+
+```{r trajectory 4, echo=T, fig.height=4, fig.width=8, fig.align = "center"}
+par(mfrow=c(1,2))
+trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
+               selection= 4,
+               length=0.1, lwd=2)
+plotTrajDiamDist(4)
+```
+
+
+
+### 3.3 Distances between trajectories
 
 ```{r avoca DT, echo=FALSE}
 avoca_D_traj_man = trajectoryDistances(avoca_D_man, avoca_sites, distance.type="DSPD", verbose=FALSE)
 print(round(avoca_D_traj_man,3))
 ```
 
-```{r avoca DT PCoA, echo=FALSE}
+```{r avoca DT PCoA, echo=FALSE, fig = TRUE, fig.height=5, fig.width=6, fig.align="center"}
 cmd_D2<-cmdscale(avoca_D_traj_man, add=TRUE, eig=TRUE, k=7)
 x<-cmd_D2$points[,1]
 y<-cmd_D2$points[,2]
@@ -180,5 +190,4 @@ plot(x,y, type="p", asp=1, xlab=paste0("PCoA 1 (", round(100*cmd_D2$eig[1]/sum(c
 text(x,y, labels=1:8, pos=2)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 

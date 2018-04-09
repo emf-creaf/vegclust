@@ -87,6 +87,10 @@ double angularAttributeConsecutive(double d12, double d23, double d13, bool add 
   }
   double a1 = (pow(d12,2.0)+pow(d13,2.0)-pow(d23,2.0))/(2.0*d13);
   double a2 = d13-a1;
+  if(add) {
+    a1 = std::min(a1,d12);
+    a2 = std::min(a2,d23);
+  }
   double alpha = acos(a1/d12)*(180.0/PI);
   double beta = acos(a2/d23)*(180.0/PI);
   return(180.0 - alpha - beta);

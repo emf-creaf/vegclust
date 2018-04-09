@@ -374,8 +374,8 @@ trajectoryAngles<-function(d, sites, surveys=NULL, verbose= FALSE) {
       d12 = dmat[ind_surv1[s1], ind_surv1[s1+1]]
       d23 = dmat[ind_surv1[s1+1], ind_surv1[s1+2]]
       d13 = dmat[ind_surv1[s1], ind_surv1[s1+2]]
-      angles[i1, s1] = .angleConsecutiveC(d12,d23,d13)
-      # cat(paste(i1,s1,":", d12,d23,d13,angles[i1,s1],"\n"))
+      angles[i1, s1] = .angleConsecutiveC(d12,d23,d13, TRUE)
+      # cat(paste(i1,s1,":", d12,d23,d13,.angleConsecutiveC(d12,d23,d13, TRUE),"\n"))
     }
     angles[i1, maxnsurveys-1] = mean(angles[i1,1:(nsurveysite[i1]-2)], na.rm=T)
     angles[i1, maxnsurveys] = sd(angles[i1,1:(nsurveysite[i1]-2)], na.rm=T)
@@ -425,4 +425,58 @@ trajectoryPCoA<-function(d, sites, surveys = NULL, selection = NULL, traj.colors
   }
   #Draw legend
   invisible(cmd_D2)
+}
+#Calculates Hausdorff distance between two line segments
+.distanceToTrajectory<-function(dsteps, d2ref, eps) {
+  
+  nsteps = length(dsteps)
+  npoints = nrow(d2ref)
+  
+  #Cumulative distance between steps
+  dstepcum = rep(0,nsteps+1)
+  for(i in 2:nsteps) {
+    dstepcum[i] = dstepcum[i-1]+dsteps[i-1]
+  }
+  dstepcum[nsteps+1] = sum(dsteps)
+  
+  projH = matrix(NA, nrow=npoints, ncol = nsteps)
+  projA1 = matrix(NA, nrow=npoints, ncol = nsteps)
+  projA2 = matrix(NA, nrow=npoints, ncol = nsteps)
+  projIn = matrix(FALSE, nrow=npoints, ncol = nsteps)
+  whichstep = rep(NA, npoints)
+  dgrad = rep(NA, npoints)
+  posgrad = rep(NA, npoints)
+  
+  for(i in 1:npoints) {
+    for(j in 1:nsteps) {
+      if(!.triangleinequality(dsteps[j], d2ref[i, j], d2ref[i, j+1])) cat(paste0(i," to [",j,", ",j+1,"] does not meet triangle inequality\n"))
+      p <-.projection(dsteps[j], d2ref[i, j], d2ref[i, j+1])
+      projA1[i,j] = p[1]
+      projA2[i,j] = p[2]
+      projH[i,j] = p[3]
+      if(!is.na(projH[i,j])) {
+        projIn[i,j] = (projH[i,j]< eps) && (projA1[i,j]>0) && (projA2[i,j]>0)
+        if(is.na(projIn[i,j])) projIn[i,j] = FALSE
+      } else {
+        projIn[i,j] = FALSE
+      }
+    }
+    if(sum(projIn[i,])>0) {
+      h = projH[i,projIn[i,]]
+      whichstep[i] = which(projIn[i,])[which.min(h)]
+      dg = dstepcum[whichstep[i]]+projA1[i,whichstep[i]]
+      posgrad[i] = dg/sum(dsteps)
+      dgrad[i] = min(h)
+    } else { #Check if point lies in gradient turns
+      jmin = which.min(d2ref[i,])
+      dgrad[i] = d2ref[i,jmin]
+      if(d2ref[i,jmin]<eps) {
+        # cat("in angle\n")
+        posgrad[i] = dstepcum[jmin]/sum(dsteps)
+      }
+    }
+  }
+  res = cbind(dgrad, posgrad)
+  row.names(res)<-row.names(d2ref)
+  return(res)
 }
