@@ -8,13 +8,59 @@ using namespace Rcpp;
 //
 // De Caceres M, Coll L, Legendre P, Allen RB, Wiser SK, Fortin MJ, Condit R & Hubbell S. (in preparation). Trajectory analysis in community ecology.
 //
+
+// Determines the constant that has to be added to each segment
+// in order to reach triangle inequality
+// [[Rcpp::export(".k2triangleC")]]
+double k2triangle(double d1, double d2, double d3) {
+  double k = 0.0;
+  k = std::max(k, d3 - (d1+d2));
+  k = std::max(k, d2 - (d3+d1));
+  k = std::max(k, d1 - (d2+d3));
+  return(k);
+}
+
+//
+// Triangle inequality for one triplet
+//
+// [[Rcpp::export(".triangleinequalityC")]]
+bool triangleinequality(double d1, double d2, double d3, double tol=0.0001){
+  if((d1+d2)<d3*(1.0-tol)) return(false);
+  else if((d1+d3)<d2*(1.0-tol)) return(false);
+  else if((d2+d3)<d1*(1.0-tol)) return(false);
+  return(true);
+}
+
+//
+// Determines if the matrix fulfills the triangle inequality
+//
+// [[Rcpp::export(".ismetricC")]]
+bool ismetric(NumericMatrix dmat, double tol=0.0001) {
+  int n = dmat.nrow();
+  for(int i=0; i<n;i++) {
+    for(int j=i;j<n;j++) {
+      for(int k=j;k<n; k++) {
+        bool ti = triangleinequality(dmat(i,j), dmat(i,k), dmat(j,k), tol);
+        if(!ti) return(false);
+      }
+    }
+  }
+  return(true);
+}
+
 // Projection of one point into a (directed) segment
 //
 // param dref Distance between the two segment endpoints
 // param d1 Distance from the target point to the initial segment endpoint
 // param d2 Distance from the target point to the final segment endpoint
 // [[Rcpp::export(".projectionC")]]
-NumericVector projection(double dref, double d1, double d2) {
+NumericVector projection(double dref, double d1, double d2, bool add = true) {
+  if(add) { //Correct triangle inequality if needed
+    double k = k2triangle(d1,d2,dref);
+    d1 = d1 + k;
+    d2 = d2 + k;
+    dref = dref + k;
+  }
   double a1 = (pow(d1,2.0)+pow(dref,2.0)-pow(d2,2.0))/(2.0*dref);
   double a2 = dref-a1;
   double s = pow(d1,2.0)-pow(a1,2.0);
@@ -32,11 +78,17 @@ NumericVector projection(double dref, double d1, double d2) {
 // param d23 Distance from p2 to p3
 // param d13 Distance from p1 to p3
 // [[Rcpp::export(".angleConsecutiveC")]]
-double angularAttributeConsecutive(double d12, double d23, double d13) {
+double angularAttributeConsecutive(double d12, double d23, double d13, bool add = true) {
+  if(add) { //Correct triangle inequality if needed
+    double k = k2triangle(d12,d23,d13);
+    d12 = d12 + k;
+    d13 = d13 + k;
+    d23 = d23 + k;
+  }
   double a1 = (pow(d12,2.0)+pow(d13,2.0)-pow(d23,2.0))/(2.0*d13);
   double a2 = d13-a1;
-  double alpha = acos(std::min(1.0,a1/d12))*(180.0/PI);
-  double beta = acos(std::min(1.0,a2/d23))*(180.0/PI);
+  double alpha = acos(a1/d12)*(180.0/PI);
+  double beta = acos(a2/d23)*(180.0/PI);
   return(180.0 - alpha - beta);
 }
 
@@ -44,8 +96,8 @@ double angularAttributeConsecutive(double d12, double d23, double d13) {
 // Distance from one point to one segment
 //
 // [[Rcpp::export(".distanceToSegmentC")]]
-NumericVector distanceToSegment(double dref, double d1, double d2) {
-  NumericVector p = projection(dref,d1, d2);
+NumericVector distanceToSegment(double dref, double d1, double d2, bool add = true) {
+  NumericVector p = projection(dref,d1, d2, add);
   if(NumericVector::is_na(p[2]) | (p[0]<0.0) | (p[1]<0.0)) {
     if(d1<d2) {
       p[0] = 0.0;
@@ -117,33 +169,6 @@ double twoSegmentDistance(NumericMatrix dmat12, String type="directed-segment") 
   return(Ds);
 }
 
-//
-// Triangle inequality for one triplet
-//
-// [[Rcpp::export(".triangleinequalityC")]]
-bool triangleinequality(double d1, double d2, double d3, double tol=0.0001){
-  if((d1+d2)<d3*(1.0-tol)) return(false);
-  else if((d1+d3)<d2*(1.0-tol)) return(false);
-  else if((d2+d3)<d1*(1.0-tol)) return(false);
-  return(true);
-}
-
-//
-// Determines if the matrix fulfills the triangle inequality
-//
-// [[Rcpp::export(".ismetricC")]]
-bool ismetric(NumericMatrix dmat, double tol=0.0001) {
-  int n = dmat.nrow();
-  for(int i=0; i<n;i++) {
-    for(int j=i;j<n;j++) {
-      for(int k=j;k<n; k++) {
-        bool ti = triangleinequality(dmat(i,j), dmat(i,k), dmat(j,k), tol);
-        if(!ti) return(false);
-      }
-    }
-  }
-  return(true);
-}
 
 // NOT PRESENTLY USED
 double pt(double dIT, double dXT, double dPX, double dPI) {
