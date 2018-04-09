@@ -2,6 +2,7 @@
 #' 
 #' Given a distance matrix between community states, functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively. 
 #' Function \code{trajectoryLengths} calculates lengths of directed segments and complete trajectories. 
+#' Function \code{trajectoryAngles} calculates the angle between consecutive pairs of directed segments.
 #' Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\link{cmdscale}}) and draws trajectories in the ordination scatterplot.
 #' 
 #' These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
@@ -40,6 +41,8 @@
 #'   \item{\code{Dfinini}: Distance matrix between final points of one segment and the initial point of the other.}
 #' }
 #' Function \code{trajectoryLengths} returns a data frame with the length of each segment on each trajectory and the total length of all trajectories. Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
+#' Function \code{trajectoryAngles} returns a data frame with the angle between each pair of segments on each trajectory and the mean and standard deviation of those angles across each trajectory. 
+#' Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres}, Forest Sciences Center of Catalonia
 #' 
@@ -68,6 +71,7 @@
 #'   d
 #'   
 #'   trajectoryLengths(d, sites, surveys)
+#'   trajectoryAngles(d, sites, surveys)
 #'   segmentDistances(d, sites, surveys)$Dseg
 #'   trajectoryDistances(d, sites, surveys, distance.type = "Hausdorff")
 #'   trajectoryDistances(d, sites, surveys, distance.type = "DSPD")
