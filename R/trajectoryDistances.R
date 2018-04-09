@@ -411,12 +411,11 @@ trajectoryPCoA<-function(d, sites, surveys = NULL, selection = NULL, traj.colors
   sitesred = sites[sites %in% selIDs]
   if(!is.null(surveys)) surveysred = surveys[sites %in% selIDs]
   else surveysred = NULL
-  
   #Draw arrows
   for(i in 1:length(selIDs)) {
     ind_surv = which(sitesred==selIDs[i])
     #Surveys may not be in order
-    if(!is.null(surveysred)) ind_surv = ind_surv[order(surveysred[sitesred==siteIDs[i]])]
+    if(!is.null(surveysred)) ind_surv = ind_surv[order(surveysred[sitesred==selIDs[i]])]
     for(t in 1:(length(ind_surv)-1)) {
       niini =ind_surv[t]
       nifin =ind_surv[t+1]
