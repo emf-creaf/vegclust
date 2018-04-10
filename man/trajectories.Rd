@@ -8,10 +8,12 @@
 \alias{trajectoryLengths}
 \alias{trajectoryAngles}
 \alias{trajectoryPCoA}
+\alias{trajectoryProjection}
 \alias{trajectoryDistances}
 \alias{trajectoryLengths}
 \alias{trajectoryAngles}
 \alias{trajectoryPCoA}
+\alias{trajectoryProjection}
 \title{Community trajectory analysis}
 \usage{
 segmentDistances(d, sites, surveys = NULL,
@@ -26,6 +28,8 @@ trajectoryAngles(d, sites, surveys = NULL, verbose = FALSE)
 
 trajectoryPCoA(d, sites, surveys = NULL, selection = NULL,
   traj.colors = NULL, axes = c(1, 2), ...)
+
+trajectoryProjection(d, target, trajectory, tol = 1e-06)
 }
 \arguments{
 \item{d}{A symmetric \code{\link{matrix}} or an object of class \code{\link{dist}} containing the distance values between pairs of community states.}
@@ -58,6 +62,12 @@ whereas for \code{trajectoryDistances} the available indices are:
 \item{axes}{The pair of principal coordinates to be plotted.}
 
 \item{...}{Additional parameters for function \code{\link{arrows}}.}
+
+\item{target}{An integer vector of the community states to be projected.}
+
+\item{trajectory}{An integer vector of the trajectory onto which target states are to be projected.}
+
+\item{tol}{Numerical tolerance value to determine that projection of a point lies within the trajectory.}
 }
 \value{
 Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories. Function \code{trajectorySegments} returns a list with the following elements:
@@ -68,15 +78,26 @@ Function \code{trajectoryDistances} returns an object of class \code{\link{dist}
   \item{\code{Dinifin}: Distance matrix between initial points of one segment and the final point of the other.}
   \item{\code{Dfinini}: Distance matrix between final points of one segment and the initial point of the other.}
 }
+
 Function \code{trajectoryLengths} returns a data frame with the length of each segment on each trajectory and the total length of all trajectories. Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
+
 Function \code{trajectoryAngles} returns a data frame with the angle between each pair of segments on each trajectory and the mean and standard deviation of those angles across each trajectory. 
+
 Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
+
+Function \code{trajectoryProjection} returns a data frame with the following columns:
+\itemize{
+  \item{\code{distanceToTrajectory}: Distances to the trajectory, i.e. rejection (\code{NA} for target points whose projection is outside the trajectory).}
+  \item{\code{segment}: Segment that includes the projected point (\code{NA} for target points whose projection is outside the trajectory).}
+  \item{\code{relativePosition}: Relative position of the projected point within the trajectory, i.e. values from 0 to 1 with 0 representing the start of the trajectory and 1 representing the end (\code{NA} for target points whose projection is outside the trajectory).}
+}
 }
 \description{
 Given a distance matrix between community states, functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively. 
 Function \code{trajectoryLengths} calculates lengths of directed segments and complete trajectories. 
 Function \code{trajectoryAngles} calculates the angle between consecutive pairs of directed segments.
 Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\link{cmdscale}}) and draws trajectories in the ordination scatterplot.
+Function \code{trajectoryProjection} projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.
 }
 \details{
 These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 

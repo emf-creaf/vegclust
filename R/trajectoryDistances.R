@@ -4,6 +4,7 @@
 #' Function \code{trajectoryLengths} calculates lengths of directed segments and complete trajectories. 
 #' Function \code{trajectoryAngles} calculates the angle between consecutive pairs of directed segments.
 #' Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\link{cmdscale}}) and draws trajectories in the ordination scatterplot.
+#' Function \code{trajectoryProjection} projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.
 #' 
 #' These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
 #' By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
@@ -11,7 +12,7 @@
 #' 
 #' @encoding UTF-8
 #' @name trajectories
-#' @aliases segmentDistances trajectoryDistances trajectoryLengths trajectoryAngles trajectoryPCoA
+#' @aliases segmentDistances trajectoryDistances trajectoryLengths trajectoryAngles trajectoryPCoA trajectoryProjection
 #' 
 #' @param d A symmetric \code{\link{matrix}} or an object of class \code{\link{dist}} containing the distance values between pairs of community states.
 #' @param sites A vector indicating the site corresponding to each community state.
@@ -40,9 +41,19 @@
 #'   \item{\code{Dinifin}: Distance matrix between initial points of one segment and the final point of the other.}
 #'   \item{\code{Dfinini}: Distance matrix between final points of one segment and the initial point of the other.}
 #' }
+#' 
 #' Function \code{trajectoryLengths} returns a data frame with the length of each segment on each trajectory and the total length of all trajectories. Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
+#' 
 #' Function \code{trajectoryAngles} returns a data frame with the angle between each pair of segments on each trajectory and the mean and standard deviation of those angles across each trajectory. 
+#' 
 #' Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
+#' 
+#' Function \code{trajectoryProjection} returns a data frame with the following columns:
+#' \itemize{
+#'   \item{\code{distanceToTrajectory}: Distances to the trajectory, i.e. rejection (\code{NA} for target points whose projection is outside the trajectory).}
+#'   \item{\code{segment}: Segment that includes the projected point (\code{NA} for target points whose projection is outside the trajectory).}
+#'   \item{\code{relativePosition}: Relative position of the projected point within the trajectory, i.e. values from 0 to 1 with 0 representing the start of the trajectory and 1 representing the end (\code{NA} for target points whose projection is outside the trajectory).}
+#' }
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres}, Forest Sciences Center of Catalonia
 #' 
@@ -426,57 +437,62 @@ trajectoryPCoA<-function(d, sites, surveys = NULL, selection = NULL, traj.colors
   #Draw legend
   invisible(cmd_D2)
 }
-#Calculates Hausdorff distance between two line segments
-.distanceToTrajectory<-function(dsteps, d2ref, eps) {
-  
-  nsteps = length(dsteps)
-  npoints = nrow(d2ref)
-  
+
+
+#' @rdname trajectories
+#' @param target An integer vector of the community states to be projected.
+#' @param trajectory An integer vector of the trajectory onto which target states are to be projected.
+#' @param tol Numerical tolerance value to determine that projection of a point lies within the trajectory.
+trajectoryProjection<-function(d, target, trajectory, tol = 0.000001) {
+  if(length(trajectory)<2) stop("Trajectory needs to include at least two states")
+  dmat = as.matrix(d)
+  npoints = length(target)
+  nsteps = length(trajectory) -1
+  #Distance betwen target points and trajectory points
+  d2ref = dmat[target, trajectory, drop=FALSE]
+  #Distance between trajectory steps
+  dsteps = diag(dmat[trajectory[1:(length(trajectory)-1)], trajectory[2:length(trajectory)]])
   #Cumulative distance between steps
   dstepcum = rep(0,nsteps+1)
-  for(i in 2:nsteps) {
-    dstepcum[i] = dstepcum[i-1]+dsteps[i-1]
+  if(nsteps>1) {
+    for(i in 2:nsteps) {
+      dstepcum[i] = dstepcum[i-1]+dsteps[i-1]
+    }
   }
   dstepcum[nsteps+1] = sum(dsteps)
   
   projH = matrix(NA, nrow=npoints, ncol = nsteps)
   projA1 = matrix(NA, nrow=npoints, ncol = nsteps)
   projA2 = matrix(NA, nrow=npoints, ncol = nsteps)
-  projIn = matrix(FALSE, nrow=npoints, ncol = nsteps)
   whichstep = rep(NA, npoints)
   dgrad = rep(NA, npoints)
   posgrad = rep(NA, npoints)
   
   for(i in 1:npoints) {
     for(j in 1:nsteps) {
-      if(!.triangleinequality(dsteps[j], d2ref[i, j], d2ref[i, j+1])) cat(paste0(i," to [",j,", ",j+1,"] does not meet triangle inequality\n"))
-      p <-.projection(dsteps[j], d2ref[i, j], d2ref[i, j+1])
-      projA1[i,j] = p[1]
-      projA2[i,j] = p[2]
-      projH[i,j] = p[3]
-      if(!is.na(projH[i,j])) {
-        projIn[i,j] = (projH[i,j]< eps) && (projA1[i,j]>0) && (projA2[i,j]>0)
-        if(is.na(projIn[i,j])) projIn[i,j] = FALSE
-      } else {
-        projIn[i,j] = FALSE
+      if(!.triangleinequalityC(dsteps[j], d2ref[i, j], d2ref[i, j+1])) warning(paste0(i," to [",j,", ",j+1,"] does not meet triangle inequality\n"))
+      p <-.projectionC(dsteps[j], d2ref[i, j], d2ref[i, j+1])
+      if((!is.na(p[3])) & (p[1]>-tol) & (p[2]>-tol)) {
+        projA1[i,j] = p[1]
+        projA2[i,j] = p[2]
+        projH[i,j] = p[3]
+        if(is.na(dgrad[i])) {
+          dgrad[i] = p[3]
+          whichstep[i] = j
+        } else {
+          if(p[3]<dgrad[i]) {
+            dgrad[i] = p[3]
+            whichstep[i] = j
+          }
+        }
       }
     }
-    if(sum(projIn[i,])>0) {
-      h = projH[i,projIn[i,]]
-      whichstep[i] = which(projIn[i,])[which.min(h)]
+    if(!is.na(whichstep[i])) {
       dg = dstepcum[whichstep[i]]+projA1[i,whichstep[i]]
       posgrad[i] = dg/sum(dsteps)
-      dgrad[i] = min(h)
-    } else { #Check if point lies in gradient turns
-      jmin = which.min(d2ref[i,])
-      dgrad[i] = d2ref[i,jmin]
-      if(d2ref[i,jmin]<eps) {
-        # cat("in angle\n")
-        posgrad[i] = dstepcum[jmin]/sum(dsteps)
-      }
     }
   }
-  res = cbind(dgrad, posgrad)
+  res = data.frame(distanceToTrajectory=dgrad, segment = whichstep, relativePosition = posgrad)
   row.names(res)<-row.names(d2ref)
   return(res)
 }
