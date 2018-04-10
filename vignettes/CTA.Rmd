@@ -85,7 +85,7 @@ trajectoryDistances(D, sites, surveys, distance.type = "DSPD")
 
 In this example we analyze the dynamics of 8 permanent forest plots located on slopes of a valley in the New Zealand Alps. Forests plots are almost monospecific (*Fuscospora cliffortioides*) and were affected by different disturbances during the sampling period (1972-2009) which includes 9 surveys. We begin by loading the data.
 ```{r load avoca, echo=T}
-load("../../avoca.rda")
+data("avoca")
 ```
 
 ```{r distance, echo=TRUE}
