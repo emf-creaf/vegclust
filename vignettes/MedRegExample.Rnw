@@ -5,6 +5,7 @@
 
 %\VignetteIndexEntry{How to classify vegetation stands in terms of structure and composition}
 %\VignettePackage{vegclust}
+%\VignetteEngine{utils::Sweave}
 
 \title{Classifying vegetation stands in terms of structure and composition}
 \author[1]{Miquel De Cáceres}

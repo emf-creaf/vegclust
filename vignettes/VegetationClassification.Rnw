@@ -5,6 +5,7 @@
 
 %\VignetteIndexEntry{Learning how to use the vegclust package for vegetation classification}
 %\VignettePackage{vegclust}
+%\VignetteEngine{utils::Sweave}
 
 \title{How to use the \texttt{vegclust} package (ver. 1.6.5)}
 \author[1]{Miquel De Cáceres}

@@ -8,6 +8,7 @@ output:
 vignette: >
   %\VignetteIndexEntry{Community trajectory analysis}
   %\VignetteEngine{knitr::rmarkdown}
+  %\VignettePackage{vegclust}
   \usepackage[utf8]{inputenc}
 ---
 
