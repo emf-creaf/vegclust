@@ -8,6 +8,7 @@ _Version 1.7.2, April 2018
 
 1. New function 'trajectoryAngles'.
 2. New function 'trajectoryProjection'.
+3. New vignette for trajectory analysis.
 
 _Version 1.7.1, September 2017
 
