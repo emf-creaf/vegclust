@@ -19,6 +19,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ## 1. Introduction
 In this vignette you will learn how to conduct community trajectory analysis (CTA), as implemented in package **vegclust**.
 
+We begin by loading the libraries:
+
 ```{r load libraries, echo = T}
 library(vegclust)
 library(RColorBrewer)
@@ -27,7 +29,7 @@ library(RColorBrewer)
 
 ## 2. Simple example
 
-In this section we describe how to study the trajectories of two sites that have been surveyed three times each. 
+In this section we describe how to study the trajectories of two sites that have been surveyed three times each. We use a simple example so that geometric calculations can be followed more easily.
 
 ### 2.1 Trajectory data
 To specify community dynamics, we need three data items: (a) a set of community states (i.e. coordinates in a space $\Omega$), described using a distance matrix $d$; (b) a vector specifying the site corresponding to each community state; (c) a vector specifying the survey corresponding to each community state. Let's first define the vectors that describe the site and the survey of each community state:
@@ -105,16 +107,22 @@ trajectoryDistances(D, sites, surveys, distance.type = "DSPD")
 
 ## 3. Structural dynamics in permanent plots
 
-In this example we analyze the dynamics of 8 permanent forest plots located on slopes of a valley in the New Zealand Alps. Forests plots are almost monospecific (*Fuscospora cliffortioides*) and were affected by different disturbances during the sampling period (1972-2009) which includes 9 surveys. We begin by loading the data.
+In this example we analyze the dynamics of 8 permanent forest plots located on slopes of a valley in the New Zealand Alps. The study area is mountainous and centered on the Craigieburn Range (Southern Alps), South Island, New Zealand.  Forests plots are almost monospecific, being the mountain beech (*Fuscospora cliffortioides*) the main dominant tree species. Previously forests consisted of largely mature stands, but some of them were affected by different disturbances during the sampling period (1972-2009) which includes 9 surveys. We begin our example by loading the data set, which includes 72 plot observations:
 ```{r load avoca, echo=T}
 data("avoca")
 ```
+Community data is in form of an object `stratifiedvegdata`. To account for differences in tree diameter, while emphasizing regeneration, the data contains individual counts to represent tree abundance and trees are classified in 19 quadratic diameter bins (in cm): {(2.25, 4], (4, 6.25], (6.25, 9], ... (110.25, 121]}. The data set also includes vectors `avoca_surveys` and `avoca_sites` that indicate the survey and forest plot corresponding to each forest state.
 
+Before starting community trajectory analysis, we have to use function `vegdiststruct`to calculate distances between forest plot states in terms of structure and composition:
 ```{r distance, echo=TRUE}
 avoca_D_man = vegdiststruct(avoca_strat, method="manhattan", transform = function(x){log(x+1)})
 ```
+Distances in `avoca_D_man` are calculated using the Manhattan metric. 
 
 ### 3.1 Display trajectories in PCoA
+
+The distance matrix `avoca_D_man` conforms our definition of $\Omega$. We use `trajectoryPCoA` to display the relations between forest plot states in this space and to draw the trajectory of each plot:
+
 ```{r avoca pcoa, echo=T, fig=TRUE, fig.height=6, fig.width=6, fig.align = "center"}
 trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
                traj.colors = brewer.pal(8,"Accent"), 
@@ -122,13 +130,7 @@ trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
 legend("topright", bty="n", legend = 1:8, col = brewer.pal(8,"Accent"), lwd=2)
 
 ```
-
-### 3.2 Trajectory lengths and angles
-
-```{r trajectory lengths, echo=T}
-trajectoryLengths(avoca_D_man, avoca_sites, avoca_surveys)
-```
-
+Note that in this case, the full $\Omega$ include more than two dimensions, and PCoA is representing 43% of total variance (correction for negative eigenvalues is included in the call to `cmdscale` from `trajectoryPCoA`), so one has to be careful when interpreting trajectories visually.
 
 ```{r int1, echo=FALSE}
 plotTrajDiamDist<-function(cli = 7) {
@@ -171,13 +173,8 @@ legend("topright", bty="n", lwd=2,col=gray(seq(0.8,0, by=-0.1)), legend=c("1970/
 }
 ```
 
-
-```{r trajectory angles, echo=T}
-trajectoryAngles(avoca_D_man, avoca_sites, avoca_surveys)
-```
-
-
-```{r trajectory 3 DBH dist, echo=F, fig.height=4, fig.width=8, fig.align = "center"}
+One can inspect specific trajectories using argument `selection` in function `trajectoryPCoA`. This allows getting a better view of particular trajectories, here that of forest plot '3':
+```{r trajectory 3 DBH dist, fig.height=4, fig.width=8, fig.align = "center"}
 par(mfrow=c(1,2))
 trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
                selection= 3,
@@ -185,6 +182,7 @@ trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
 plotTrajDiamDist(3)
 ```
 
+In the right hand, we added a representation of the change in the mountain beech tree diameter distribution through time for trajectory of forest plot '3'. The dynamics of this plot include mostly growth, which results in individuals moving from one diameter class to the other. The whole trajectory looks mostly directional. Let's now inspect the trajectory of forest plot '4':
 ```{r trajectory 4, echo=T, fig.height=4, fig.width=8, fig.align = "center"}
 par(mfrow=c(1,2))
 trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
@@ -193,16 +191,33 @@ trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
 plotTrajDiamDist(4)
 ```
 
+This second trajectory is less straight and seems to include a turn by the end of the sampling period, corresponding to the recruitment of new saplings.
+
+### 3.2 Trajectory lengths and angles
+
+While trajectory lengths and angles can be inspected visually in ordination diagrams, it is better to calculate them using the full $\Omega$ space (i.e., from matrix `avoca_D_man`). Using function `trajectoryLengths` we can see that the trajectory of forest plot '4' is lengthier than that of plot '3', mostly because includes a lengthier last segment (i.e. the recruitment of new individuals):
+
+```{r trajectory lengths, echo=T}
+trajectoryLengths(avoca_D_man, avoca_sites, avoca_surveys)
+```
+
+If we calculate the angles between consecutive segments (using function `trajectoryLengths`) we see that indeed the trajectory of '3' is rather directional, but the angles of trajectory of '4' are not that low:
+
+```{r trajectory angles, echo=T}
+trajectoryAngles(avoca_D_man, avoca_sites, avoca_surveys)
+```
+
 
 
 ### 3.3 Distances between trajectories
 
+We can calculate the resemblance between forest plot trajectories using `trajectoryDistances`:
 ```{r avoca DT, echo=FALSE}
 avoca_D_traj_man = trajectoryDistances(avoca_D_man, avoca_sites, distance.type="DSPD", verbose=FALSE)
 print(round(avoca_D_traj_man,3))
 ```
-
-```{r avoca DT PCoA, echo=FALSE, fig = TRUE, fig.height=5, fig.width=6, fig.align="center"}
+The closest trajectories are those of plots '1' and '2'. They looked rather close in *position* in the PCoA ordination of $\Omega$ with all trajectories, so probably it is position, rather than *shape* which has influenced this low value. The next pair of similar trajectories are those of the '3'-'5' pair. We can use `cmdscale` to produce an ordination of resemblances between trajectories:
+```{r avoca DT PCoA, echo=TRUE, fig = TRUE, fig.height=5, fig.width=6, fig.align="center"}
 cmd_D2<-cmdscale(avoca_D_traj_man, add=TRUE, eig=TRUE, k=7)
 x<-cmd_D2$points[,1]
 y<-cmd_D2$points[,2]
@@ -211,5 +226,4 @@ plot(x,y, type="p", asp=1, xlab=paste0("PCoA 1 (", round(100*cmd_D2$eig[1]/sum(c
      bg= brewer.pal(8,"Accent"), pch=21)
 text(x,y, labels=1:8, pos=2)
 ```
-
 

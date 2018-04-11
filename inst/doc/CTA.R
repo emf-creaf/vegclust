@@ -59,9 +59,6 @@ trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
 legend("topright", bty="n", legend = 1:8, col = brewer.pal(8,"Accent"), lwd=2)
 
 
-## ----trajectory lengths, echo=T------------------------------------------
-trajectoryLengths(avoca_D_man, avoca_sites, avoca_surveys)
-
 ## ----int1, echo=FALSE----------------------------------------------------
 plotTrajDiamDist<-function(cli = 7) {
 l = colnames(avoca_strat[[1]])
@@ -102,10 +99,7 @@ lines(m2009, col=gray(0), lwd=2)
 legend("topright", bty="n", lwd=2,col=gray(seq(0.8,0, by=-0.1)), legend=c("1970/72","1974","1978","1983", "1987", "1993","1999","2004","2009"))
 }
 
-## ----trajectory angles, echo=T-------------------------------------------
-trajectoryAngles(avoca_D_man, avoca_sites, avoca_surveys)
-
-## ----trajectory 3 DBH dist, echo=F, fig.height=4, fig.width=8, fig.align = "center"----
+## ----trajectory 3 DBH dist, fig.height=4, fig.width=8, fig.align = "center"----
 par(mfrow=c(1,2))
 trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
                selection= 3,
@@ -119,11 +113,17 @@ trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
                length=0.1, lwd=2)
 plotTrajDiamDist(4)
 
+## ----trajectory lengths, echo=T------------------------------------------
+trajectoryLengths(avoca_D_man, avoca_sites, avoca_surveys)
+
+## ----trajectory angles, echo=T-------------------------------------------
+trajectoryAngles(avoca_D_man, avoca_sites, avoca_surveys)
+
 ## ----avoca DT, echo=FALSE------------------------------------------------
 avoca_D_traj_man = trajectoryDistances(avoca_D_man, avoca_sites, distance.type="DSPD", verbose=FALSE)
 print(round(avoca_D_traj_man,3))
 
-## ----avoca DT PCoA, echo=FALSE, fig = TRUE, fig.height=5, fig.width=6, fig.align="center"----
+## ----avoca DT PCoA, echo=TRUE, fig = TRUE, fig.height=5, fig.width=6, fig.align="center"----
 cmd_D2<-cmdscale(avoca_D_traj_man, add=TRUE, eig=TRUE, k=7)
 x<-cmd_D2$points[,1]
 y<-cmd_D2$points[,2]
