@@ -1,13 +1,13 @@
 Package: vegclust
 Type: Package
 Title: Fuzzy Clustering of Vegetation Data
-Version: 1.7.2
+Version: 1.7.3
 Date: 2018-04-07
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com'))
 Description: A set of functions to perform fuzzy clustering of vegetation data [De Cáceres et al. (2010) <doi:10.1111/j.1654-1103.2010.01211.x>] and to assess ecological community ressemblance on the basis of structure and composition [De Cáceres et al. (2013): <doi:10.1111/2041-210X.12116>].
-Depends: R (>= 3.4.0), vegan
+Depends: R (>= 3.4.0), vegan, Kendall
 Imports: sp, Rcpp (>= 0.12.12)
 LinkingTo: Rcpp
 License: GPL (>= 2)

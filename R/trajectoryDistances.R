@@ -12,7 +12,7 @@
 #' 
 #' @encoding UTF-8
 #' @name trajectories
-#' @aliases segmentDistances trajectoryDistances trajectoryLengths trajectoryAngles trajectoryPCoA trajectoryProjection
+#' @aliases segmentDistances trajectoryDistances trajectoryLengths trajectoryAngles trajectoryPCoA trajectoryProjection trajectoryConvergence trajectoryDirectionality
 #' 
 #' @param d A symmetric \code{\link{matrix}} or an object of class \code{\link{dist}} containing the distance values between pairs of community states.
 #' @param sites A vector indicating the site corresponding to each community state.
@@ -494,5 +494,105 @@ trajectoryProjection<-function(d, target, trajectory, tol = 0.000001) {
   }
   res = data.frame(distanceToTrajectory=dgrad, segment = whichstep, relativePosition = posgrad)
   row.names(res)<-row.names(d2ref)
+  return(res)
+}
+
+
+#' @rdname trajectories
+#' @param symmetric A logical flag to indicate a symmetric convergence comparison of trajectories.
+trajectoryConvergence<-function(d, sites, surveys, symmetric = FALSE, verbose = FALSE){
+  if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
+  if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
+  siteIDs = unique(sites)
+  nsite = length(siteIDs)
+  nsurveysite<-numeric(nsite)
+  for(i in 1:nsite) nsurveysite[i] = sum(sites==siteIDs[i])
+  if(sum(nsurveysite<3)>0) stop("All sites need to be surveyed at least three times")
+  n = nrow(as.matrix(d))
+
+  #Init output
+  tau = matrix(NA, nrow=nsite, ncol = nsite)
+  rownames(tau) = siteIDs
+  colnames(tau) = siteIDs
+  p.value = tau
+  dmat = as.matrix(d)
+  if(verbose) {
+    cat("\nCalculating trajectory convergence...\n")
+    tb = txtProgressBar(1, nsite, style=3)
+  }
+  for(i1 in 1:(nsite-1)) {
+    if(verbose) setTxtProgressBar(tb, i1)
+    ind_surv1 = which(sites==siteIDs[i1])
+    #Surveys may not be in order
+    if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
+    for(i2 in (i1+1):nsite) {
+      ind_surv2 = which(sites==siteIDs[i2])
+      #Surveys may not be in order
+      if(!is.null(surveys)) ind_surv2 = ind_surv2[order(surveys[sites==siteIDs[i2]])]
+      if(!symmetric) {
+        trajectory = ind_surv2
+        target = ind_surv1
+        trajProj = trajectoryProjection(d,target, trajectory)
+        dT = trajProj$distanceToTrajectory
+        mk.test = MannKendall(dT)
+        tau[i1,i2] = mk.test$tau
+        p.value[i1,i2] = mk.test$sl
+        trajectory = ind_surv1
+        target = ind_surv2
+        trajProj = trajectoryProjection(d,target, trajectory)
+        dT = trajProj$distanceToTrajectory
+        mk.test = MannKendall(dT)
+        tau[i2,i1] = mk.test$tau
+        p.value[i2,i1] = mk.test$sl
+      } 
+      else {
+        if(length(ind_surv1)==length(ind_surv2)) {
+          dT = numeric(length(ind_surv1))
+          for(j in 1:length(ind_surv1)) dT[j] = dmat[ind_surv1[j], ind_surv2[j]]
+          mk.test = MannKendall(dT)
+          tau[i1,i2] = mk.test$tau
+          p.value[i1,i2] = mk.test$sl
+          tau[i2,i1] = mk.test$tau
+          p.value[i2,i1] = mk.test$sl
+        } else {
+          warning(paste0("sites ",i1, " and ",i2," do not have the same number of surveys."))
+        }
+      }
+    }
+  }
+  return(list(tau = tau, p.value = p.value))
+}
+
+
+#' @rdname trajectories
+#' @param nperm Number of permutations in the Mantel test
+trajectoryDirectionality<-function(d, sites, surveys, nperm = 999, verbose = FALSE) {
+  if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
+  if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
+  siteIDs = unique(sites)
+  nsite = length(siteIDs)
+  nsurveysite<-numeric(nsite)
+  for(i in 1:nsite) nsurveysite[i] = sum(sites==siteIDs[i])
+  if(sum(nsurveysite<3)>0) stop("All sites need to be surveyed at least three times")
+  n = nrow(as.matrix(d))
+  
+  dmat = as.matrix(d)
+  #Init output
+  res = data.frame(r= rep(NA,nsite), p.value = rep(NA,nsite), row.names = siteIDs)
+  if(verbose) {
+    cat("\nCalculating trajectory directionality...\n")
+    tb = txtProgressBar(1, nsite, style=3)
+  }
+  for(i1 in 1:nsite) {
+    if(verbose) setTxtProgressBar(tb, i1)
+    ind_surv1 = which(sites==siteIDs[i1])
+    #Surveys may not be in order
+    if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
+    d1 = as.dist(dmat[ind_surv1, ind_surv1])
+    d2 = dist(ind_surv1)
+    m = mantel(d1,d2, permutations = nperm)
+    res[i1, "r"] = m$statistic
+    res[i1, "p.value"] = m$signif
+  }
   return(res)
 }

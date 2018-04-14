@@ -4,6 +4,10 @@
 
 __Version history__
 
+_Version 1.7.3, April 2018
+1. New function 'trajectoryConvergence'
+2. New function 'trajectoryDirectionality'
+
 _Version 1.7.2, April 2018
 
 1. New function 'trajectoryAngles'.

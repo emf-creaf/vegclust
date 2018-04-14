@@ -9,11 +9,15 @@
 \alias{trajectoryAngles}
 \alias{trajectoryPCoA}
 \alias{trajectoryProjection}
+\alias{trajectoryConvergence}
+\alias{trajectoryDirectionality}
 \alias{trajectoryDistances}
 \alias{trajectoryLengths}
 \alias{trajectoryAngles}
 \alias{trajectoryPCoA}
 \alias{trajectoryProjection}
+\alias{trajectoryConvergence}
+\alias{trajectoryDirectionality}
 \title{Community trajectory analysis}
 \usage{
 segmentDistances(d, sites, surveys = NULL,
@@ -30,6 +34,10 @@ trajectoryPCoA(d, sites, surveys = NULL, selection = NULL,
   traj.colors = NULL, axes = c(1, 2), ...)
 
 trajectoryProjection(d, target, trajectory, tol = 1e-06)
+
+trajectoryConvergence(d, sites, surveys, symmetric = FALSE, verbose = FALSE)
+
+trajectoryDirectionality(d, sites, surveys, nperm = 999, verbose = FALSE)
 }
 \arguments{
 \item{d}{A symmetric \code{\link{matrix}} or an object of class \code{\link{dist}} containing the distance values between pairs of community states.}
@@ -68,6 +76,10 @@ whereas for \code{trajectoryDistances} the available indices are:
 \item{trajectory}{An integer vector of the trajectory onto which target states are to be projected.}
 
 \item{tol}{Numerical tolerance value to determine that projection of a point lies within the trajectory.}
+
+\item{symmetric}{A logical flag to indicate a symmetric convergence comparison of trajectories.}
+
+\item{nperm}{Number of permutations in the Mantel test}
 }
 \value{
 Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories. Function \code{trajectorySegments} returns a list with the following elements:
