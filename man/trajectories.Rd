@@ -35,9 +35,10 @@ trajectoryPCoA(d, sites, surveys = NULL, selection = NULL,
 
 trajectoryProjection(d, target, trajectory, tol = 1e-06)
 
-trajectoryConvergence(d, sites, surveys, symmetric = FALSE, verbose = FALSE)
+trajectoryConvergence(d, sites, surveys = NULL, symmetric = FALSE,
+  verbose = FALSE)
 
-trajectoryDirectionality(d, sites, surveys, nperm = 999, verbose = FALSE)
+trajectoryDirectionality(d, sites, surveys = NULL, verbose = FALSE)
 }
 \arguments{
 \item{d}{A symmetric \code{\link{matrix}} or an object of class \code{\link{dist}} containing the distance values between pairs of community states.}
@@ -78,8 +79,6 @@ whereas for \code{trajectoryDistances} the available indices are:
 \item{tol}{Numerical tolerance value to determine that projection of a point lies within the trajectory.}
 
 \item{symmetric}{A logical flag to indicate a symmetric convergence comparison of trajectories.}
-
-\item{nperm}{Number of permutations in the Mantel test}
 }
 \value{
 Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories. Function \code{trajectorySegments} returns a list with the following elements:
@@ -103,6 +102,14 @@ Function \code{trajectoryProjection} returns a data frame with the following col
   \item{\code{segment}: Segment that includes the projected point (\code{NA} for target points whose projection is outside the trajectory).}
   \item{\code{relativePosition}: Relative position of the projected point within the trajectory, i.e. values from 0 to 1 with 0 representing the start of the trajectory and 1 representing the end (\code{NA} for target points whose projection is outside the trajectory).}
 }
+
+Function \code{trajectoryConvergence} returns a list with two elements:
+\itemize{
+  \item{\code{tau}: A matrix with the statistic (Mann-Kendall's tau) of the convergence/divergence test between trajectories. If \code{symmetric=TRUE} then the matrix is square. Otherwise the statistic of the test of the row trajectory approaching the column trajectory.}
+  \item{\code{p.value}: A matrix with the p-value of the convergence/divergence test between trajectories. If \code{symmetric=TRUE} then the matrix is square. Otherwise the p-value indicates the test of the row trajectory approaching the column trajectory.}
+}
+
+Function \code{trajectoryDirectionality} returns a vector with correlation values (one per trajectory).
 }
 \description{
 Given a distance matrix between community states, functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively. 
@@ -110,6 +117,8 @@ Function \code{trajectoryLengths} calculates lengths of directed segments and co
 Function \code{trajectoryAngles} calculates the angle between consecutive pairs of directed segments.
 Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\link{cmdscale}}) and draws trajectories in the ordination scatterplot.
 Function \code{trajectoryProjection} projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.
+Function \code{trajectoryConvergence} performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.
+Function \code{trajectoryDirectionality} returns (for each trajectory) Mantel's correlation value between two dissimilarity matrices: (1) the distance between segments of the trajectory; and (2) the distance between the order of segments in the trajectory.
 }
 \details{
 These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
