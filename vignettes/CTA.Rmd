@@ -70,7 +70,7 @@ legend("topright", col=c("black","red"), legend=c("Trajectory 1", "Trajectory 2"
 
 While trajectory of site '1' (black arrows) is made of two segments of the same length and direction, trajectory of site '2' (red arrows) has a second segment that bends and is longer than that of the segond segment of site '1'. 
 
-### 2.3 Trajectory lengths and angles
+### 2.3 Trajectory lengths, angles and directionality
 
 We can obtain the length of trajectory segments using function `trajectoryLengths` and the angles between consecutive segments, using function `trajectoryAngles`:
 
@@ -78,7 +78,14 @@ We can obtain the length of trajectory segments using function `trajectoryLength
 trajectoryLengths(D, sites, surveys)
 trajectoryAngles(D, sites, surveys)
 ```
-where some segments are longer angles are smaller and for trajectory of site '2'. In this case, the same information could be obtained by inspecting the PCoA representation, but in a case of $\Omega$ having many dimensions, the PCoA representation will correspond to a reduced space and hence, angles and lengths will not correspond exactly to those of functions `trajectoryLengths` and `trajectoryAngles`, which take into account the full space.
+where some segments are longer and angles are smaller for trajectory of site '2'. In this case, the same information could be obtained by inspecting the PCoA representation, but in a case of $\Omega$ having many dimensions, the PCoA representation will correspond to a reduced space and hence, angles and lengths will not correspond exactly to those of functions `trajectoryLengths` and `trajectoryAngles`, which take into account the full space.
+
+One way of determining the degree to which trajectories follow directional trends (i.e. more or less straight pathways) involves considering all pairs of triplets in the trajectory. This approach is implemented in function `trajectoryDirectionality`:
+```{r} 
+trajectoryDirectionality(D, sites, surveys)
+```  
+As expected, trajectory of site '2' is less straight than trajectory of site '1'. Although it would be desirable, the function does not perform any statistical test on directionality.
+
 
 ### 2.4 Relative positions within trajectories
 Community states occupy a position within their trajectory that depends on their position along the total pathway of the trajectory. By adding the length of segments prior to a given state and dividing the sum by the total length of the trajectory we obtain the relative position of the community state. Function `trajectoryProjection` allows obtaining the relative position of each point of a trajectory. To use it for this purpose one should use as parameters the distance matrix between state and the indices that conform the trajectory. For example for the two example trajectories we would have:
@@ -94,12 +101,7 @@ Function `trajectoryProjection` can also be used to project arbitrary community 
 trajectoryProjection(D, 3, 5:8)
 ```  
 
-### 2.5 Trajectory directionality and convergence
-One way of determining the degree to which trajectories follow trends (i.e. more or less straight pathways) is to calculate the Mantel correlation between the dissimilarity matrix containing distances between points of the trajectories and distance matrix containing the separation in terms of surveys. Surveys are far appart in time they should correspond to a larger distances than surveys that are close in time. The function that calculates the Mantel correlation statistic is `trajectoryDirectionality`:
-```{r} 
-trajectoryDirectionality(D, sites, surveys)
-```  
-As expected, trajectory of site '2' is less straight than trajectory of site '1'. The function does not perform the Mantel test, because temporal autocorrelation of trajectory positions biases the test.
+### 2.5 Trajectory convergence
 
 When trajectories have been sampled the same number of times, function `trajectoryConvergence` allows performing tests of convergence based on the trend analysis of the sequences of distances between points of the two trajectories (i.e. first-first, second-second, ...):
 

@@ -6,7 +6,7 @@
 #' Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\link{cmdscale}}) and draws trajectories in the ordination scatterplot.
 #' Function \code{trajectoryProjection} projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.
 #' Function \code{trajectoryConvergence} performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.
-#' Function \code{trajectoryDirectionality} returns (for each trajectory) Mantel's correlation value between two dissimilarity matrices: (1) the distance between segments of the trajectory; and (2) the distance between the order of segments in the trajectory.
+#' Function \code{trajectoryDirectionality} returns (for each trajectory) a statistic that measures directionality of the whole trajectory.
 #' 
 #' These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
 #' By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
@@ -63,7 +63,7 @@
 #'   \item{\code{p.value}: A matrix with the p-value of the convergence/divergence test between trajectories. If \code{symmetric=TRUE} then the matrix is square. Otherwise the p-value indicates the test of the row trajectory approaching the column trajectory.}
 #' }
 #' 
-#' Function \code{trajectoryDirectionality} returns a vector with correlation values (one per trajectory).
+#' Function \code{trajectoryDirectionality} returns a vector with directionality values (one per trajectory).
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres}, Forest Sciences Center of Catalonia
 #' 
@@ -419,6 +419,9 @@ trajectoryPCoA<-function(d, sites, surveys = NULL, selection = NULL, traj.colors
   #Apply site selection
   
   if(is.null(selection)) selection = 1:nsite 
+  else {
+    if(is.character(selection)) selection = (siteIDs %in% selection)
+  }
   selIDs = siteIDs[selection]
   
   D2 =as.dist(as.matrix(d)[sites %in% selIDs, sites %in% selIDs])
@@ -573,6 +576,38 @@ trajectoryConvergence<-function(d, sites, surveys = NULL, symmetric = FALSE, ver
   return(list(tau = tau, p.value = p.value))
 }
 
+#' 
+#' #' @rdname trajectories
+#' trajectoryAutocorrelation<-function(d, sites, surveys = NULL, permutations = 999, verbose = FALSE) {
+#'   if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
+#'   if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
+#'   siteIDs = unique(sites)
+#'   nsite = length(siteIDs)
+#'   nsurveysite<-numeric(nsite)
+#'   for(i in 1:nsite) nsurveysite[i] = sum(sites==siteIDs[i])
+#'   if(sum(nsurveysite<3)>0) stop("All sites need to be surveyed at least three times")
+#' 
+#'   dmat = as.matrix(d)
+#'   #Init output
+#'   res = data.frame(r = rep(NA, nsite), p.value = rep(NA, nsite),  row.names = siteIDs)
+#'   if(verbose) {
+#'     cat("\nAssessing trajectory autocorrelation...\n")
+#'     tb = txtProgressBar(1, nsite, style=3)
+#'   }
+#'   for(i1 in 1:nsite) {
+#'     if(verbose) setTxtProgressBar(tb, i1)
+#'     ind_surv1 = which(sites==siteIDs[i1])
+#'     #Surveys may not be in order
+#'     if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
+#'     d1 = dist(dmat[ind_surv1, ind_surv1])
+#'     mt = mantel(d1, dist(1:length(ind_surv1)), permutations = permutations)
+#'     # print(names(mt))
+#'     res[i1,"r"] = mt$statistic
+#'     res[i1,"p.value"] = mt$signif
+#'   }
+#'   return(res)
+#' }
+
 
 #' @rdname trajectories
 trajectoryDirectionality<-function(d, sites, surveys = NULL, verbose = FALSE) {
@@ -583,13 +618,13 @@ trajectoryDirectionality<-function(d, sites, surveys = NULL, verbose = FALSE) {
   nsurveysite<-numeric(nsite)
   for(i in 1:nsite) nsurveysite[i] = sum(sites==siteIDs[i])
   if(sum(nsurveysite<3)>0) stop("All sites need to be surveyed at least three times")
-
+  
   dmat = as.matrix(d)
   #Init output
-  r = rep(NA, nsite)
-  names(r) = siteIDs
+  dir = rep(NA, nsite)
+  names(dir) = siteIDs
   if(verbose) {
-    cat("\nCalculating trajectory directionality...\n")
+    cat("\nAssessing trajectory directionality...\n")
     tb = txtProgressBar(1, nsite, style=3)
   }
   for(i1 in 1:nsite) {
@@ -597,8 +632,24 @@ trajectoryDirectionality<-function(d, sites, surveys = NULL, verbose = FALSE) {
     ind_surv1 = which(sites==siteIDs[i1])
     #Surveys may not be in order
     if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
-    d1 = dist(dmat[ind_surv1, ind_surv1])
-    r[i1] = cor(as.vector(d1), as.vector(dist(1:length(ind_surv1))))
+    dsub = dmat[ind_surv1, ind_surv1]
+    n = length(ind_surv1)
+    den = 0
+    num = 0
+    if(n>2) {
+      for(i in 1:(n-2)) {
+        for(j in (i+1):(n-1)) {
+          for(k in (j+1):n) {
+            da = dsub[i,j]
+            db = dsub[j,k]
+            dab = dsub[i,k]
+            den = den + da + db
+            num = num + dab
+          }
+        }
+      }
+      dir[i1] = num/den
+    }
   }
-  return(r)
+  return(dir)
 }

@@ -109,7 +109,7 @@ Function \code{trajectoryConvergence} returns a list with two elements:
   \item{\code{p.value}: A matrix with the p-value of the convergence/divergence test between trajectories. If \code{symmetric=TRUE} then the matrix is square. Otherwise the p-value indicates the test of the row trajectory approaching the column trajectory.}
 }
 
-Function \code{trajectoryDirectionality} returns a vector with correlation values (one per trajectory).
+Function \code{trajectoryDirectionality} returns a vector with directionality values (one per trajectory).
 }
 \description{
 Given a distance matrix between community states, functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively. 
@@ -118,7 +118,7 @@ Function \code{trajectoryAngles} calculates the angle between consecutive pairs 
 Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\link{cmdscale}}) and draws trajectories in the ordination scatterplot.
 Function \code{trajectoryProjection} projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.
 Function \code{trajectoryConvergence} performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.
-Function \code{trajectoryDirectionality} returns (for each trajectory) Mantel's correlation value between two dissimilarity matrices: (1) the distance between segments of the trajectory; and (2) the distance between the order of segments in the trajectory.
+Function \code{trajectoryDirectionality} returns (for each trajectory) a statistic that measures directionality of the whole trajectory.
 }
 \details{
 These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
