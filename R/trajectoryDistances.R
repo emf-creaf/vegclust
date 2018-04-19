@@ -365,7 +365,7 @@ trajectoryLengths<-function(d, sites, surveys=NULL, verbose= FALSE) {
 }
 
 #' @rdname trajectories
-trajectoryAngles<-function(d, sites, surveys=NULL, verbose= FALSE) {
+trajectoryAngles<-function(d, sites, surveys=NULL, all = FALSE, verbose= FALSE) {
   if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
   if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
   
@@ -380,7 +380,10 @@ trajectoryAngles<-function(d, sites, surveys=NULL, verbose= FALSE) {
   n = nrow(dmat)
   
   maxnsurveys = max(nsurveysite)
-  angles = matrix(NA, nrow=nsite, ncol=maxnsurveys)
+  if(!all) angles = matrix(NA, nrow=nsite, ncol=maxnsurveys)
+  else {
+    angles = matrix(NA, nrow=nsite, ncol=choose(maxnsurveys,3)+2)
+  }
   if(verbose) {
     cat("\nCalculating trajectory angles...\n")
     tb = txtProgressBar(1, nsite, style=3)
@@ -388,22 +391,35 @@ trajectoryAngles<-function(d, sites, surveys=NULL, verbose= FALSE) {
   for(i1 in 1:nsite) {
     if(verbose) setTxtProgressBar(tb, i1)
     ind_surv1 = which(sites==siteIDs[i1])
-    # print(ind_surv1)
     #Surveys may not be in order
     if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
-    for(s1 in 1:(nsurveysite[i1]-2)) {
-      d12 = dmat[ind_surv1[s1], ind_surv1[s1+1]]
-      d23 = dmat[ind_surv1[s1+1], ind_surv1[s1+2]]
-      d13 = dmat[ind_surv1[s1], ind_surv1[s1+2]]
-      angles[i1, s1] = .angleConsecutiveC(d12,d23,d13, TRUE)
-      # cat(paste(i1,s1,":", d12,d23,d13,.angleConsecutiveC(d12,d23,d13, TRUE),"\n"))
+    if(!all) {
+      for(s1 in 1:(nsurveysite[i1]-2)) {
+        d12 = dmat[ind_surv1[s1], ind_surv1[s1+1]]
+        d23 = dmat[ind_surv1[s1+1], ind_surv1[s1+2]]
+        d13 = dmat[ind_surv1[s1], ind_surv1[s1+2]]
+        angles[i1, s1] = .angleConsecutiveC(d12,d23,d13, TRUE)
+        # cat(paste(i1,s1,":", d12,d23,d13,.angleConsecutiveC(d12,d23,d13, TRUE),"\n"))
+      }
+      angles[i1, maxnsurveys-1] = mean(angles[i1,1:(nsurveysite[i1]-2)], na.rm=T)
+      angles[i1, maxnsurveys] = sd(angles[i1,1:(nsurveysite[i1]-2)], na.rm=T)
+    } else {
+      cs = combn(length(ind_surv1),3)
+      dsub = dmat[ind_surv1, ind_surv1]
+      for(s in 1:ncol(cs)) {
+        d12 = dsub[cs[1,s],cs[2,s]]
+        d23 = dsub[cs[2,s],cs[3,s]]
+        d13 = dsub[cs[1,s],cs[3,s]]
+        angles[i1, s] = .angleConsecutiveC(d12,d23,d13, TRUE)
+      }
+      angles[i1, ncol(angles)-1] = mean(angles[i1,], na.rm=T)
+      angles[i1, ncol(angles)] = sd(angles[i1,], na.rm=T)
     }
-    angles[i1, maxnsurveys-1] = mean(angles[i1,1:(nsurveysite[i1]-2)], na.rm=T)
-    angles[i1, maxnsurveys] = sd(angles[i1,1:(nsurveysite[i1]-2)], na.rm=T)
   }
   angles = as.data.frame(angles)
   row.names(angles)<-siteIDs
-  names(angles)<-c(paste0("S",as.character(1:(maxnsurveys-2)),"-S",as.character(2:(maxnsurveys-1))),"mean", "sd")
+  if(!all) names(angles)<-c(paste0("S",as.character(1:(maxnsurveys-2)),"-S",as.character(2:(maxnsurveys-1))),"mean", "sd")
+  else names(angles)<-c(paste0("A",as.character(1:(ncol(angles)-2))),"mean", "sd")
   return(angles)
 }
 
@@ -576,8 +592,6 @@ trajectoryConvergence<-function(d, sites, surveys = NULL, symmetric = FALSE, ver
   return(list(tau = tau, p.value = p.value))
 }
 
-#' 
-#' #' @rdname trajectories
 #' trajectoryAutocorrelation<-function(d, sites, surveys = NULL, permutations = 999, verbose = FALSE) {
 #'   if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
 #'   if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
@@ -652,4 +666,46 @@ trajectoryDirectionality<-function(d, sites, surveys = NULL, verbose = FALSE) {
     }
   }
   return(dir)
+}
+
+centerTrajectories<-function(d, sites, surveys = NULL, verbose = FALSE) {
+  if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
+  if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
+  siteIDs = unique(sites)
+  nsite = length(siteIDs)
+  nsurveysite<-numeric(nsite)
+  for(i in 1:nsite) nsurveysite[i] = sum(sites==siteIDs[i])
+
+  #PCoA (d imaginary dimensions)
+  # Dmat = as.matrix(d)
+  # k = nrow(Dmat)
+  # A = -0.5*Dmat^2
+  # I = diag(1,k)
+  # Ck = I - matrix(1/k,nrow=k, ncol=k)
+  # G = Ck%*%A%*%Ck
+  # e <- eigen(G, symmetric = TRUE)
+  # ev <- e$values[1:k]
+  # evec <- e$vectors[, 1:k, drop = FALSE]
+  # points <- sweep(evec, 2, sqrt(abs(ev)),"*")
+  # x <- points[,ev>0]
+  if(verbose) {
+    cat("\nPrincipal coordinates Analysis...\n")
+    tb = txtProgressBar(1, nsite, style=3)
+  }
+  cmd = cmdscale(d, length(sites)-1, add=TRUE)
+  x = cmd$points
+  rm(cmd)
+  if(verbose) {
+    cat("\nAssessing trajectory directionality...\n")
+    tb = txtProgressBar(1, nsite, style=3)
+  }
+  for(i1 in 1:nsite) {
+    if(verbose) setTxtProgressBar(tb, i1)
+    ind_surv1 = which(sites==siteIDs[i1])
+    #Surveys may not be in order
+    if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
+    #Centers trajectory (only positive eigen values (real dimensions))
+    x[ind_surv1, ] = scale(x[ind_surv1, ], scale=FALSE)
+  }
+  return(dist(x))
 }

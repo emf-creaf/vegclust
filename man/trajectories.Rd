@@ -28,7 +28,7 @@ trajectoryDistances(d, sites, surveys = NULL, distance.type = "DSPD",
 
 trajectoryLengths(d, sites, surveys = NULL, verbose = FALSE)
 
-trajectoryAngles(d, sites, surveys = NULL, verbose = FALSE)
+trajectoryAngles(d, sites, surveys = NULL, all = FALSE, verbose = FALSE)
 
 trajectoryPCoA(d, sites, surveys = NULL, selection = NULL,
   traj.colors = NULL, axes = c(1, 2), ...)
