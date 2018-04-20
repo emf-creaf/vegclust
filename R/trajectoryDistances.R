@@ -7,6 +7,7 @@
 #' Function \code{trajectoryProjection} projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.
 #' Function \code{trajectoryConvergence} performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.
 #' Function \code{trajectoryDirectionality} returns (for each trajectory) a statistic that measures directionality of the whole trajectory.
+#' Function \code{centerTrajectories} shifts all trajectories to the center of the compositional space and returns a modified distance matrix.
 #' 
 #' These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
 #' By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
@@ -14,7 +15,9 @@
 #' 
 #' @encoding UTF-8
 #' @name trajectories
-#' @aliases segmentDistances trajectoryDistances trajectoryLengths trajectoryAngles trajectoryPCoA trajectoryProjection trajectoryConvergence trajectoryDirectionality
+#' @aliases segmentDistances trajectoryDistances trajectoryLengths trajectoryAngles 
+#'          trajectoryPCoA trajectoryProjection trajectoryConvergence trajectoryDirectionality 
+#'          centerTrajectories
 #' 
 #' @param d A symmetric \code{\link{matrix}} or an object of class \code{\link{dist}} containing the distance values between pairs of community states.
 #' @param sites A vector indicating the site corresponding to each community state.
@@ -64,6 +67,7 @@
 #' }
 #' 
 #' Function \code{trajectoryDirectionality} returns a vector with directionality values (one per trajectory).
+#' Function \code{centerTrajectory} returns an object of class \code{\link{dist}}.
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres}, Forest Sciences Center of Catalonia
 #' 
@@ -365,6 +369,7 @@ trajectoryLengths<-function(d, sites, surveys=NULL, verbose= FALSE) {
 }
 
 #' @rdname trajectories
+#' @param all A flag to indicate that angles are desired for all triangles in the trajectory
 trajectoryAngles<-function(d, sites, surveys=NULL, all = FALSE, verbose= FALSE) {
   if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
   if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
@@ -668,6 +673,7 @@ trajectoryDirectionality<-function(d, sites, surveys = NULL, verbose = FALSE) {
   return(dir)
 }
 
+#' @rdname trajectories
 centerTrajectories<-function(d, sites, surveys = NULL, verbose = FALSE) {
   if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
   if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
@@ -676,18 +682,6 @@ centerTrajectories<-function(d, sites, surveys = NULL, verbose = FALSE) {
   nsurveysite<-numeric(nsite)
   for(i in 1:nsite) nsurveysite[i] = sum(sites==siteIDs[i])
 
-  #PCoA (d imaginary dimensions)
-  # Dmat = as.matrix(d)
-  # k = nrow(Dmat)
-  # A = -0.5*Dmat^2
-  # I = diag(1,k)
-  # Ck = I - matrix(1/k,nrow=k, ncol=k)
-  # G = Ck%*%A%*%Ck
-  # e <- eigen(G, symmetric = TRUE)
-  # ev <- e$values[1:k]
-  # evec <- e$vectors[, 1:k, drop = FALSE]
-  # points <- sweep(evec, 2, sqrt(abs(ev)),"*")
-  # x <- points[,ev>0]
   if(verbose) {
     cat("\nPrincipal coordinates Analysis...\n")
     tb = txtProgressBar(1, nsite, style=3)

@@ -11,6 +11,7 @@
 \alias{trajectoryProjection}
 \alias{trajectoryConvergence}
 \alias{trajectoryDirectionality}
+\alias{centerTrajectories}
 \alias{trajectoryDistances}
 \alias{trajectoryLengths}
 \alias{trajectoryAngles}
@@ -18,6 +19,7 @@
 \alias{trajectoryProjection}
 \alias{trajectoryConvergence}
 \alias{trajectoryDirectionality}
+\alias{centerTrajectories}
 \title{Community trajectory analysis}
 \usage{
 segmentDistances(d, sites, surveys = NULL,
@@ -39,6 +41,8 @@ trajectoryConvergence(d, sites, surveys = NULL, symmetric = FALSE,
   verbose = FALSE)
 
 trajectoryDirectionality(d, sites, surveys = NULL, verbose = FALSE)
+
+centerTrajectories(d, sites, surveys = NULL, verbose = FALSE)
 }
 \arguments{
 \item{d}{A symmetric \code{\link{matrix}} or an object of class \code{\link{dist}} containing the distance values between pairs of community states.}
@@ -63,6 +67,8 @@ whereas for \code{trajectoryDistances} the available indices are:
 \item{verbose}{Provides console output informing about process (useful for large dataset).}
 
 \item{symmetrization}{Function used to obtain a symmetric distance, so that DSPD(T1,T2) = DSPD(T2,T1) (e.g., \code{mean} or \code{min}).}
+
+\item{all}{A flag to indicate that angles are desired for all triangles in the trajectory}
 
 \item{selection}{A numeric or logical vector of the same length as \code{sites}, indicating a subset of site trajectories to be plotted.}
 
@@ -110,6 +116,7 @@ Function \code{trajectoryConvergence} returns a list with two elements:
 }
 
 Function \code{trajectoryDirectionality} returns a vector with directionality values (one per trajectory).
+Function \code{centerTrajectory} returns an object of class \code{\link{dist}}.
 }
 \description{
 Given a distance matrix between community states, functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively. 
@@ -119,6 +126,7 @@ Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\l
 Function \code{trajectoryProjection} projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.
 Function \code{trajectoryConvergence} performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.
 Function \code{trajectoryDirectionality} returns (for each trajectory) a statistic that measures directionality of the whole trajectory.
+Function \code{centerTrajectories} shifts all trajectories to the center of the compositional space and returns a modified distance matrix.
 }
 \details{
 These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 

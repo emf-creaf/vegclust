@@ -2,8 +2,9 @@ import(vegan,sp)
 importFrom("grDevices", "colorRampPalette", "rainbow")
 importFrom("graphics", "abline", "axis", "legend", "lines", "matlines",
              "persp", "arrows")
-importFrom("stats", "as.dist", "cutree", "dist", "quantile", "var", "cmdscale")
-importFrom("utils", "setTxtProgressBar", "txtProgressBar")
+importFrom("stats", "as.dist", "cutree", "dist", "quantile", "var", "cmdscale", "sd")
+importFrom("utils", "setTxtProgressBar", "txtProgressBar", "combn")
+importFrom("Kendall", "MannKendall")
 importFrom(Rcpp, evalCpp)
 useDynLib(vegclust)
 
