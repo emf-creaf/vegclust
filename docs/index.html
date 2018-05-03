@@ -18,7 +18,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-home">
+    <div class="container template-vignette">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -51,7 +51,7 @@
       <a href="articles/CTA.html">Community trajectory analysis</a>
     </li>
     <li>
-      <a href="articles/MedRegExample.html">Classifying vegetation stands in terms of structure and composition</a>
+      <a href="articles/MedRegExample.html">Describing vegetation in terms of structure and composition</a>
     </li>
   </ul>
 </li>
@@ -66,12 +66,44 @@
 
       
       </header><div class="row">
-  <div class="contents col-md-9">
-    A set of functions to perform fuzzy clustering of vegetation data [De Caceres et al. (2010) &lt;<a href="https://doi.org/10.1111/j.1654-1103.2010.01211.x">doi:10.1111/j.1654-1103.2010.01211.x</a>&gt;] and to assess ecological community ressemblance on the basis of structure and composition [De Caceres et al. (2013): &lt;<a href="https://doi.org/10.1111/2041-210X.12116">doi:10.1111/2041-210X.12116</a>&gt;].
+  <div class="col-md-9">
+    
+
+    
+    
+<div class="contents">
+<div id="introduction" class="section level2">
+<h2 class="hasAnchor">
+<a href="#introduction" class="anchor"></a>Introduction</h2>
+<p>Package <code>vegclust</code> is a package designed to assist analyses of vegetation structure and composition. It is intended to be useful for community ecologists and forest engineers, but the clustering functions can be used in other fields. The package provides functions to:</p>
+<ul>
+<li>Perform fuzzy clustering of vegetation data De Caceres et al. (2010) <a href="doi:10.1111/j.1654-1103.2010.01211.x" class="uri">doi:10.1111/j.1654-1103.2010.01211.x</a>
+</li>
+<li>Assess ecological community ressemblance on the basis of structure and composition De Caceres et al. (2013) <a href="doi:10.1111/2041-210X.12116" class="uri">doi:10.1111/2041-210X.12116</a>
+</li>
+<li>Perform community trajectory analysis (De Caceres et al. in prep.)</li>
+</ul>
+</div>
+<div id="package-installation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#package-installation" class="anchor"></a>Package installation</h2>
+<p>Package vegclust can be found at <a href="https://cran.r-project.org/">CRAN</a> package repository. In addition, the latest stable <code>vegclust</code> R package can be installed from GitHub as follows:</p>
+<pre class="sourceCode r" id="cb1"><code class="sourceCode r"><div class="sourceLine" id="cb1-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"miquelcaceres/vegclust"</span>, <span class="dt">build_vignettes=</span><span class="ot">TRUE</span>)</div></code></pre>
+</div>
+<div id="references" class="section level2">
+<h2 class="hasAnchor">
+<a href="#references" class="anchor"></a>References</h2>
+<ul>
+<li><p>De Cáceres, M., Font, X., &amp; Oliva, F. 2010. The management of vegetation classifications with fuzzy clustering. Journal of Vegetation Science 21: 1138–1151.</p></li>
+<li><p>De Cáceres, M., Legendre, P., &amp; He, F. 2013. Dissimilarity measurements and the size structure of ecological communities (D. Faith, Ed.). Methods in Ecology and Evolution 4: 1167–1177.</p></li>
+</ul>
+</div>
+</div>
   </div>
 
-  <div class="col-md-3" id="sidebar">
-    <h2>Links</h2>
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2 class="hasAnchor">
+<a href="#sidebar" class="anchor"></a>Links</h2>
 <ul class="list-unstyled">
 <li>Download from CRAN at <br><a href="https://cran.r-project.org/package=vegclust">https://​cran.r-project.org/​package=vegclust</a>
 </li>
@@ -87,6 +119,7 @@
 <li>Miquel De Caceres <br><small class="roles"> Author, maintainer </small>  </li>
 </ul>
 </div>
+
 </div>
 
 

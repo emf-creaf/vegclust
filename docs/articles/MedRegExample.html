@@ -5,11 +5,11 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Classifying vegetation stands in terms of structure and composition • vegclust</title>
+<title>Describing vegetation in terms of structure and composition • vegclust</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="Classifying vegetation stands in terms of structure and composition">
+<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="Describing vegetation in terms of structure and composition">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -51,7 +51,7 @@
       <a href="../articles/CTA.html">Community trajectory analysis</a>
     </li>
     <li>
-      <a href="../articles/MedRegExample.html">Classifying vegetation stands in terms of structure and composition</a>
+      <a href="../articles/MedRegExample.html">Describing vegetation in terms of structure and composition</a>
     </li>
   </ul>
 </li>
@@ -68,7 +68,7 @@
       </header><div class="row">
   <div class="col-md-9">
     <div class="page-header toc-ignore">
-      <h1>Classifying vegetation stands in terms of structure and composition</h1>
+      <h1>Describing vegetation in terms of structure and composition</h1>
                         <h4 class="author">Miquel De Cáceres</h4>
             
             <h4 class="date">2018-05-03</h4>
@@ -169,12 +169,12 @@
 <pre class="sourceCode r" id="cb25"><code class="sourceCode r"><div class="sourceLine" id="cb25-1" data-line-number="1">
 <span class="kw">print</span>(<span class="kw">head</span>(m))</div></code></pre>
 <pre><code>##   plot species   height diameter          ba
-## 1    1       2 2.804916        6 0.002827433
-## 2    1       2 4.500761       26 0.053092916
-## 3    1       1 4.823540       22 0.038013271
-## 4    1       2 6.561648       46 0.166190251
-## 5    1       2 4.605050       21 0.034636059
-## 6    1       1 6.844679       55 0.237582944</code></pre>
+## 1    1       1 4.344740       18 0.025446900
+## 2    1       2 9.597285       84 0.554176944
+## 3    1       2 2.977569        6 0.002827433
+## 4    1       1 5.432643       22 0.038013271
+## 5    1       1 4.184176       17 0.022698007
+## 6    1       2 4.957008       22 0.038013271</code></pre>
 <p>We start our analysis by defining two sets of size classes, one for height and the other for diameter:</p>
 <pre class="sourceCode r" id="cb27"><code class="sourceCode r"><div class="sourceLine" id="cb27-1" data-line-number="1">heights =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">4</span>, <span class="dt">by=</span>.<span class="dv">25</span>)<span class="op">^</span><span class="dv">2</span> <span class="co"># Quadratic classes</span>
 </div>
@@ -204,14 +204,14 @@
 <span class="kw">print</span>(<span class="kw"><a href="../reference/CAS.html">CASmargin</a></span>(tree.CAS, <span class="dt">margin=</span><span class="dv">1</span>))</div></code></pre>
 <pre><code>## $`1`
 ##   (0,0.0625] (0.0625,0.25] (0.25,0.562] (0.562,1] (1,1.56] (1.56,2.25]
-## 1   4.149730      4.149730     4.149730  4.149730 4.149730    4.149730
-## 2   4.448809      4.448809     4.448809  4.448809 4.448809    4.448809
-##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56]  (7.56,9] (9,10.6]
-## 1    4.149730 4.125618 4.062629    3.356399    2.677344 1.3522200 0.000000
-## 2    4.448809 4.421399 4.297306    3.603642    2.429079 0.9199369 0.664761
-##   (10.6,12.2] (12.2,14.1] (14.1,16]
-## 1           0           0         0
-## 2           0           0         0
+## 1   2.979722      2.979722     2.979722  2.979722 2.979722    2.979722
+## 2   3.847430      3.847430     3.847430  3.847430 3.847430    3.847430
+##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56]  (7.56,9]
+## 1    2.979644 2.979644 2.876913    2.373238    1.387956 0.2642079
+## 2    3.844603 3.807689 3.677156    3.283985    2.561419 1.6885275
+##    (9,10.6] (10.6,12.2] (12.2,14.1] (14.1,16]
+## 1 0.0000000           0           0         0
+## 2 0.5541769           0           0         0
 ## 
 ## attr(,"class")
 ## [1] "CAP"  "list"</code></pre>
@@ -223,14 +223,14 @@
 <span class="kw">print</span>(<span class="kw"><a href="../reference/CAP.html">CAP</a></span>(tree.S2))</div></code></pre>
 <pre><code>## $`1`
 ##   (0,0.0625] (0.0625,0.25] (0.25,0.562] (0.562,1] (1,1.56] (1.56,2.25]
-## 1   4.149730      4.149730     4.149730  4.149730 4.149730    4.149730
-## 2   4.448809      4.448809     4.448809  4.448809 4.448809    4.448809
-##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56]  (7.56,9] (9,10.6]
-## 1    4.149730 4.125618 4.062629    3.356399    2.677344 1.3522200 0.000000
-## 2    4.448809 4.421399 4.297306    3.603642    2.429079 0.9199369 0.664761
-##   (10.6,12.2] (12.2,14.1] (14.1,16]
-## 1           0           0         0
-## 2           0           0         0
+## 1   2.979722      2.979722     2.979722  2.979722 2.979722    2.979722
+## 2   3.847430      3.847430     3.847430  3.847430 3.847430    3.847430
+##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56]  (7.56,9]
+## 1    2.979644 2.979644 2.876913    2.373238    1.387956 0.2642079
+## 2    3.844603 3.807689 3.677156    3.283985    2.561419 1.6885275
+##    (9,10.6] (10.6,12.2] (12.2,14.1] (14.1,16]
+## 1 0.0000000           0           0         0
+## 2 0.5541769           0           0         0
 ## 
 ## attr(,"class")
 ## [1] "CAP"  "list"</code></pre>
@@ -287,14 +287,14 @@
 <pre class="sourceCode r" id="cb43"><code class="sourceCode r"><div class="sourceLine" id="cb43-1" data-line-number="1">medoids&lt;-vc<span class="op">$</span>mobileCenters</div>
 <div class="sourceLine" id="cb43-2" data-line-number="2">
 <span class="kw">print</span>(medoids)</div></code></pre>
-<pre><code>## [1]  4 24 92  7 20 38</code></pre>
+<pre><code>## [1] 20 60 92 71 24 38</code></pre>
 <p>The number of stands belonging to each cluster can be found using:</p>
 <pre class="sourceCode r" id="cb45"><code class="sourceCode r"><div class="sourceLine" id="cb45-1" data-line-number="1">cluster&lt;-<span class="kw"><a href="../reference/defuzzify.html">defuzzify</a></span>(vc)<span class="op">$</span>cluster</div>
 <div class="sourceLine" id="cb45-2" data-line-number="2">
 <span class="kw">table</span>(cluster)</div></code></pre>
 <pre><code>## cluster
 ## M1 M2 M3 M4 M5 M6  N 
-##  9 24  9 11 20 13 10</code></pre>
+## 21  8  9 15 28  7  8</code></pre>
 <p>Note that, because of the model chosen (and with the parameter <code>dnoise</code>), there are a number of stands that are left unclassified (i.e. those assigned to class “N”). A useful way to display the results of the cluster analysis is by showing the stand memberships to clusters in the ordination:</p>
 <pre class="sourceCode r" id="cb47"><code class="sourceCode r"><div class="sourceLine" id="cb47-1" data-line-number="1">clNum =<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">as.factor</span>(cluster))</div>
 <div class="sourceLine" id="cb47-2" data-line-number="2">
@@ -313,10 +313,10 @@
 <span class="kw">round</span>(CAPm[[n[<span class="dv">4</span>]]], <span class="dt">dig=</span><span class="dv">1</span>)</div></code></pre>
 <pre><code>##                                1    2    3 4 5 6 7
 ## Pine trees                  12.5  0.0  0.0 0 0 0 0
-## Quercus trees               25.0 25.0 25.0 0 0 0 0
-## Tall shrubs and small trees 75.0 62.5 37.5 0 0 0 0
-## Scrubs and small shrubs     37.5 37.5  0.0 0 0 0 0
-## Grass                       25.0  0.0  0.0 0 0 0 0</code></pre>
+## Quercus trees               35.0 35.0 35.0 5 0 0 0
+## Tall shrubs and small trees 67.5 67.5 37.5 0 0 0 0
+## Scrubs and small shrubs     25.0 25.0  0.0 0 0 0 0
+## Grass                       12.5  0.0  0.0 0 0 0 0</code></pre>
 <p>The following displays graphically the CAPs of all six groups of vegetation stands (code not shown):</p>
 <p><img src="MedRegExample_files/figure-html/unnamed-chunk-31-1.png" width="576"></p>
 </div>
