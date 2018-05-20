@@ -24,7 +24,7 @@ stratifyvegdata<-function(x,sizes1, sizes2 = NULL, treeSel=NULL, spcodes=NULL, p
     nstrata = length(sizes)-1
     m = matrix(0,nrow=nsp, ncol=nstrata)
     rownames(m) = spcodes
-    c1 = cut(treeDataPlot[,size1ColumnId], sizes1)
+    c1 = cut(treeDataPlot[,sizeColumnId], sizes)
     colnames(m) = levels(c1)
     c1 = as.numeric(c1)    
     for(i in 1:nrow(treeDataPlot)) {
@@ -40,7 +40,8 @@ stratifyvegdata<-function(x,sizes1, sizes2 = NULL, treeSel=NULL, spcodes=NULL, p
     }
     return(m)
   }
-  doublestratify<-function(treeDataPlot, sizes1, sizes2, spcodes=NULL, speciesColumnId, abundanceColumnId, size1ColumnId, size2ColumnId, cumulative=FALSE, counts=FALSE, verbose=FALSE) {
+  doublestratify<-function(treeDataPlot, sizes1, sizes2, spcodes=NULL, speciesColumnId, abundanceColumnId, 
+                           size1ColumnId, size2ColumnId, cumulative=FALSE, counts=FALSE, verbose=FALSE) {
     if(is.null(spcodes)) spcodes = unique(treeData[,speciesColumnId])
     nsp = length(spcodes)
     nstrata1 = length(sizes1)-1
