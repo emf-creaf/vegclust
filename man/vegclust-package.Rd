@@ -1,7 +1,6 @@
 \encoding{UTF-8}
 \name{vegclust-package}
 \alias{vegclust-package}
-\alias{vegclust}
 \docType{package}
 \title{
 \packageTitle{vegclust}

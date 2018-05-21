@@ -71,7 +71,7 @@
       <h1>Community trajectory analysis</h1>
                         <h4 class="author">Miquel De Cáceres</h4>
             
-            <h4 class="date">2018-05-03</h4>
+            <h4 class="date">2018-05-21</h4>
       
       
 
@@ -279,7 +279,7 @@
 <div class="sourceLine" id="cb39-3" data-line-number="3">               <span class="dt">axes=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="dt">length=</span><span class="fl">0.1</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</div>
 <div class="sourceLine" id="cb39-4" data-line-number="4">
 <span class="kw">legend</span>(<span class="st">"topright"</span>, <span class="dt">bty=</span><span class="st">"n"</span>, <span class="dt">legend =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">8</span>, <span class="dt">col =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer">brewer.pal</a></span>(<span class="dv">8</span>,<span class="st">"Accent"</span>), <span class="dt">lwd=</span><span class="dv">2</span>)</div></code></pre>
-<p><img src="CTA_files/figure-html/avoca%20pcoa-1.png" width="576" style="display: block; margin: auto;"> Note that in this case, the full <span class="math inline">\(\Omega\)</span> include more than two dimensions, and PCoA is representing 43% of total variance (correction for negative eigenvalues is included in the call to <code>cmdscale</code> from <code>trajectoryPCoA</code>), so one has to be careful when interpreting trajectories visually.</p>
+<p><img src="CTA_files/figure-html/avoca_pcoa-1.png" width="576" style="display: block; margin: auto;"> Note that in this case, the full <span class="math inline">\(\Omega\)</span> include more than two dimensions, and PCoA is representing 43% of total variance (correction for negative eigenvalues is included in the call to <code>cmdscale</code> from <code>trajectoryPCoA</code>), so one has to be careful when interpreting trajectories visually.</p>
 <p>One can inspect specific trajectories using argument <code>selection</code> in function <code>trajectoryPCoA</code>. This allows getting a better view of particular trajectories, here that of forest plot ‘3’:</p>
 <pre class="sourceCode r" id="cb40"><code class="sourceCode r"><div class="sourceLine" id="cb40-1" data-line-number="1">
 <span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</div>
@@ -289,7 +289,7 @@
 <div class="sourceLine" id="cb40-4" data-line-number="4">               <span class="dt">length=</span><span class="fl">0.1</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</div>
 <div class="sourceLine" id="cb40-5" data-line-number="5">
 <span class="kw">plotTrajDiamDist</span>(<span class="dv">3</span>)</div></code></pre>
-<p><img src="CTA_files/figure-html/trajectory%203%20DBH%20dist-1.png" width="768" style="display: block; margin: auto;"></p>
+<p><img src="CTA_files/figure-html/trajectory_3-1.png" width="768" style="display: block; margin: auto;"></p>
 <p>In the right hand, we added a representation of the change in the mountain beech tree diameter distribution through time for trajectory of forest plot ‘3’. The dynamics of this plot include mostly growth, which results in individuals moving from one diameter class to the other. The whole trajectory looks mostly directional. Let’s now inspect the trajectory of forest plot ‘4’:</p>
 <pre class="sourceCode r" id="cb41"><code class="sourceCode r"><div class="sourceLine" id="cb41-1" data-line-number="1">
 <span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</div>
@@ -299,7 +299,7 @@
 <div class="sourceLine" id="cb41-4" data-line-number="4">               <span class="dt">length=</span><span class="fl">0.1</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</div>
 <div class="sourceLine" id="cb41-5" data-line-number="5">
 <span class="kw">plotTrajDiamDist</span>(<span class="dv">4</span>)</div></code></pre>
-<p><img src="CTA_files/figure-html/trajectory%204-1.png" width="768" style="display: block; margin: auto;"></p>
+<p><img src="CTA_files/figure-html/trajectory_4-1.png" width="768" style="display: block; margin: auto;"></p>
 <p>This second trajectory is less straight and seems to include a turn by the end of the sampling period, corresponding to the recruitment of new saplings.</p>
 </div>
 <div id="trajectory-lengths-angles-and-directionality-1" class="section level3">
@@ -377,7 +377,7 @@
 <div class="sourceLine" id="cb49-6" data-line-number="6">     <span class="dt">bg=</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer">brewer.pal</a></span>(<span class="dv">8</span>,<span class="st">"Accent"</span>), <span class="dt">pch=</span><span class="dv">21</span>)</div>
 <div class="sourceLine" id="cb49-7" data-line-number="7">
 <span class="kw">text</span>(x,y, <span class="dt">labels=</span><span class="dv">1</span><span class="op">:</span><span class="dv">8</span>, <span class="dt">pos=</span><span class="dv">2</span>)</div></code></pre>
-<p><img src="CTA_files/figure-html/avoca%20DT%20PCoA-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="CTA_files/figure-html/avoca_DT_PCoA-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 </div>
 </div>

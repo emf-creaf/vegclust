@@ -180,30 +180,30 @@
 <span class='no'>X</span> <span class='kw'>=</span> <span class='fu'><a href='stratifyvegdata.html'>stratifyvegdata</a></span>(<span class='no'>treedata</span>, <span class='kw'>sizes1</span><span class='kw'>=</span><span class='no'>heights</span>, <span class='kw'>sizes2</span><span class='kw'>=</span><span class='no'>diameters</span>, <span class='kw'>plotColumn</span><span class='kw'>=</span><span class='st'>"plotID"</span>,
                     <span class='kw'>speciesColumn</span><span class='kw'>=</span><span class='st'>"species"</span>, <span class='kw'>size1Column</span><span class='kw'>=</span><span class='st'>"height"</span>, <span class='kw'>size2Column</span><span class='kw'>=</span><span class='st'>"diam"</span>,
                     <span class='kw'>counts</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
-<span class='no'>X</span><span class='kw'>[[</span><span class='fl'>2</span>]]</div><div class='output co'>#&gt; , , (0,0.5]
+<span class='no'>X</span><span class='kw'>[[</span><span class='fl'>2</span>]]</div><div class='output co'>#&gt; , , [0,0.5]
 #&gt; 
-#&gt;   (0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
+#&gt;   [0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
 #&gt; H       0       0       0       0       0       0       0       0
 #&gt; N       0       0       0       0       0       0       0       0
 #&gt; O       0       0       0       0       0       0       0       0
 #&gt; 
 #&gt; , , (0.5,1]
 #&gt; 
-#&gt;   (0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
+#&gt;   [0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
 #&gt; H       0       0       0       0       0       0       0       0
 #&gt; N       0       0       0       0       0       0       0       0
 #&gt; O       0       2       0       0       0       0       0       0
 #&gt; 
 #&gt; , , (1,1.5]
 #&gt; 
-#&gt;   (0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
+#&gt;   [0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
 #&gt; H       0       0       0       0       0       0       0       3
 #&gt; N       0       0       0       0       0       0       0       0
 #&gt; O       0       0       0       0       0       0       0       0
 #&gt; 
 #&gt; , , (1.5,2]
 #&gt; 
-#&gt;   (0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
+#&gt;   [0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
 #&gt; H       0       0       0       0       0       0       0       0
 #&gt; N       0       0       0       0       0       0       0       0
 #&gt; O       0       0       0       0       0       0       0       0
@@ -211,42 +211,42 @@
 <span class='co'>## Build cummulative abundance surface</span>
 <span class='no'>Y</span> <span class='kw'>=</span> <span class='fu'>CAS</span>(<span class='no'>X</span>)
 
-<span class='no'>Y</span><span class='kw'>[[</span><span class='fl'>2</span>]]</div><div class='output co'>#&gt; , , (0,0.5]
+<span class='no'>Y</span><span class='kw'>[[</span><span class='fl'>2</span>]]</div><div class='output co'>#&gt; , , [0,0.5]
 #&gt; 
-#&gt;   (0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
+#&gt;   [0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
 #&gt; H       3       3       3       3       3       3       3       3
 #&gt; N       0       0       0       0       0       0       0       0
 #&gt; O       2       2       0       0       0       0       0       0
 #&gt; 
 #&gt; , , (0.5,1]
 #&gt; 
-#&gt;   (0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
+#&gt;   [0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
 #&gt; H       3       3       3       3       3       3       3       3
 #&gt; N       0       0       0       0       0       0       0       0
 #&gt; O       2       2       0       0       0       0       0       0
 #&gt; 
 #&gt; , , (1,1.5]
 #&gt; 
-#&gt;   (0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
+#&gt;   [0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
 #&gt; H       3       3       3       3       3       3       3       3
 #&gt; N       0       0       0       0       0       0       0       0
 #&gt; O       0       0       0       0       0       0       0       0
 #&gt; 
 #&gt; , , (1.5,2]
 #&gt; 
-#&gt;   (0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
+#&gt;   [0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
 #&gt; H       0       0       0       0       0       0       0       0
 #&gt; N       0       0       0       0       0       0       0       0
 #&gt; O       0       0       0       0       0       0       0       0
 #&gt; </div><div class='input'>
 <span class='co'>##  Extracts the first and second marginal (i.e. CAP on heights or diameters respectively)</span>
 <span class='no'>Y.M1</span> <span class='kw'>=</span> <span class='fu'>CASmargin</span>(<span class='no'>Y</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>1</span>)
-<span class='no'>Y.M1</span><span class='kw'>[[</span><span class='fl'>2</span>]]</div><div class='output co'>#&gt;   (0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
+<span class='no'>Y.M1</span><span class='kw'>[[</span><span class='fl'>2</span>]]</div><div class='output co'>#&gt;   [0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
 #&gt; H       3       3       3       3       3       3       3       3
 #&gt; N       0       0       0       0       0       0       0       0
 #&gt; O       2       2       0       0       0       0       0       0</div><div class='input'>
 <span class='no'>Y.M2</span> <span class='kw'>=</span> <span class='fu'>CASmargin</span>(<span class='no'>Y</span>, <span class='kw'>margin</span> <span class='kw'>=</span> <span class='fl'>2</span>)
-<span class='no'>Y.M2</span><span class='kw'>[[</span><span class='fl'>2</span>]]</div><div class='output co'>#&gt;   (0,0.5] (0.5,1] (1,1.5] (1.5,2]
+<span class='no'>Y.M2</span><span class='kw'>[[</span><span class='fl'>2</span>]]</div><div class='output co'>#&gt;   [0,0.5] (0.5,1] (1,1.5] (1.5,2]
 #&gt; H       3       3       3       0
 #&gt; N       0       0       0       0
 #&gt; O       2       2       0       0</div><div class='input'>
@@ -254,13 +254,13 @@
 <span class='no'>Y1</span> <span class='kw'>=</span> <span class='fu'><a href='CAP.html'>CAP</a></span>(<span class='fu'><a href='stratifyvegdata.html'>stratifyvegdata</a></span>(<span class='no'>treedata</span>, <span class='kw'>sizes1</span><span class='kw'>=</span><span class='no'>heights</span>, <span class='kw'>plotColumn</span><span class='kw'>=</span><span class='st'>"plotID"</span>,
                     <span class='kw'>speciesColumn</span><span class='kw'>=</span><span class='st'>"species"</span>, <span class='kw'>size1Column</span><span class='kw'>=</span><span class='st'>"height"</span>,
                     <span class='kw'>counts</span><span class='kw'>=</span><span class='fl'>TRUE</span>))
-<span class='no'>Y1</span><span class='kw'>[[</span><span class='fl'>2</span>]]</div><div class='output co'>#&gt;   (0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
+<span class='no'>Y1</span><span class='kw'>[[</span><span class='fl'>2</span>]]</div><div class='output co'>#&gt;   [0,0.5] (0.5,1] (1,1.5] (1.5,2] (2,2.5] (2.5,3] (3,3.5] (3.5,4]
 #&gt; H       3       3       3       3       3       3       3       3
 #&gt; N       0       0       0       0       0       0       0       0
 #&gt; O       2       2       0       0       0       0       0       0</div><div class='input'><span class='no'>Y2</span> <span class='kw'>=</span> <span class='fu'><a href='CAP.html'>CAP</a></span>(<span class='fu'><a href='stratifyvegdata.html'>stratifyvegdata</a></span>(<span class='no'>treedata</span>, <span class='kw'>sizes1</span><span class='kw'>=</span><span class='no'>diameters</span>, <span class='kw'>plotColumn</span><span class='kw'>=</span><span class='st'>"plotID"</span>,
                     <span class='kw'>speciesColumn</span><span class='kw'>=</span><span class='st'>"species"</span>, <span class='kw'>size1Column</span><span class='kw'>=</span><span class='st'>"diam"</span>,
                     <span class='kw'>counts</span><span class='kw'>=</span><span class='fl'>TRUE</span>))
-<span class='no'>Y2</span><span class='kw'>[[</span><span class='fl'>2</span>]]</div><div class='output co'>#&gt;   (0,0.5] (0.5,1] (1,1.5] (1.5,2]
+<span class='no'>Y2</span><span class='kw'>[[</span><span class='fl'>2</span>]]</div><div class='output co'>#&gt;   [0,0.5] (0.5,1] (1,1.5] (1.5,2]
 #&gt; H       3       3       3       0
 #&gt; N       0       0       0       0
 #&gt; O       2       2       0       0</div><div class='input'>
