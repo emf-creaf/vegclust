@@ -4,6 +4,9 @@
 
 __Version history__
 
+_Version 1.7.4, May 2018
+1. Improvement of parameter checking in function 'stratifyvegdata'
+
 _Version 1.7.3, April 2018
 1. New function 'trajectoryConvergence'
 2. New function 'trajectoryDirectionality'
