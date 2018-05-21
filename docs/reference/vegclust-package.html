@@ -6,7 +6,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Functions for fuzzy and hard clustering of vegetation data — vegclust-package • vegclust</title>
+<title>Fuzzy Clustering of Vegetation Data
+
+Functions for fuzzy and hard clustering of vegetation data — vegclust-package • vegclust</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -25,7 +27,11 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-<meta property="og:title" content="Functions for fuzzy and hard clustering of vegetation data — vegclust-package" />
+<meta property="og:title" content="Fuzzy Clustering of Vegetation Data
+
+Functions for fuzzy and hard clustering of vegetation data — vegclust-package" />
+
+<meta property="og:description" content="A set of functions to perform fuzzy clustering of vegetation data [De Caceres et al. (2010) &lt;doi:10.1111/j.1654-1103.2010.01211.x&gt;] and to assess ecological community ressemblance on the basis of structure and composition [De Caceres et al. (2013): &lt;doi:10.1111/2041-210X.12116&gt;]." />
 
 <meta property="og:description" content="This package contains functions used to perform fuzzy and hard clustering of vegetation data under different models." />
 <meta name="twitter:card" content="summary" />
@@ -94,46 +100,29 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Functions for fuzzy and hard clustering of vegetation data</h1>
+    <h1>Fuzzy Clustering of Vegetation Data
+
+Functions for fuzzy and hard clustering of vegetation data</h1>
     
     </div>
 
     
-    <p>This package contains functions used to perform fuzzy and hard clustering of vegetation data under different models.</p>
+    <p>A set of functions to perform fuzzy clustering of vegetation data [De Caceres et al. (2010) &lt;doi:10.1111/j.1654-1103.2010.01211.x&gt;] and to assess ecological community ressemblance on the basis of structure and composition [De Caceres et al. (2013): &lt;doi:10.1111/2041-210X.12116&gt;].
+
+    This package contains functions used to perform fuzzy and hard clustering of vegetation data under different models.</p>
     
 
         
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <table><tr><td>
-Package: </td>
-<td> vegclust</td>
-</tr><tr><td>
-Type: </td>
-<td> Package</td>
-</tr><tr><td>
-Version: </td>
-<td> 1.6.4</td>
-</tr><tr><td>
-Date: </td>
-<td> 2016-05-19</td>
-</tr><tr><td>
-License: </td>
-<td> GPL (&gt;= 2)</td>
-</tr><tr><td>
-LazyLoad: </td>
-<td> yes</td>
-</tr></table>
-    <p>This package is intended to be helpful for generating and maintaining classifications of vegetation. There are two main functions: (1) <code><a href='vegclust.html'>vegclust</a></code> is used to create a fuzzy classification from an initial data set (a set of releves of community composition); (2) <code><a href='vegclass.html'>vegclass</a></code> is used to classify new data (i.e. new releves) into previous classification structures.</p>
+    <p>The DESCRIPTION file:
+This package was not yet installed at build time.
+    Index:  This package was not yet installed at build time.</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Forgy, E. W. (1965) Cluster analysis of multivariate data: efficiency vs interpretability of classifications. Biometrics 21, 768-769.</p>
-<p>MacQueen, J. (1967) Some methods for classification and analysis of multivariate observations. In Proceedings of the Fifth Berkeley Symposium on Mathematical Statistics and Probability, eds L. M. Le Cam and J. Neyman, 1, pp. 281-297. Berkeley, CA: University of California Press.</p>
-<p>Davé, R. N. and R. Krishnapuram (1997) Robust clustering methods: a unified view. IEEE Transactions on Fuzzy Systems 5, 270-293.</p>
-<p>Bezdek, J. C. (1981) Pattern recognition with fuzzy objective functions. Plenum Press, New York.</p>
-<p>Krishnapuram, R. and J. M. Keller. (1993) A possibilistic approach to clustering. IEEE transactions on fuzzy systems 1, 98-110.</p>
-<p>De Cáceres, M., Font, X, Oliva, F. (2010) The management of numerical vegetation classifications with fuzzy clustering methods. Journal of Vegetation Science 21 (6): 1138-1151.</p>
+    <p>De Caceres, M., Font, X, Oliva, F. (2010) The management of numerical vegetation classifications with fuzzy clustering methods. Journal of Vegetation Science 21 (6): 1138-1151.</p>
+<p>De Cáceres, M., Legendre, P., &amp; He, F. 2013. Dissimilarity measurements and the size structure of ecological communities (D. Faith, Ed.). Methods in Ecology and Evolution 4: 1167–1177.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -141,7 +130,6 @@ LazyLoad: </td>
 <span class='fu'>data</span>(<span class='no'>wetland</span>)
 
 <span class='co'>## This equals the chord transformation </span>
-<span class='co'>## (see also  \code{\link{decostand}} in package 'vegan')</span>
 <span class='no'>wetland.chord</span> <span class='kw'>=</span> <span class='fu'>as.data.frame</span>(<span class='fu'>sweep</span>(<span class='fu'>as.matrix</span>(<span class='no'>wetland</span>), <span class='fl'>1</span>,
                               <span class='fu'>sqrt</span>(<span class='fu'>rowSums</span>(<span class='fu'>as.matrix</span>(<span class='no'>wetland</span>)^<span class='fl'>2</span>)), <span class='st'>"/"</span>))
 
@@ -163,9 +151,10 @@ LazyLoad: </td>
 
     <h2>Author</h2>
     
-Miquel De Cáceres, Forest Science Center of Catalonia
+NA
 
-Maintainer: Miquel De Cáceres &lt;miquelcaceres@gmail.com&gt;
+ Maintainer: NA
+ 
 
   </div>
 </div>

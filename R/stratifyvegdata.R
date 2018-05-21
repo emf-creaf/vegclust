@@ -24,7 +24,8 @@ stratifyvegdata<-function(x,sizes1, sizes2 = NULL, treeSel=NULL, spcodes=NULL, p
     nstrata = length(sizes)-1
     m = matrix(0,nrow=nsp, ncol=nstrata)
     rownames(m) = spcodes
-    c1 = cut(treeDataPlot[,size1ColumnId], sizes1)
+    c1 = cut(treeDataPlot[,sizeColumnId], sizes, include.lowest = TRUE)
+    if(sum(is.na(c1))>0) stop("Some values are not included within size classes. Revise size class definition")
     colnames(m) = levels(c1)
     c1 = as.numeric(c1)    
     for(i in 1:nrow(treeDataPlot)) {
@@ -40,14 +41,17 @@ stratifyvegdata<-function(x,sizes1, sizes2 = NULL, treeSel=NULL, spcodes=NULL, p
     }
     return(m)
   }
-  doublestratify<-function(treeDataPlot, sizes1, sizes2, spcodes=NULL, speciesColumnId, abundanceColumnId, size1ColumnId, size2ColumnId, cumulative=FALSE, counts=FALSE, verbose=FALSE) {
+  doublestratify<-function(treeDataPlot, sizes1, sizes2, spcodes=NULL, speciesColumnId, abundanceColumnId, 
+                           size1ColumnId, size2ColumnId, cumulative=FALSE, counts=FALSE, verbose=FALSE) {
     if(is.null(spcodes)) spcodes = unique(treeData[,speciesColumnId])
     nsp = length(spcodes)
     nstrata1 = length(sizes1)-1
     nstrata2 = length(sizes2)-1
     m = array(0,dim=c(nsp, nstrata1, nstrata2))
-    c1 = cut(treeDataPlot[,size1ColumnId], sizes1)
-    c2 = cut(treeDataPlot[,size2ColumnId], sizes2)
+    c1 = cut(treeDataPlot[,size1ColumnId], sizes1, include.lowest = TRUE)
+    if(sum(is.na(c1))>0) stop("Some values are not included within size1 classes. Revise size1 class definition")
+    c2 = cut(treeDataPlot[,size2ColumnId], sizes2, include.lowest = TRUE)
+    if(sum(is.na(c2))>0) stop("Some values are not included within size2 classes. Revise size2 class definition")
     dimnames(m) = list(spcodes, levels(c1), levels(c2))
     c1 = as.numeric(c1)
     c2 = as.numeric(c2)

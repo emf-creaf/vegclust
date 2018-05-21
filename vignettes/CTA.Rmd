@@ -147,7 +147,7 @@ Distances in `avoca_D_man` are calculated using the Manhattan metric.
 
 The distance matrix `avoca_D_man` conforms our definition of $\Omega$. We use `trajectoryPCoA` to display the relations between forest plot states in this space and to draw the trajectory of each plot:
 
-```{r avoca pcoa, echo=T, fig=TRUE, fig.height=6, fig.width=6, fig.align = "center"}
+```{r avoca_pcoa, echo=T, fig=TRUE, fig.height=6, fig.width=6, fig.align = "center"}
 trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
                traj.colors = brewer.pal(8,"Accent"), 
                axes=c(1,2), length=0.1, lwd=2)
@@ -198,7 +198,7 @@ legend("topright", bty="n", lwd=2,col=gray(seq(0.8,0, by=-0.1)), legend=c("1970/
 ```
 
 One can inspect specific trajectories using argument `selection` in function `trajectoryPCoA`. This allows getting a better view of particular trajectories, here that of forest plot '3':
-```{r trajectory 3 DBH dist, fig.height=4, fig.width=8, fig.align = "center"}
+```{r trajectory_3, fig.height=4, fig.width=8, fig.align = "center"}
 par(mfrow=c(1,2))
 trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
                selection= 3,
@@ -207,7 +207,7 @@ plotTrajDiamDist(3)
 ```
 
 In the right hand, we added a representation of the change in the mountain beech tree diameter distribution through time for trajectory of forest plot '3'. The dynamics of this plot include mostly growth, which results in individuals moving from one diameter class to the other. The whole trajectory looks mostly directional. Let's now inspect the trajectory of forest plot '4':
-```{r trajectory 4, echo=T, fig.height=4, fig.width=8, fig.align = "center"}
+```{r trajectory_4, echo=T, fig.height=4, fig.width=8, fig.align = "center"}
 par(mfrow=c(1,2))
 trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
                selection= 4,
@@ -246,7 +246,7 @@ avoca_D_traj_man = trajectoryDistances(avoca_D_man, avoca_sites, distance.type="
 print(round(avoca_D_traj_man,3))
 ```
 The closest trajectories are those of plots '1' and '2'. They looked rather close in *position* in the PCoA ordination of $\Omega$ with all trajectories, so probably it is position, rather than *shape* which has influenced this low value. The next pair of similar trajectories are those of the '3'-'5' pair. We can use `cmdscale` to produce an ordination of resemblances between trajectories:
-```{r avoca DT PCoA, echo=TRUE, fig = TRUE, fig.height=5, fig.width=6, fig.align="center"}
+```{r avoca_DT_PCoA, echo=TRUE, fig = TRUE, fig.height=5, fig.width=6, fig.align="center"}
 cmd_D2<-cmdscale(avoca_D_traj_man, add=TRUE, eig=TRUE, k=7)
 x<-cmd_D2$points[,1]
 y<-cmd_D2$points[,2]

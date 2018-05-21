@@ -1,8 +1,8 @@
 Package: vegclust
 Type: Package
 Title: Fuzzy Clustering of Vegetation Data
-Version: 1.7.3
-Date: 2018-04-07
+Version: 1.7.4
+Date: 2018-05-21
 Authors@R: c(
 	person('Miquel', 'De Caceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com'))
