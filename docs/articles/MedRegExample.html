@@ -168,13 +168,13 @@
 <p>This specific data looks as follows:</p>
 <pre class="sourceCode r" id="cb25"><code class="sourceCode r"><div class="sourceLine" id="cb25-1" data-line-number="1">
 <span class="kw">print</span>(<span class="kw">head</span>(m))</div></code></pre>
-<pre><code>##   plot species   height diameter           ba
-## 1    1       2 3.161775       10 0.0078539816
-## 2    1       1 1.924028        2 0.0003141593
-## 3    1       2 4.127788       12 0.0113097336
-## 4    1       2 6.016441       41 0.1320254313
-## 5    1       1 4.904547       30 0.0706858347
-## 6    1       1 2.820610       10 0.0078539816</code></pre>
+<pre><code>##   plot species   height diameter          ba
+## 1    1       2 3.899597       15 0.017671459
+## 2    1       1 2.710317        9 0.006361725
+## 3    1       1 4.649139       26 0.053092916
+## 4    1       1 4.534756       27 0.057255526
+## 5    1       1 7.340530       56 0.246300864
+## 6    1       2 7.243397       54 0.229022104</code></pre>
 <p>We start our analysis by defining two sets of size classes, one for height and the other for diameter:</p>
 <pre class="sourceCode r" id="cb27"><code class="sourceCode r"><div class="sourceLine" id="cb27-1" data-line-number="1">heights =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">4</span>, <span class="dt">by=</span>.<span class="dv">25</span>)<span class="op">^</span><span class="dv">2</span> <span class="co"># Quadratic classes</span>
 </div>
@@ -204,11 +204,11 @@
 <span class="kw">print</span>(<span class="kw"><a href="../reference/CAS.html">CASmargin</a></span>(tree.CAS, <span class="dt">margin=</span><span class="dv">1</span>))</div></code></pre>
 <pre><code>## $`1`
 ##   [0,0.0625] (0.0625,0.25] (0.25,0.562] (0.562,1] (1,1.56] (1.56,2.25]
-## 1   1.587604      1.587604     1.587604  1.587604 1.587604    1.587604
-## 2   4.851247      4.851247     4.851247  4.851247 4.851247    4.851247
-##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56]  (7.56,9] (9,10.6]
-## 1    1.586583 1.574645 1.485109    1.111574   0.6573783 0.2463009        0
-## 2    4.851247 4.825408 4.630708    3.880024   2.7750473 1.5023096        0
+## 1   4.180046      4.180046     4.180046  4.180046 4.180046    4.180046
+## 2   3.787897      3.787897     3.787897  3.787897 3.787897    3.787897
+##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56] (7.56,9]  (9,10.6]
+## 1    4.174705 4.166380 4.047078    3.190052    2.424131 1.593730 0.4656626
+## 2    3.787897 3.756402 3.614167    3.211415    2.443609 1.277372 0.0000000
 ##   (10.6,12.2] (12.2,14.1] (14.1,16]
 ## 1           0           0         0
 ## 2           0           0         0
@@ -223,11 +223,11 @@
 <span class="kw">print</span>(<span class="kw"><a href="../reference/CAP.html">CAP</a></span>(tree.S2))</div></code></pre>
 <pre><code>## $`1`
 ##   [0,0.0625] (0.0625,0.25] (0.25,0.562] (0.562,1] (1,1.56] (1.56,2.25]
-## 1   1.587604      1.587604     1.587604  1.587604 1.587604    1.587604
-## 2   4.851247      4.851247     4.851247  4.851247 4.851247    4.851247
-##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56]  (7.56,9] (9,10.6]
-## 1    1.586583 1.574645 1.485109    1.111574   0.6573783 0.2463009        0
-## 2    4.851247 4.825408 4.630708    3.880024   2.7750473 1.5023096        0
+## 1   4.180046      4.180046     4.180046  4.180046 4.180046    4.180046
+## 2   3.787897      3.787897     3.787897  3.787897 3.787897    3.787897
+##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56] (7.56,9]  (9,10.6]
+## 1    4.174705 4.166380 4.047078    3.190052    2.424131 1.593730 0.4656626
+## 2    3.787897 3.756402 3.614167    3.211415    2.443609 1.277372 0.0000000
 ##   (10.6,12.2] (12.2,14.1] (14.1,16]
 ## 1           0           0         0
 ## 2           0           0         0
@@ -287,14 +287,14 @@
 <pre class="sourceCode r" id="cb43"><code class="sourceCode r"><div class="sourceLine" id="cb43-1" data-line-number="1">medoids&lt;-vc<span class="op">$</span>mobileCenters</div>
 <div class="sourceLine" id="cb43-2" data-line-number="2">
 <span class="kw">print</span>(medoids)</div></code></pre>
-<pre><code>## [1] 38 20 71 92 60 24</code></pre>
+<pre><code>## [1] 38 20 92 60 24 71</code></pre>
 <p>The number of stands belonging to each cluster can be found using:</p>
 <pre class="sourceCode r" id="cb45"><code class="sourceCode r"><div class="sourceLine" id="cb45-1" data-line-number="1">cluster&lt;-<span class="kw"><a href="../reference/defuzzify.html">defuzzify</a></span>(vc)<span class="op">$</span>cluster</div>
 <div class="sourceLine" id="cb45-2" data-line-number="2">
 <span class="kw">table</span>(cluster)</div></code></pre>
 <pre><code>## cluster
 ## M1 M2 M3 M4 M5 M6  N 
-##  7 21 15  9  8 28  8</code></pre>
+##  7 21  9  8 28 15  8</code></pre>
 <p>Note that, because of the model chosen (and with the parameter <code>dnoise</code>), there are a number of stands that are left unclassified (i.e. those assigned to class “N”). A useful way to display the results of the cluster analysis is by showing the stand memberships to clusters in the ordination:</p>
 <pre class="sourceCode r" id="cb47"><code class="sourceCode r"><div class="sourceLine" id="cb47-1" data-line-number="1">clNum =<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">as.factor</span>(cluster))</div>
 <div class="sourceLine" id="cb47-2" data-line-number="2">
@@ -311,12 +311,12 @@
 <p>For example, we can inspect the structure and composition of the fourth group:</p>
 <pre class="sourceCode r" id="cb49"><code class="sourceCode r"><div class="sourceLine" id="cb49-1" data-line-number="1">
 <span class="kw">round</span>(CAPm[[n[<span class="dv">4</span>]]], <span class="dt">dig=</span><span class="dv">1</span>)</div></code></pre>
-<pre><code>##                                 1     2    3    4 5 6 7
-## Pine trees                    0.0   0.0  0.0  0.0 0 0 0
-## Quercus trees                25.0  25.0  0.0  0.0 0 0 0
-## Tall shrubs and small trees 117.5 112.5 87.5 12.5 0 0 0
-## Scrubs and small shrubs      25.0  25.0  0.0  0.0 0 0 0
-## Grass                        37.5   0.0  0.0  0.0 0 0 0</code></pre>
+<pre><code>##                                1    2    3    4    5    6 7
+## Pine trees                  37.5 37.5 37.5 37.5 37.5 37.5 0
+## Quercus trees               37.5 37.5 37.5 12.5  0.0  0.0 0
+## Tall shrubs and small trees 80.0 80.0 55.0 37.5  0.0  0.0 0
+## Scrubs and small shrubs     17.5 17.5 12.5  0.0  0.0  0.0 0
+## Grass                        0.0  0.0  0.0  0.0  0.0  0.0 0</code></pre>
 <p>The following displays graphically the CAPs of all six groups of vegetation stands (code not shown):</p>
 <p><img src="MedRegExample_files/figure-html/unnamed-chunk-31-1.png" width="576"></p>
 </div>
