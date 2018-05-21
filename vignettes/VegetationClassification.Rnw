@@ -23,9 +23,10 @@ options(width=67)
 @
 \section{Introduction}
 \subsection{What is this tutorial about?}
-Classification of vegetation plot records involves different activities, including the design of an appropriate vegetation survey, the use of a classification method to group vegetation observations and the characterization, validation and naming of the resulting vegetation groups. In this tutorial we focus on only one of this steps, namely to group vegetation observations, and we show how to conduct it with the help of the R package \texttt{vegclust}. Before starting our examples we need to load the \texttt{vegclust} package, which also loads the required R packages \texttt{vegan} and \texttt{permute}:
+Classification of vegetation plot records involves different activities, including the design of an appropriate vegetation survey, the use of a classification method to group vegetation observations and the characterization, validation and naming of the resulting vegetation groups. In this tutorial we focus on only one of this steps, namely to group vegetation observations, and we show how to conduct it with the help of the R package \texttt{vegclust}. Before starting our examples we need to load the \texttt{vegclust} package, which also loads the required \texttt{permute}, and package \texttt{vegan}:
 <<>>=
 library(vegclust)
+library(vegan)
 @
 
 \subsection{Example vegetation data}
