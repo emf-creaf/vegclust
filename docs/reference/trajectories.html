@@ -27,14 +27,19 @@
 <script src="../pkgdown.js"></script>
 <meta property="og:title" content="Community trajectory analysis — trajectories" />
 
-<meta property="og:description" content="Given a distance matrix between community states, functions segmentDistances and trajectoryDistances calculate the distance between pairs of directed segments and community trajectories, respectively. 
-Function trajectoryLengths calculates lengths of directed segments and complete trajectories. 
+<meta property="og:description" content="Set of functions for trajectory analysis
+Given a distance matrix between community states, functions segmentDistances and trajectoryDistances calculate the distance between pairs of directed segments and community trajectories, respectively.
+Function trajectoryLengths calculates lengths of directed segments and complete trajectories.
 Function trajectoryAngles calculates the angle between consecutive pairs of directed segments.
 Function trajectoryPCoA performs principal coordinates analysis (cmdscale) and draws trajectories in the ordination scatterplot.
+Function trajectoryPlot Draws trajectories in a scatterplot corresponding to the input coordinates.
 Function trajectoryProjection projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.
 Function trajectoryConvergence performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.
 Function trajectoryDirectionality returns (for each trajectory) a statistic that measures directionality of the whole trajectory.
-Function centerTrajectories shifts all trajectories to the center of the compositional space and returns a modified distance matrix." />
+Function centerTrajectories shifts all trajectories to the center of the compositional space and returns a modified distance matrix.
+These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
+By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
+Details of calculations are given in De Cáceres et al (submitted)" />
 <meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
@@ -106,14 +111,19 @@ Function centerTrajectories shifts all trajectories to the center of the composi
     </div>
 
     
-    <p>Given a distance matrix between community states, functions <code>segmentDistances</code> and <code>trajectoryDistances</code> calculate the distance between pairs of directed segments and community trajectories, respectively. 
-Function <code>trajectoryLengths</code> calculates lengths of directed segments and complete trajectories. 
-Function <code>trajectoryAngles</code> calculates the angle between consecutive pairs of directed segments.
-Function <code>trajectoryPCoA</code> performs principal coordinates analysis (<code>cmdscale</code>) and draws trajectories in the ordination scatterplot.
-Function <code>trajectoryProjection</code> projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.
-Function <code>trajectoryConvergence</code> performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.
-Function <code>trajectoryDirectionality</code> returns (for each trajectory) a statistic that measures directionality of the whole trajectory.
-Function <code>centerTrajectories</code> shifts all trajectories to the center of the compositional space and returns a modified distance matrix.</p>
+    <p>Set of functions for trajectory analysis</p><ul>
+<li><p>Given a distance matrix between community states, functions <code>segmentDistances</code> and <code>trajectoryDistances</code> calculate the distance between pairs of directed segments and community trajectories, respectively.</p></li>
+<li><p>Function <code>trajectoryLengths</code> calculates lengths of directed segments and complete trajectories.</p></li>
+<li><p>Function <code>trajectoryAngles</code> calculates the angle between consecutive pairs of directed segments.</p></li>
+<li><p>Function <code>trajectoryPCoA</code> performs principal coordinates analysis (<code>cmdscale</code>) and draws trajectories in the ordination scatterplot.</p></li>
+<li><p>Function <code>trajectoryPlot</code> Draws trajectories in a scatterplot corresponding to the input coordinates.</p></li>
+<li><p>Function <code>trajectoryProjection</code> projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.</p></li>
+<li><p>Function <code>trajectoryConvergence</code> performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.</p></li>
+<li><p>Function <code>trajectoryDirectionality</code> returns (for each trajectory) a statistic that measures directionality of the whole trajectory.</p></li>
+<li><p>Function <code>centerTrajectories</code> shifts all trajectories to the center of the compositional space and returns a modified distance matrix.</p></li>
+</ul><p>These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
+By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
+Details of calculations are given in De Cáceres et al (submitted)</p>
     
 
     <pre class="usage"><span class='fu'>segmentDistances</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -127,6 +137,9 @@ Function <code>centerTrajectories</code> shifts all trajectories to the center o
 <span class='fu'>trajectoryAngles</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>all</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
 <span class='fu'>trajectoryPCoA</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>selection</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>traj.colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>axes</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>2</span>), <span class='no'>...</span>)
+
+<span class='fu'>trajectoryPlot</span>(<span class='no'>x</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>selection</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>traj.colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>axes</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>2</span>), <span class='no'>...</span>)
 
 <span class='fu'>trajectoryProjection</span>(<span class='no'>d</span>, <span class='no'>target</span>, <span class='no'>trajectory</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>)
@@ -194,6 +207,10 @@ Function <code>centerTrajectories</code> shifts all trajectories to the center o
       <td><p>Additional parameters for function <code>arrows</code>.</p></td>
     </tr>
     <tr>
+      <th>x</th>
+      <td><p>A data.frame or matrix where rows are community states and columns are coordinates in an arbitrary space</p></td>
+    </tr>
+    <tr>
       <th>target</th>
       <td><p>An integer vector of the community states to be projected.</p></td>
     </tr>
@@ -237,12 +254,6 @@ Function <code>centerTrajectories</code> shifts all trajectories to the center o
 
 <p>Function <code>trajectoryDirectionality</code> returns a vector with directionality values (one per trajectory).
 Function <code>centerTrajectory</code> returns an object of class <code>dist</code>.</p>
-    
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
-By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
-Details of calculations are given in De Cáceres et al (submitted)</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
@@ -311,8 +322,6 @@ Details of calculations are given in De Cáceres et al (submitted)</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
 
       <li><a href="#references">References</a></li>
 

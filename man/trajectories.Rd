@@ -91,14 +91,6 @@ whereas for \code{trajectoryDistances} the available indices are:
 \item{tol}{Numerical tolerance value to determine that projection of a point lies within the trajectory.}
 
 \item{symmetric}{A logical flag to indicate a symmetric convergence comparison of trajectories.}
-
-\item{selection}{A numeric or logical vector of the same length as \code{sites}, indicating a subset of site trajectories to be plotted.}
-
-\item{traj.colors}{A vector of colors (one per site). If \code{selection != NULL} the length of the color vector should be equal to the number of sites selected.}
-
-\item{axes}{The pair of axes to be plotted.}
-
-\item{...}{Additional parameters for function \code{\link{arrows}}.}
 }
 \value{
 Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories. Function \code{trajectorySegments} returns a list with the following elements:

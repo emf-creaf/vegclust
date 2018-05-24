@@ -477,10 +477,6 @@ trajectoryPCoA<-function(d, sites, surveys = NULL, selection = NULL, traj.colors
 
 #' @rdname trajectories
 #' @param x A data.frame or matrix where rows are community states and columns are coordinates in an arbitrary space
-#' @param selection A numeric or logical vector of the same length as \code{sites}, indicating a subset of site trajectories to be plotted.
-#' @param traj.colors A vector of colors (one per site). If \code{selection != NULL} the length of the color vector should be equal to the number of sites selected.
-#' @param axes The pair of axes to be plotted.
-#' @param ... Additional parameters for function \code{\link{arrows}}.
 trajectoryPlot<-function(x, sites, surveys = NULL, selection = NULL, traj.colors = NULL, axes=c(1,2), ...) {
   siteIDs = unique(sites)
   nsite = length(siteIDs)

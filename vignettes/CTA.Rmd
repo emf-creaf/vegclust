@@ -313,15 +313,77 @@ sqrtD = sqrt(D)
 sqrtD
 
 ```
-The transformation increases all dissimilarity values (because the original values are smaller than 1), but the increase is larger for smaller values, so the ratio between large dissimilarities and small dissimilarities decreases. This has an effect on the overall shape of the trajectory, which is no longer:
+The transformation increases all dissimilarity values (because the original values are smaller than 1), but the increase is larger for smaller values, so the ratio between large dissimilarities and small dissimilarities decreases. This has an effect on the overall shape of the trajectory, which surprisingly now looks like:
 ```{r, echo=TRUE, fig = TRUE, fig.height=4, fig.width=6, fig.align="center"}
 trajectoryPCoA(sqrtD,sites,surveys)
 ```
-Surprisingly, the trajectory does not look straight any more. Now the number of dimensions of the data have increased (i.e the sum of variance explained by the two axes is 88% < 100%), so we cannot be sure that the angles are well represented. If we re-calculate the properties of the trajectory we obtain:
+In addition to the distortion observed, the number of dimensions of the data have increased (i.e the sum of variance explained by the two axes is 88% < 100%), so we cannot be sure that the angles are well represented. If we re-calculate the properties of the trajectory taking into account all dimensions we obtain:
 
 ```{r}
 trajectoryLengths(sqrtD,sites,surveys)
 trajectoryAngles(sqrtD,sites,surveys)
 trajectoryDirectionality(sqrtD,sites,surveys)
 ```
-The length of segments and the trajectory have increased, but all segments are still the same size, which is in agreement with the original trajectory. On the other hand, the angles are now 90 degrees and the directionality of the trajectory has decreased substantially.
+The length of segments and the trajectory have increased, but all segments are still the same size, in agreement with the original trajectory. In contrast, the angles are now 90 degrees and the directionality of the trajectory has decreased substantially.
+
+### 4.3 Longer trajectories
+
+Do the results of the previous section hold for a more complex trajectory? Here we use simulated dynamics to build another trajectory with more species (20) and more time steps. We begin by setting the number of time steps (50) and the size of the community (100 individuals):
+```{r}
+Nsteps = 50
+CC = 100
+Nreplace <- CC*0.05
+```
+`Nreplace` is the number of individuals to be replaced each time step (5\%). Now we define the initial community vector and the vector with the probabilities of offspring for each species according to some ecological conditions:
+```{r}
+x <- c(0, 1, 0, 67, 1, 3, 0, 2, 2, 2, 1, 6, 2, 0, 0, 2, 5, 1, 6, 0)
+poffspring <- c(0, 0, 0.002, 0.661 ,0 ,0, 0.037, 0.281, 0, 0, 0, 0.008, 0, 0, 0.005, 0.003, 0, 0, 0, 0)
+```
+We can now simulate the dynamics by sequentially applying stochastic deaths and recruitment:
+```{r}
+m <- matrix(0, nrow=Nsteps+1, ncol=length(x))
+m[1, ] = x
+for(k in 1:Nsteps) {
+  pdeath <-x/sum(x) #Equal probability of dying
+  deaths<-rmultinom(1,Nreplace, pdeath)
+  x <- pmax(x - deaths,0)
+  offspring = rmultinom(1,Nreplace, as.vector(poffspring))
+  x <- x + offspring
+  m[k+1, ]<-x
+}
+```
+Then we decide how frequently (with respect to the simulated step) a sample of the community is taken, here every four steps:
+```{r}
+Sj <- seq(1,51, by=4) #Sample every four steps
+mj <- m[Sj,]
+surveys = 1:length(Sj)
+sites = rep(1,length(Sj))
+```
+Now we are ready to calculate the Bray-Curtis dissimilarity and to plot the resulting trajectory:
+```{r, echo=TRUE, fig = TRUE, fig.height=5, fig.width=6, fig.align="center"}
+D <- vegan::vegdist(mj,"bray")
+trajectoryPCoA(D, sites, surveys, selection=1,length=0.1, axes=c(1,2))
+```
+
+The trajectory looks rather directional, although it has some twists derived from stochasticity in death and recruitment. Let's now look at the square root of the Bray-Curtis dissimilarity:
+```{r, echo=TRUE, fig = TRUE, fig.height=5, fig.width=6, fig.align="center"}
+sqrtD = sqrt(D)
+trajectoryPCoA(sqrtD, sites, surveys, selection=1,length=0.1, axes=c(1,2))
+```
+
+While they look different, the differences are not so striking as with the simple example. In other words, the overall shape of the trajectory looks similar in the two plots. From this, we might conclude that the square root transformation did not distort the trajectory significantly. However, note that the proportion of variance explained by the two axes has decreased after the transformation, so there might be changes in trajectory shape that are hidden in the dimensions of the data that we do not see. If we calculate geometric properties we are not limited by the ordination plot and we can take into account all dimensions. In contrast with the ordination plot, the angles of the trajectory are strongly affected by the square root transformation:
+
+```{r}
+trajectoryAngles(D,sites,surveys)
+trajectoryAngles(sqrtD,sites,surveys)
+```
+And so does the overall directionality:
+```{r}
+trajectoryDirectionality(D,sites,surveys)
+trajectoryDirectionality(sqrtD,sites,surveys)
+```
+
+### 4.4 Conclusions
+
+In this small study we have shown how the square root transformation distorts the angles and overall directionality of trajectories on the space defined by the percentage difference (alias Bray-Curtis) dissimilarity index. We suspect that this negative effect of square root transformation on angles happens no matter which coefficient is used to derive the initial distance matrix. Therefore, we advocate for avoiding its use when conducting community trajectory analysis (in particular for angles). However, the square root transformation may still be advised for the representation of (especially complex) trajectories in ordination diagrams, because the alternative is to discard the information corresponding to negative eigenvalues of the distance matrix. 
+

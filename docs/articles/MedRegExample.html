@@ -71,7 +71,7 @@
       <h1>Describing vegetation in terms of structure and composition</h1>
                         <h4 class="author">Miquel De Cáceres</h4>
             
-            <h4 class="date">2018-05-21</h4>
+            <h4 class="date">2018-05-24</h4>
       
       
 
@@ -86,30 +86,26 @@
 <p>The aim of this tutorial is to show how to implement the method to calculate dissimilarities between communities presented in De Caceres et al (2013). This method allows incorporating both the structure and the composition of the community in the dissimilary measurement. The functions needed to carry out computations have been included in package <code>vegclust</code> so we start by loading the package:</p>
 <pre class="sourceCode r" id="cb1"><code class="sourceCode r"><div class="sourceLine" id="cb1-1" data-line-number="1">
 <span class="kw">library</span>(vegclust)</div></code></pre>
-<pre><code>## Loading required package: vegan</code></pre>
-<pre><code>## Loading required package: permute</code></pre>
-<pre><code>## Loading required package: lattice</code></pre>
-<pre><code>## This is vegan 2.5-1</code></pre>
-<pre><code>## Loading required package: Kendall</code></pre>
+<pre><code>## Loading required package: Rcpp</code></pre>
 </div>
 <div id="post-fire-vegetation-regeneration-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#post-fire-vegetation-regeneration-data" class="anchor"></a>Post-fire vegetation regeneration data</h2>
 <p>In order to illustrate the method we will use a stratified vegetation data set containing data from 96 stands. The data was obtained to investigate patterns vegetation regeneration three years after the impact of a wildfire. Data were collected in 2012 by Miquel De Caceres and Albert Petit in Horta de Sant Joan (Catalonia, Spain). The R object is of class <code>stratifiedvegdata</code> (actually a list).</p>
-<pre class="sourceCode r" id="cb7"><code class="sourceCode r"><div class="sourceLine" id="cb7-1" data-line-number="1">
+<pre class="sourceCode r" id="cb3"><code class="sourceCode r"><div class="sourceLine" id="cb3-1" data-line-number="1">
 <span class="kw">data</span>(medreg)</div>
-<div class="sourceLine" id="cb7-2" data-line-number="2">
+<div class="sourceLine" id="cb3-2" data-line-number="2">
 <span class="kw">class</span>(medreg)</div></code></pre>
 <pre><code>## [1] "stratifiedvegdata" "list"</code></pre>
-<pre class="sourceCode r" id="cb9"><code class="sourceCode r"><div class="sourceLine" id="cb9-1" data-line-number="1">
+<pre class="sourceCode r" id="cb5"><code class="sourceCode r"><div class="sourceLine" id="cb5-1" data-line-number="1">
 <span class="kw">length</span>(medreg)</div></code></pre>
 <pre><code>## [1] 96</code></pre>
 <p>The dataset contains 96 stands (list elements), each of them a data.frame where rows correspond to broad plant functional groups (Pine trees, Oak trees, Tall shrubs and small trees, Scrubs and small shrubs and Grass) and columns correspond to vegetation strata (1 to 7). The upper heights of the vegetation strata are the following (in cm.) vector:</p>
-<pre class="sourceCode r" id="cb11"><code class="sourceCode r"><div class="sourceLine" id="cb11-1" data-line-number="1">strataUp =<span class="st"> </span><span class="kw">c</span>(<span class="dv">20</span>,<span class="dv">50</span>,<span class="dv">100</span>,<span class="dv">300</span>,<span class="dv">600</span>,<span class="dv">1200</span>,<span class="dv">2400</span>)</div></code></pre>
+<pre class="sourceCode r" id="cb7"><code class="sourceCode r"><div class="sourceLine" id="cb7-1" data-line-number="1">strataUp =<span class="st"> </span><span class="kw">c</span>(<span class="dv">20</span>,<span class="dv">50</span>,<span class="dv">100</span>,<span class="dv">300</span>,<span class="dv">600</span>,<span class="dv">1200</span>,<span class="dv">2400</span>)</div></code></pre>
 <p>And the width (range of heights) of each stratum is:</p>
-<pre class="sourceCode r" id="cb12"><code class="sourceCode r"><div class="sourceLine" id="cb12-1" data-line-number="1">strataWidths =<span class="st"> </span><span class="kw">c</span>(<span class="dv">20</span>,<span class="dv">30</span>,<span class="dv">50</span>,<span class="dv">200</span>,<span class="dv">300</span>,<span class="dv">600</span>,<span class="dv">1200</span>)</div></code></pre>
+<pre class="sourceCode r" id="cb8"><code class="sourceCode r"><div class="sourceLine" id="cb8-1" data-line-number="1">strataWidths =<span class="st"> </span><span class="kw">c</span>(<span class="dv">20</span>,<span class="dv">30</span>,<span class="dv">50</span>,<span class="dv">200</span>,<span class="dv">300</span>,<span class="dv">600</span>,<span class="dv">1200</span>)</div></code></pre>
 <p>Species abundance values are percentage cover values estimated using cover classes:</p>
-<pre class="sourceCode r" id="cb13"><code class="sourceCode r"><div class="sourceLine" id="cb13-1" data-line-number="1">medreg[[<span class="dv">1</span>]]</div></code></pre>
+<pre class="sourceCode r" id="cb9"><code class="sourceCode r"><div class="sourceLine" id="cb9-1" data-line-number="1">medreg[[<span class="dv">1</span>]]</div></code></pre>
 <pre><code>##                                1    2  3 4 5 6 7
 ## Pine trees                   0.0  0.0  0 0 0 0 0
 ## Quercus trees               12.5 25.0  0 0 0 0 0
@@ -122,16 +118,16 @@
 <h2 class="hasAnchor">
 <a href="#cumulative-abundance-profiles" class="anchor"></a>Cumulative abundance profiles</h2>
 <p>The <strong>cumulative abundance profile</strong> (CAP) is a function that takes a value of <em>size</em> as input (here the <em>size</em> is a vegetation stratum) and returns the cumulative abundance of organisms (here the cumulative cover value) whose size is <em>equal to</em> or <em>larger than</em> the input value. In our case, the CAP function is the cumulative cover of plants reaching the current stratum or higher strata. Calculations are made using function <code><a href="../reference/CAP.html">CAP()</a></code> of <code>vegclust</code>:</p>
-<pre class="sourceCode r" id="cb15"><code class="sourceCode r"><div class="sourceLine" id="cb15-1" data-line-number="1">medreg.CAP &lt;-<span class="st"> </span><span class="kw"><a href="../reference/CAP.html">CAP</a></span>(medreg)</div></code></pre>
+<pre class="sourceCode r" id="cb11"><code class="sourceCode r"><div class="sourceLine" id="cb11-1" data-line-number="1">medreg.CAP &lt;-<span class="st"> </span><span class="kw"><a href="../reference/CAP.html">CAP</a></span>(medreg)</div></code></pre>
 <p>Note that a different CAP is calculated for each functional group and plot. The structure of the resulting R object is very similar to the stratified data:</p>
-<pre class="sourceCode r" id="cb16"><code class="sourceCode r"><div class="sourceLine" id="cb16-1" data-line-number="1">
+<pre class="sourceCode r" id="cb12"><code class="sourceCode r"><div class="sourceLine" id="cb12-1" data-line-number="1">
 <span class="kw">class</span>(medreg.CAP)</div></code></pre>
 <pre><code>## [1] "CAP"  "list"</code></pre>
-<pre class="sourceCode r" id="cb18"><code class="sourceCode r"><div class="sourceLine" id="cb18-1" data-line-number="1">
+<pre class="sourceCode r" id="cb14"><code class="sourceCode r"><div class="sourceLine" id="cb14-1" data-line-number="1">
 <span class="kw">length</span>(medreg.CAP)</div></code></pre>
 <pre><code>## [1] 96</code></pre>
 <p>If we inspect the first element of the list, we can see the difference between the original data and the cumulative abundance profile.</p>
-<pre class="sourceCode r" id="cb20"><code class="sourceCode r"><div class="sourceLine" id="cb20-1" data-line-number="1">medreg.CAP[[<span class="dv">1</span>]]</div></code></pre>
+<pre class="sourceCode r" id="cb16"><code class="sourceCode r"><div class="sourceLine" id="cb16-1" data-line-number="1">medreg.CAP[[<span class="dv">1</span>]]</div></code></pre>
 <pre><code>##                                1    2  3 4 5 6 7
 ## Pine trees                   0.0  0.0  0 0 0 0 0
 ## Quercus trees               37.5 25.0  0 0 0 0 0
@@ -139,13 +135,13 @@
 ## Scrubs and small shrubs     50.0 37.5  0 0 0 0 0
 ## Grass                       50.0  0.0  0 0 0 0 0</code></pre>
 <p>Moreover, it is possible to graphically display the CAP of a given stand (it may become difficult to interpret when the number of species is large). For example, we can display the CAP for each functional group of the first stand (<code>plots="1"</code>):</p>
-<pre class="sourceCode r" id="cb22"><code class="sourceCode r"><div class="sourceLine" id="cb22-1" data-line-number="1">
+<pre class="sourceCode r" id="cb18"><code class="sourceCode r"><div class="sourceLine" id="cb18-1" data-line-number="1">
 <span class="kw">plot</span>(medreg.CAP, <span class="dt">plots=</span><span class="st">"1"</span>, <span class="dt">sizes=</span>strataUp, <span class="dt">xlab=</span><span class="st">"Height (cm)"</span>, </div>
-<div class="sourceLine" id="cb22-2" data-line-number="2">     <span class="dt">ylab=</span><span class="st">"Cumulative percent cover"</span>)</div>
-<div class="sourceLine" id="cb22-3" data-line-number="3">
+<div class="sourceLine" id="cb18-2" data-line-number="2">     <span class="dt">ylab=</span><span class="st">"Cumulative percent cover"</span>)</div>
+<div class="sourceLine" id="cb18-3" data-line-number="3">
 <span class="kw">legend</span>(<span class="st">"topright"</span>, <span class="dt">col=</span><span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dt">lty=</span><span class="dv">1</span>, </div>
-<div class="sourceLine" id="cb22-4" data-line-number="4">       <span class="dt">legend=</span><span class="kw">c</span>(<span class="st">"Pines"</span>,<span class="st">"Oaks"</span>,<span class="st">"Tall shrubs"</span>,<span class="st">"Scrubs"</span>,<span class="st">"Grass"</span>), </div>
-<div class="sourceLine" id="cb22-5" data-line-number="5">       <span class="dt">bty=</span><span class="st">"n"</span>)</div></code></pre>
+<div class="sourceLine" id="cb18-4" data-line-number="4">       <span class="dt">legend=</span><span class="kw">c</span>(<span class="st">"Pines"</span>,<span class="st">"Oaks"</span>,<span class="st">"Tall shrubs"</span>,<span class="st">"Scrubs"</span>,<span class="st">"Grass"</span>), </div>
+<div class="sourceLine" id="cb18-5" data-line-number="5">       <span class="dt">bty=</span><span class="st">"n"</span>)</div></code></pre>
 <p><img src="MedRegExample_files/figure-html/unnamed-chunk-9-1.png" width="480"></p>
 <p>In this case the vegetation is a short but dense shrubland. Note that in the plot we used <code>strataUp</code> to set the x-axis, so that real heights are adequately represented.</p>
 </div>
@@ -153,62 +149,62 @@
 <h2 class="hasAnchor">
 <a href="#cumulative-abundance-surfaces" class="anchor"></a>Cumulative abundance surfaces</h2>
 <p>The concept of cumulative abundance profile can be extended to two structural variables, which leads to the concept of <strong>cumulative abundance surface</strong> (CAS). The CAS is a function that takes a the values of two structural variables (<em>size1</em> and <em>size2</em>) as input and returns the cumulative abundance of organisms whose size is <em>equal to</em> or <em>larger than</em> the input values in one of the structural variables or in both. In the case of forests, natural choices for structural variables are tree diameter and tree height. Since our post-fire regeneration dataset only includes one structural variable, we will illustrate the concept of CASs using a synthetic data set consisting in a single plot where the species identity, diameter and height of a hundred trees has been measured. We start by building a tree-based data set:</p>
-<pre class="sourceCode r" id="cb23"><code class="sourceCode r"><div class="sourceLine" id="cb23-1" data-line-number="1">pl =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,<span class="dv">100</span>) <span class="co"># All trees in the same plot</span>
+<pre class="sourceCode r" id="cb19"><code class="sourceCode r"><div class="sourceLine" id="cb19-1" data-line-number="1">pl =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,<span class="dv">100</span>) <span class="co"># All trees in the same plot</span>
 </div>
-<div class="sourceLine" id="cb23-2" data-line-number="2">sp =<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">runif</span>(<span class="dv">100</span>)<span class="op">&gt;</span><span class="fl">0.5</span>,<span class="dv">1</span>,<span class="dv">2</span>) <span class="co"># Random species identity (species 1 or 2)</span>
+<div class="sourceLine" id="cb19-2" data-line-number="2">sp =<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">runif</span>(<span class="dv">100</span>)<span class="op">&gt;</span><span class="fl">0.5</span>,<span class="dv">1</span>,<span class="dv">2</span>) <span class="co"># Random species identity (species 1 or 2)</span>
 </div>
-<div class="sourceLine" id="cb23-3" data-line-number="3">h=<span class="kw">rgamma</span>(<span class="dv">100</span>,<span class="dv">10</span>,<span class="dv">2</span>) <span class="co"># Heights (m)</span>
+<div class="sourceLine" id="cb19-3" data-line-number="3">h=<span class="kw">rgamma</span>(<span class="dv">100</span>,<span class="dv">10</span>,<span class="dv">2</span>) <span class="co"># Heights (m)</span>
 </div>
-<div class="sourceLine" id="cb23-4" data-line-number="4">d =<span class="st"> </span><span class="kw">rpois</span>(<span class="dv">100</span>, <span class="dt">lambda=</span>h<span class="op">^</span><span class="dv">2</span>) <span class="co"># Diameters (cm)</span>
+<div class="sourceLine" id="cb19-4" data-line-number="4">d =<span class="st"> </span><span class="kw">rpois</span>(<span class="dv">100</span>, <span class="dt">lambda=</span>h<span class="op">^</span><span class="dv">2</span>) <span class="co"># Diameters (cm)</span>
 </div>
-<div class="sourceLine" id="cb23-5" data-line-number="5">m =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">plot=</span>pl,<span class="dt">species=</span>sp, <span class="dt">height=</span>h,<span class="dt">diameter=</span>d) </div></code></pre>
+<div class="sourceLine" id="cb19-5" data-line-number="5">m =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">plot=</span>pl,<span class="dt">species=</span>sp, <span class="dt">height=</span>h,<span class="dt">diameter=</span>d) </div></code></pre>
 <p>In this example, we will use basal area (m2) as measure of abundance. We calculate the area (in square meters) of each tree:</p>
-<pre class="sourceCode r" id="cb24"><code class="sourceCode r"><div class="sourceLine" id="cb24-1" data-line-number="1">m<span class="op">$</span>ba =<span class="st"> </span>pi<span class="op">*</span>(m<span class="op">$</span>diameter<span class="op">/</span><span class="dv">200</span>)<span class="op">^</span><span class="dv">2</span>
+<pre class="sourceCode r" id="cb20"><code class="sourceCode r"><div class="sourceLine" id="cb20-1" data-line-number="1">m<span class="op">$</span>ba =<span class="st"> </span>pi<span class="op">*</span>(m<span class="op">$</span>diameter<span class="op">/</span><span class="dv">200</span>)<span class="op">^</span><span class="dv">2</span>
 </div></code></pre>
 <p>This specific data looks as follows:</p>
-<pre class="sourceCode r" id="cb25"><code class="sourceCode r"><div class="sourceLine" id="cb25-1" data-line-number="1">
+<pre class="sourceCode r" id="cb21"><code class="sourceCode r"><div class="sourceLine" id="cb21-1" data-line-number="1">
 <span class="kw">print</span>(<span class="kw">head</span>(m))</div></code></pre>
 <pre><code>##   plot species   height diameter          ba
-## 1    1       2 3.899597       15 0.017671459
-## 2    1       1 2.710317        9 0.006361725
-## 3    1       1 4.649139       26 0.053092916
-## 4    1       1 4.534756       27 0.057255526
-## 5    1       1 7.340530       56 0.246300864
-## 6    1       2 7.243397       54 0.229022104</code></pre>
+## 1    1       1 2.921803        9 0.006361725
+## 2    1       2 7.851461       70 0.384845100
+## 3    1       2 3.543649       10 0.007853982
+## 4    1       1 6.131195       32 0.080424772
+## 5    1       1 7.009692       49 0.188574099
+## 6    1       1 7.197362       58 0.264207942</code></pre>
 <p>We start our analysis by defining two sets of size classes, one for height and the other for diameter:</p>
-<pre class="sourceCode r" id="cb27"><code class="sourceCode r"><div class="sourceLine" id="cb27-1" data-line-number="1">heights =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">4</span>, <span class="dt">by=</span>.<span class="dv">25</span>)<span class="op">^</span><span class="dv">2</span> <span class="co"># Quadratic classes</span>
+<pre class="sourceCode r" id="cb23"><code class="sourceCode r"><div class="sourceLine" id="cb23-1" data-line-number="1">heights =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">4</span>, <span class="dt">by=</span>.<span class="dv">25</span>)<span class="op">^</span><span class="dv">2</span> <span class="co"># Quadratic classes</span>
 </div>
-<div class="sourceLine" id="cb27-2" data-line-number="2">diams =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">130</span>, <span class="dt">by=</span><span class="dv">5</span>) <span class="co"># Linear classes</span>
+<div class="sourceLine" id="cb23-2" data-line-number="2">diams =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">130</span>, <span class="dt">by=</span><span class="dv">5</span>) <span class="co"># Linear classes</span>
 </div></code></pre>
 <p>We are ready to stratify the data set:</p>
-<pre class="sourceCode r" id="cb28"><code class="sourceCode r"><div class="sourceLine" id="cb28-1" data-line-number="1">tree.S&lt;-<span class="kw"><a href="../reference/stratifyvegdata.html">stratifyvegdata</a></span>(m, <span class="dt">sizes1=</span>heights, <span class="dt">sizes2=</span>diams, </div>
-<div class="sourceLine" id="cb28-2" data-line-number="2">                   <span class="dt">plotColumn =</span> <span class="st">"plot"</span>, <span class="dt">speciesColumn =</span> <span class="st">"species"</span>, </div>
-<div class="sourceLine" id="cb28-3" data-line-number="3">                   <span class="dt">size1Column =</span> <span class="st">"height"</span>, <span class="dt">size2Column =</span> <span class="st">"diameter"</span>, </div>
-<div class="sourceLine" id="cb28-4" data-line-number="4">                   <span class="dt">abundanceColumn =</span> <span class="st">"ba"</span>)</div></code></pre>
+<pre class="sourceCode r" id="cb24"><code class="sourceCode r"><div class="sourceLine" id="cb24-1" data-line-number="1">tree.S&lt;-<span class="kw"><a href="../reference/stratifyvegdata.html">stratifyvegdata</a></span>(m, <span class="dt">sizes1=</span>heights, <span class="dt">sizes2=</span>diams, </div>
+<div class="sourceLine" id="cb24-2" data-line-number="2">                   <span class="dt">plotColumn =</span> <span class="st">"plot"</span>, <span class="dt">speciesColumn =</span> <span class="st">"species"</span>, </div>
+<div class="sourceLine" id="cb24-3" data-line-number="3">                   <span class="dt">size1Column =</span> <span class="st">"height"</span>, <span class="dt">size2Column =</span> <span class="st">"diameter"</span>, </div>
+<div class="sourceLine" id="cb24-4" data-line-number="4">                   <span class="dt">abundanceColumn =</span> <span class="st">"ba"</span>)</div></code></pre>
 <p>Function <code><a href="../reference/stratifyvegdata.html">stratifyvegdata()</a></code> is used to reshape data sets so that they are suitable for calculating CAPs or CASs. In the case of one structural variable, the function returns a list of matrices, one for each plot. The post-fire vegetation data presented in the previous section is an example of this. In the case of two structural variables, <code><a href="../reference/stratifyvegdata.html">stratifyvegdata()</a></code> returns a list of three-dimensional arrays, one for each plot. The cumulative abundance surface is then calculated using function <code>CAS</code>:</p>
-<pre class="sourceCode r" id="cb29"><code class="sourceCode r"><div class="sourceLine" id="cb29-1" data-line-number="1">tree.CAS &lt;-<span class="st"> </span><span class="kw"><a href="../reference/CAS.html">CAS</a></span>(tree.S)</div></code></pre>
+<pre class="sourceCode r" id="cb25"><code class="sourceCode r"><div class="sourceLine" id="cb25-1" data-line-number="1">tree.CAS &lt;-<span class="st"> </span><span class="kw"><a href="../reference/CAS.html">CAS</a></span>(tree.S)</div></code></pre>
 <p>We can plot the surface corresponding to each species as follows:</p>
-<pre class="sourceCode r" id="cb30"><code class="sourceCode r"><div class="sourceLine" id="cb30-1" data-line-number="1">
+<pre class="sourceCode r" id="cb26"><code class="sourceCode r"><div class="sourceLine" id="cb26-1" data-line-number="1">
 <span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">2</span>,<span class="dv">1</span>))</div>
-<div class="sourceLine" id="cb30-2" data-line-number="2">
+<div class="sourceLine" id="cb26-2" data-line-number="2">
 <span class="kw">plot</span>(tree.CAS, <span class="dt">species=</span><span class="dv">1</span>, <span class="dt">sizes1=</span>heights[<span class="op">-</span><span class="dv">1</span>], <span class="dt">xlab=</span><span class="st">"height (m)"</span>, </div>
-<div class="sourceLine" id="cb30-3" data-line-number="3">     <span class="dt">ylab=</span><span class="st">"diameter (cm)"</span>, <span class="dt">sizes2=</span>diams[<span class="op">-</span><span class="dv">1</span>], <span class="dt">zlab=</span><span class="st">"Basal area (m2)"</span>,</div>
-<div class="sourceLine" id="cb30-4" data-line-number="4">     <span class="dt">zlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">6</span>), <span class="dt">main=</span><span class="st">"Species 1"</span>)</div>
-<div class="sourceLine" id="cb30-5" data-line-number="5">
+<div class="sourceLine" id="cb26-3" data-line-number="3">     <span class="dt">ylab=</span><span class="st">"diameter (cm)"</span>, <span class="dt">sizes2=</span>diams[<span class="op">-</span><span class="dv">1</span>], <span class="dt">zlab=</span><span class="st">"Basal area (m2)"</span>,</div>
+<div class="sourceLine" id="cb26-4" data-line-number="4">     <span class="dt">zlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">6</span>), <span class="dt">main=</span><span class="st">"Species 1"</span>)</div>
+<div class="sourceLine" id="cb26-5" data-line-number="5">
 <span class="kw">plot</span>(tree.CAS, <span class="dt">species=</span><span class="dv">2</span>, <span class="dt">sizes1=</span>heights[<span class="op">-</span><span class="dv">1</span>], <span class="dt">xlab=</span><span class="st">"height (m)"</span>, </div>
-<div class="sourceLine" id="cb30-6" data-line-number="6">     <span class="dt">ylab=</span><span class="st">"diameter (cm)"</span>, <span class="dt">sizes2=</span>diams[<span class="op">-</span><span class="dv">1</span>], <span class="dt">zlab=</span><span class="st">"Basal area (m2)"</span>,</div>
-<div class="sourceLine" id="cb30-7" data-line-number="7">     <span class="dt">zlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">6</span>), <span class="dt">main =</span> <span class="st">"Species 2"</span>)</div></code></pre>
+<div class="sourceLine" id="cb26-6" data-line-number="6">     <span class="dt">ylab=</span><span class="st">"diameter (cm)"</span>, <span class="dt">sizes2=</span>diams[<span class="op">-</span><span class="dv">1</span>], <span class="dt">zlab=</span><span class="st">"Basal area (m2)"</span>,</div>
+<div class="sourceLine" id="cb26-7" data-line-number="7">     <span class="dt">zlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">6</span>), <span class="dt">main =</span> <span class="st">"Species 2"</span>)</div></code></pre>
 <p><img src="MedRegExample_files/figure-html/unnamed-chunk-16-1.png" width="480"></p>
 <p>One nice property of CAS is that its marginal distributions are CAPs. This can be easily shown if we compare the marginal CAP for height:</p>
-<pre class="sourceCode r" id="cb31"><code class="sourceCode r"><div class="sourceLine" id="cb31-1" data-line-number="1">
+<pre class="sourceCode r" id="cb27"><code class="sourceCode r"><div class="sourceLine" id="cb27-1" data-line-number="1">
 <span class="kw">print</span>(<span class="kw"><a href="../reference/CAS.html">CASmargin</a></span>(tree.CAS, <span class="dt">margin=</span><span class="dv">1</span>))</div></code></pre>
 <pre><code>## $`1`
 ##   [0,0.0625] (0.0625,0.25] (0.25,0.562] (0.562,1] (1,1.56] (1.56,2.25]
-## 1   4.180046      4.180046     4.180046  4.180046 4.180046    4.180046
-## 2   3.787897      3.787897     3.787897  3.787897 3.787897    3.787897
-##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56] (7.56,9]  (9,10.6]
-## 1    4.174705 4.166380 4.047078    3.190052    2.424131 1.593730 0.4656626
-## 2    3.787897 3.756402 3.614167    3.211415    2.443609 1.277372 0.0000000
+## 1   3.635137      3.635137     3.635137  3.635137 3.635137    3.635137
+## 2   5.251486      5.251486     5.251486  5.251486 5.251486    5.251486
+##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56]  (7.56,9] (9,10.6]
+## 1    3.633880 3.609454 3.456851    3.051036    1.576687 0.4489336 0.000000
+## 2    5.251486 5.236956 5.096841    4.460355    3.393313 1.7694235 1.384578
 ##   (10.6,12.2] (12.2,14.1] (14.1,16]
 ## 1           0           0         0
 ## 2           0           0         0
@@ -216,18 +212,18 @@
 ## attr(,"class")
 ## [1] "CAP"  "list"</code></pre>
 <p>with the CAP directly build using heights:</p>
-<pre class="sourceCode r" id="cb33"><code class="sourceCode r"><div class="sourceLine" id="cb33-1" data-line-number="1">tree.S2&lt;-<span class="kw"><a href="../reference/stratifyvegdata.html">stratifyvegdata</a></span>(m, <span class="dt">sizes1=</span>heights, <span class="dt">plotColumn =</span> <span class="st">"plot"</span>, </div>
-<div class="sourceLine" id="cb33-2" data-line-number="2">                         <span class="dt">speciesColumn =</span> <span class="st">"species"</span>, <span class="dt">size1Column =</span> <span class="st">"height"</span>, </div>
-<div class="sourceLine" id="cb33-3" data-line-number="3">                         <span class="dt">abundanceColumn =</span> <span class="st">"ba"</span>)</div>
-<div class="sourceLine" id="cb33-4" data-line-number="4">
+<pre class="sourceCode r" id="cb29"><code class="sourceCode r"><div class="sourceLine" id="cb29-1" data-line-number="1">tree.S2&lt;-<span class="kw"><a href="../reference/stratifyvegdata.html">stratifyvegdata</a></span>(m, <span class="dt">sizes1=</span>heights, <span class="dt">plotColumn =</span> <span class="st">"plot"</span>, </div>
+<div class="sourceLine" id="cb29-2" data-line-number="2">                         <span class="dt">speciesColumn =</span> <span class="st">"species"</span>, <span class="dt">size1Column =</span> <span class="st">"height"</span>, </div>
+<div class="sourceLine" id="cb29-3" data-line-number="3">                         <span class="dt">abundanceColumn =</span> <span class="st">"ba"</span>)</div>
+<div class="sourceLine" id="cb29-4" data-line-number="4">
 <span class="kw">print</span>(<span class="kw"><a href="../reference/CAP.html">CAP</a></span>(tree.S2))</div></code></pre>
 <pre><code>## $`1`
 ##   [0,0.0625] (0.0625,0.25] (0.25,0.562] (0.562,1] (1,1.56] (1.56,2.25]
-## 1   4.180046      4.180046     4.180046  4.180046 4.180046    4.180046
-## 2   3.787897      3.787897     3.787897  3.787897 3.787897    3.787897
-##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56] (7.56,9]  (9,10.6]
-## 1    4.174705 4.166380 4.047078    3.190052    2.424131 1.593730 0.4656626
-## 2    3.787897 3.756402 3.614167    3.211415    2.443609 1.277372 0.0000000
+## 1   3.635137      3.635137     3.635137  3.635137 3.635137    3.635137
+## 2   5.251486      5.251486     5.251486  5.251486 5.251486    5.251486
+##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56]  (7.56,9] (9,10.6]
+## 1    3.633880 3.609454 3.456851    3.051036    1.576687 0.4489336 0.000000
+## 2    5.251486 5.236956 5.096841    4.460355    3.393313 1.7694235 1.384578
 ##   (10.6,12.2] (12.2,14.1] (14.1,16]
 ## 1           0           0         0
 ## 2           0           0         0
@@ -235,40 +231,40 @@
 ## attr(,"class")
 ## [1] "CAP"  "list"</code></pre>
 <p>Finally, compare the previous three-dimensional figures, with the marginal CAP plots for diameters and heights:</p>
-<pre class="sourceCode r" id="cb35"><code class="sourceCode r"><div class="sourceLine" id="cb35-1" data-line-number="1">
+<pre class="sourceCode r" id="cb31"><code class="sourceCode r"><div class="sourceLine" id="cb31-1" data-line-number="1">
 <span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">2</span>,<span class="dv">1</span>))</div>
-<div class="sourceLine" id="cb35-2" data-line-number="2">
+<div class="sourceLine" id="cb31-2" data-line-number="2">
 <span class="kw">plot</span>(<span class="kw"><a href="../reference/CAS.html">CASmargin</a></span>(tree.CAS,<span class="dt">margin=</span><span class="dv">1</span>), <span class="dt">plots=</span><span class="dv">1</span>, <span class="dt">sizes=</span>heights[<span class="op">-</span><span class="dv">1</span>], </div>
-<div class="sourceLine" id="cb35-3" data-line-number="3">     <span class="dt">xlab=</span><span class="st">"height (m)"</span>, <span class="dt">ylab=</span><span class="st">"Basal area (m2)"</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">7</span>))</div>
-<div class="sourceLine" id="cb35-4" data-line-number="4">
+<div class="sourceLine" id="cb31-3" data-line-number="3">     <span class="dt">xlab=</span><span class="st">"height (m)"</span>, <span class="dt">ylab=</span><span class="st">"Basal area (m2)"</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">7</span>))</div>
+<div class="sourceLine" id="cb31-4" data-line-number="4">
 <span class="kw">plot</span>(<span class="kw"><a href="../reference/CAS.html">CASmargin</a></span>(tree.CAS,<span class="dt">margin=</span><span class="dv">2</span>), <span class="dt">plots=</span><span class="dv">1</span>, <span class="dt">sizes=</span>diams[<span class="op">-</span><span class="dv">1</span>], </div>
-<div class="sourceLine" id="cb35-5" data-line-number="5">     <span class="dt">xlab=</span><span class="st">"diameter (cm)"</span>, <span class="dt">ylab=</span><span class="st">"Basal area (m2)"</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">7</span>))</div></code></pre>
+<div class="sourceLine" id="cb31-5" data-line-number="5">     <span class="dt">xlab=</span><span class="st">"diameter (cm)"</span>, <span class="dt">ylab=</span><span class="st">"Basal area (m2)"</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">7</span>))</div></code></pre>
 <p><img src="MedRegExample_files/figure-html/unnamed-chunk-19-1.png" width="384"></p>
 </div>
 <div id="dissimilarities-in-structure-and-composition" class="section level2">
 <h2 class="hasAnchor">
 <a href="#dissimilarities-in-structure-and-composition" class="anchor"></a>Dissimilarities in structure and composition</h2>
 <p>Although CAPs can be used to graphically display the structure and composition of vegetation stands, the whole point of defining the CAP function was to allow comparisons between stands. Returning to the post-fire vegetation regeneration data, we can calculate dissimilarities for all pairs of stands, thus obtaining a square and symmetric matrix with dissimilarity values:</p>
-<pre class="sourceCode r" id="cb36"><code class="sourceCode r"><div class="sourceLine" id="cb36-1" data-line-number="1">medreg.D =<span class="st"> </span><span class="kw"><a href="../reference/vegdiststruct.html">vegdiststruct</a></span>(medreg.CAP, <span class="dt">method=</span><span class="st">"bray"</span>, </div>
-<div class="sourceLine" id="cb36-2" data-line-number="2">                         <span class="dt">classWeights=</span>strataWidths)</div></code></pre>
+<pre class="sourceCode r" id="cb32"><code class="sourceCode r"><div class="sourceLine" id="cb32-1" data-line-number="1">medreg.D =<span class="st"> </span><span class="kw"><a href="../reference/vegdiststruct.html">vegdiststruct</a></span>(medreg.CAP, <span class="dt">method=</span><span class="st">"bray"</span>, </div>
+<div class="sourceLine" id="cb32-2" data-line-number="2">                         <span class="dt">classWeights=</span>strataWidths)</div></code></pre>
 <p>In the above sentence we forced strata to have different weight, according to the range of heights that each stratum occupies. There are different alternatives with respect to the dissimilarity index. In our case we chose the CAP generalization of Bray-Curtis (De Caceres et al 2013). If we want to know, for example, the dissimilarity between stands <code>1' and</code>2’ we simply write:</p>
-<pre class="sourceCode r" id="cb37"><code class="sourceCode r"><div class="sourceLine" id="cb37-1" data-line-number="1">
+<pre class="sourceCode r" id="cb33"><code class="sourceCode r"><div class="sourceLine" id="cb33-1" data-line-number="1">
 <span class="kw">as.matrix</span>(medreg.D)[<span class="dv">1</span>,<span class="dv">2</span>]</div></code></pre>
 <pre><code>## [1] 0.2713178</code></pre>
 <p>When calculating dissimilarities it is possible to transform the CAP values in order to prevent large abundance values to have an undue influence in the analysis. In our case we choose to take the square root of cumulative cover values:</p>
-<pre class="sourceCode r" id="cb39"><code class="sourceCode r"><div class="sourceLine" id="cb39-1" data-line-number="1">medreg.Dsqrt =<span class="st"> </span><span class="kw"><a href="../reference/vegdiststruct.html">vegdiststruct</a></span>(medreg.CAP, <span class="dt">method=</span><span class="st">"bray"</span>, </div>
-<div class="sourceLine" id="cb39-2" data-line-number="2">                         <span class="dt">classWeights=</span>strataWidths, <span class="dt">transform=</span><span class="st">"sqrt"</span>)</div></code></pre>
+<pre class="sourceCode r" id="cb35"><code class="sourceCode r"><div class="sourceLine" id="cb35-1" data-line-number="1">medreg.Dsqrt =<span class="st"> </span><span class="kw"><a href="../reference/vegdiststruct.html">vegdiststruct</a></span>(medreg.CAP, <span class="dt">method=</span><span class="st">"bray"</span>, </div>
+<div class="sourceLine" id="cb35-2" data-line-number="2">                         <span class="dt">classWeights=</span>strataWidths, <span class="dt">transform=</span><span class="st">"sqrt"</span>)</div></code></pre>
 <p>We can use metric multidimensional scaling to represent the distances between stands obtained in both cases:</p>
-<pre class="sourceCode r" id="cb40"><code class="sourceCode r"><div class="sourceLine" id="cb40-1" data-line-number="1">
+<pre class="sourceCode r" id="cb36"><code class="sourceCode r"><div class="sourceLine" id="cb36-1" data-line-number="1">
 <span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">2</span>,<span class="dv">1</span>))</div>
-<div class="sourceLine" id="cb40-2" data-line-number="2">X&lt;-<span class="kw">cmdscale</span>(medreg.D, <span class="dt">k=</span><span class="dv">2</span>)</div>
-<div class="sourceLine" id="cb40-3" data-line-number="3">
+<div class="sourceLine" id="cb36-2" data-line-number="2">X&lt;-<span class="kw">cmdscale</span>(medreg.D, <span class="dt">k=</span><span class="dv">2</span>)</div>
+<div class="sourceLine" id="cb36-3" data-line-number="3">
 <span class="kw">plot</span>(X, <span class="dt">xlab=</span><span class="st">"MDS 1"</span>, <span class="dt">ylab=</span><span class="st">"MDS 2"</span>, <span class="dt">asp=</span><span class="dv">1</span>,</div>
-<div class="sourceLine" id="cb40-4" data-line-number="4">     <span class="dt">main=</span><span class="st">"Cover untransformed"</span>, <span class="dt">cex=</span><span class="fl">0.5</span>)</div>
-<div class="sourceLine" id="cb40-5" data-line-number="5">Xsqrt&lt;-<span class="kw">cmdscale</span>(medreg.Dsqrt, <span class="dt">k=</span><span class="dv">2</span>)</div>
-<div class="sourceLine" id="cb40-6" data-line-number="6">
+<div class="sourceLine" id="cb36-4" data-line-number="4">     <span class="dt">main=</span><span class="st">"Cover untransformed"</span>, <span class="dt">cex=</span><span class="fl">0.5</span>)</div>
+<div class="sourceLine" id="cb36-5" data-line-number="5">Xsqrt&lt;-<span class="kw">cmdscale</span>(medreg.Dsqrt, <span class="dt">k=</span><span class="dv">2</span>)</div>
+<div class="sourceLine" id="cb36-6" data-line-number="6">
 <span class="kw">plot</span>(Xsqrt, <span class="dt">xlab=</span><span class="st">"MDS 1"</span>, <span class="dt">ylab=</span><span class="st">"MDS 2"</span>, <span class="dt">asp=</span><span class="dv">1</span>,</div>
-<div class="sourceLine" id="cb40-7" data-line-number="7">     <span class="dt">main=</span><span class="st">"Cover sqrt-transformed"</span>, <span class="dt">cex=</span><span class="fl">0.5</span>)</div></code></pre>
+<div class="sourceLine" id="cb36-7" data-line-number="7">     <span class="dt">main=</span><span class="st">"Cover sqrt-transformed"</span>, <span class="dt">cex=</span><span class="fl">0.5</span>)</div></code></pre>
 <p><img src="MedRegExample_files/figure-html/unnamed-chunk-23-1.png" width="384"></p>
 <p>Note that the differences between the two ordination plots are remarkable.</p>
 </div>
@@ -276,40 +272,40 @@
 <h2 class="hasAnchor">
 <a href="#classification-of-vegetation-stands" class="anchor"></a>Classification of vegetation stands</h2>
 <p>In this section we use the square-root transformed dissimilarities between vegetation stands to obtain a classification of the stands in terms of their structure and composition. If you are not familiarized with non-hierarchical clustering, you can read the tutorial about <code>vegclust</code> package. We start by setting the number of clusters to be found (<code>nclusters</code>) and the size of clusters (<code>dnoise</code>, a parameter used to leave stands that are far from all group prototypes unclassified):</p>
-<pre class="sourceCode r" id="cb41"><code class="sourceCode r"><div class="sourceLine" id="cb41-1" data-line-number="1">nclusters =<span class="st"> </span><span class="dv">6</span>
+<pre class="sourceCode r" id="cb37"><code class="sourceCode r"><div class="sourceLine" id="cb37-1" data-line-number="1">nclusters =<span class="st"> </span><span class="dv">6</span>
 </div>
-<div class="sourceLine" id="cb41-2" data-line-number="2">dnoise =<span class="st"> </span><span class="fl">0.40</span>
+<div class="sourceLine" id="cb37-2" data-line-number="2">dnoise =<span class="st"> </span><span class="fl">0.40</span>
 </div></code></pre>
 <p>We call function <code><a href="../reference/vegclust.html">vegclust()</a></code> using the clustering method <code>"HNCdd"</code>, which indicates (a) hard clustering, (b) medoids as prototypes, and (c) noise clustering (i.e. excluding outliers in a special class called <em>noise class</em>):</p>
-<pre class="sourceCode r" id="cb42"><code class="sourceCode r"><div class="sourceLine" id="cb42-1" data-line-number="1">vc&lt;-<span class="kw"><a href="../reference/vegclust.html">vegclustdist</a></span>(medreg.Dsqrt, <span class="dt">mobileMemb =</span> nclusters, </div>
-<div class="sourceLine" id="cb42-2" data-line-number="2">                 <span class="dt">method=</span><span class="st">"HNCdd"</span>, <span class="dt">dnoise=</span>dnoise, <span class="dt">nstart=</span><span class="dv">100</span>)</div></code></pre>
+<pre class="sourceCode r" id="cb38"><code class="sourceCode r"><div class="sourceLine" id="cb38-1" data-line-number="1">vc&lt;-<span class="kw"><a href="../reference/vegclust.html">vegclustdist</a></span>(medreg.Dsqrt, <span class="dt">mobileMemb =</span> nclusters, </div>
+<div class="sourceLine" id="cb38-2" data-line-number="2">                 <span class="dt">method=</span><span class="st">"HNCdd"</span>, <span class="dt">dnoise=</span>dnoise, <span class="dt">nstart=</span><span class="dv">100</span>)</div></code></pre>
 <p>With <code>nstart=100</code> we indicate that the algorithm should be run 100 times starting from random seeds. This is advisable in order to maximize the chance of having suboptimal solutions. The prototypes identified by the algorithm are the following medoids (these are indices of stands in <code>medreg</code>):</p>
-<pre class="sourceCode r" id="cb43"><code class="sourceCode r"><div class="sourceLine" id="cb43-1" data-line-number="1">medoids&lt;-vc<span class="op">$</span>mobileCenters</div>
-<div class="sourceLine" id="cb43-2" data-line-number="2">
+<pre class="sourceCode r" id="cb39"><code class="sourceCode r"><div class="sourceLine" id="cb39-1" data-line-number="1">medoids&lt;-vc<span class="op">$</span>mobileCenters</div>
+<div class="sourceLine" id="cb39-2" data-line-number="2">
 <span class="kw">print</span>(medoids)</div></code></pre>
-<pre><code>## [1] 38 20 92 60 24 71</code></pre>
+<pre><code>## [1] 92 71 20 60 24 38</code></pre>
 <p>The number of stands belonging to each cluster can be found using:</p>
-<pre class="sourceCode r" id="cb45"><code class="sourceCode r"><div class="sourceLine" id="cb45-1" data-line-number="1">cluster&lt;-<span class="kw"><a href="../reference/defuzzify.html">defuzzify</a></span>(vc)<span class="op">$</span>cluster</div>
-<div class="sourceLine" id="cb45-2" data-line-number="2">
+<pre class="sourceCode r" id="cb41"><code class="sourceCode r"><div class="sourceLine" id="cb41-1" data-line-number="1">cluster&lt;-<span class="kw"><a href="../reference/defuzzify.html">defuzzify</a></span>(vc)<span class="op">$</span>cluster</div>
+<div class="sourceLine" id="cb41-2" data-line-number="2">
 <span class="kw">table</span>(cluster)</div></code></pre>
 <pre><code>## cluster
 ## M1 M2 M3 M4 M5 M6  N 
-##  7 21  9  8 28 15  8</code></pre>
+##  9 15 21  8 28  7  8</code></pre>
 <p>Note that, because of the model chosen (and with the parameter <code>dnoise</code>), there are a number of stands that are left unclassified (i.e. those assigned to class “N”). A useful way to display the results of the cluster analysis is by showing the stand memberships to clusters in the ordination:</p>
-<pre class="sourceCode r" id="cb47"><code class="sourceCode r"><div class="sourceLine" id="cb47-1" data-line-number="1">clNum =<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">as.factor</span>(cluster))</div>
-<div class="sourceLine" id="cb47-2" data-line-number="2">
+<pre class="sourceCode r" id="cb43"><code class="sourceCode r"><div class="sourceLine" id="cb43-1" data-line-number="1">clNum =<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">as.factor</span>(cluster))</div>
+<div class="sourceLine" id="cb43-2" data-line-number="2">
 <span class="kw">plot</span>(Xsqrt, <span class="dt">xlab=</span><span class="st">"MDS 1"</span>, <span class="dt">ylab=</span><span class="st">"MDS 2"</span>, </div>
-<div class="sourceLine" id="cb47-3" data-line-number="3">     <span class="dt">pch=</span>clNum, <span class="dt">col=</span>clNum)</div>
-<div class="sourceLine" id="cb47-4" data-line-number="4">
+<div class="sourceLine" id="cb43-3" data-line-number="3">     <span class="dt">pch=</span>clNum, <span class="dt">col=</span>clNum)</div>
+<div class="sourceLine" id="cb43-4" data-line-number="4">
 <span class="kw">legend</span>(<span class="st">"topleft"</span>, <span class="dt">col=</span><span class="dv">1</span><span class="op">:</span>(nclusters<span class="op">+</span><span class="dv">1</span>), <span class="dt">pch=</span><span class="dv">1</span><span class="op">:</span>(nclusters<span class="op">+</span><span class="dv">1</span>),</div>
-<div class="sourceLine" id="cb47-5" data-line-number="5">       <span class="dt">legend=</span><span class="kw">levels</span>(<span class="kw">as.factor</span>(cluster)), <span class="dt">bty=</span><span class="st">"n"</span>)</div></code></pre>
+<div class="sourceLine" id="cb43-5" data-line-number="5">       <span class="dt">legend=</span><span class="kw">levels</span>(<span class="kw">as.factor</span>(cluster)), <span class="dt">bty=</span><span class="st">"n"</span>)</div></code></pre>
 <p><img src="MedRegExample_files/figure-html/unnamed-chunk-28-1.png" width="384"></p>
 <p>While the stands belonging to <em>true</em> clusters are more or less close, those that are assigned to the <em>noise</em> can be far appart, because the only fact that makes them be in the same class is their lack of membership for <em>true</em> clusters.</p>
 <p>To facilitate the interpretation of the clusters we can extract the cumulative abundance profiles of the cluster medoids:</p>
-<pre class="sourceCode r" id="cb48"><code class="sourceCode r"><div class="sourceLine" id="cb48-1" data-line-number="1">CAPm =<span class="st"> </span><span class="kw"><a href="../reference/CAP.html">CAPcenters</a></span>(medreg.CAP, vc)</div>
-<div class="sourceLine" id="cb48-2" data-line-number="2">n =<span class="st"> </span><span class="kw">names</span>(CAPm)</div></code></pre>
+<pre class="sourceCode r" id="cb44"><code class="sourceCode r"><div class="sourceLine" id="cb44-1" data-line-number="1">CAPm =<span class="st"> </span><span class="kw"><a href="../reference/CAP.html">CAPcenters</a></span>(medreg.CAP, vc)</div>
+<div class="sourceLine" id="cb44-2" data-line-number="2">n =<span class="st"> </span><span class="kw">names</span>(CAPm)</div></code></pre>
 <p>For example, we can inspect the structure and composition of the fourth group:</p>
-<pre class="sourceCode r" id="cb49"><code class="sourceCode r"><div class="sourceLine" id="cb49-1" data-line-number="1">
+<pre class="sourceCode r" id="cb45"><code class="sourceCode r"><div class="sourceLine" id="cb45-1" data-line-number="1">
 <span class="kw">round</span>(CAPm[[n[<span class="dv">4</span>]]], <span class="dt">dig=</span><span class="dv">1</span>)</div></code></pre>
 <pre><code>##                                1    2    3    4    5    6 7
 ## Pine trees                  37.5 37.5 37.5 37.5 37.5 37.5 0
