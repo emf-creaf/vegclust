@@ -16,6 +16,7 @@
 \alias{trajectoryLengths}
 \alias{trajectoryAngles}
 \alias{trajectoryPCoA}
+\alias{trajectoryPlot}
 \alias{trajectoryProjection}
 \alias{trajectoryConvergence}
 \alias{trajectoryDirectionality}
@@ -33,6 +34,9 @@ trajectoryLengths(d, sites, surveys = NULL, verbose = FALSE)
 trajectoryAngles(d, sites, surveys = NULL, all = FALSE, verbose = FALSE)
 
 trajectoryPCoA(d, sites, surveys = NULL, selection = NULL,
+  traj.colors = NULL, axes = c(1, 2), ...)
+
+trajectoryPlot(x, sites, surveys = NULL, selection = NULL,
   traj.colors = NULL, axes = c(1, 2), ...)
 
 trajectoryProjection(d, target, trajectory, tol = 1e-06)
@@ -78,6 +82,8 @@ whereas for \code{trajectoryDistances} the available indices are:
 
 \item{...}{Additional parameters for function \code{\link{arrows}}.}
 
+\item{x}{A data.frame or matrix where rows are community states and columns are coordinates in an arbitrary space}
+
 \item{target}{An integer vector of the community states to be projected.}
 
 \item{trajectory}{An integer vector of the trajectory onto which target states are to be projected.}
@@ -85,6 +91,14 @@ whereas for \code{trajectoryDistances} the available indices are:
 \item{tol}{Numerical tolerance value to determine that projection of a point lies within the trajectory.}
 
 \item{symmetric}{A logical flag to indicate a symmetric convergence comparison of trajectories.}
+
+\item{selection}{A numeric or logical vector of the same length as \code{sites}, indicating a subset of site trajectories to be plotted.}
+
+\item{traj.colors}{A vector of colors (one per site). If \code{selection != NULL} the length of the color vector should be equal to the number of sites selected.}
+
+\item{axes}{The pair of axes to be plotted.}
+
+\item{...}{Additional parameters for function \code{\link{arrows}}.}
 }
 \value{
 Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories. Function \code{trajectorySegments} returns a list with the following elements:
@@ -119,16 +133,18 @@ Function \code{trajectoryDirectionality} returns a vector with directionality va
 Function \code{centerTrajectory} returns an object of class \code{\link{dist}}.
 }
 \description{
-Given a distance matrix between community states, functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively. 
-Function \code{trajectoryLengths} calculates lengths of directed segments and complete trajectories. 
-Function \code{trajectoryAngles} calculates the angle between consecutive pairs of directed segments.
-Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\link{cmdscale}}) and draws trajectories in the ordination scatterplot.
-Function \code{trajectoryProjection} projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.
-Function \code{trajectoryConvergence} performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.
-Function \code{trajectoryDirectionality} returns (for each trajectory) a statistic that measures directionality of the whole trajectory.
-Function \code{centerTrajectories} shifts all trajectories to the center of the compositional space and returns a modified distance matrix.
+Set of functions for trajectory analysis
+\itemize{
+\item{Given a distance matrix between community states, functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively.}
+\item{Function \code{trajectoryLengths} calculates lengths of directed segments and complete trajectories.}
+\item{Function \code{trajectoryAngles} calculates the angle between consecutive pairs of directed segments.}
+\item{Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\link{cmdscale}}) and draws trajectories in the ordination scatterplot.}
+\item{Function \code{trajectoryPlot} Draws trajectories in a scatterplot corresponding to the input coordinates.}
+\item{Function \code{trajectoryProjection} projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.}
+\item{Function \code{trajectoryConvergence} performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.}
+\item{Function \code{trajectoryDirectionality} returns (for each trajectory) a statistic that measures directionality of the whole trajectory.}
+\item{Function \code{centerTrajectories} shifts all trajectories to the center of the compositional space and returns a modified distance matrix.}
 }
-\details{
 These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
 By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
 Details of calculations are given in De \enc{Cáceres}{Caceres} et al (submitted)

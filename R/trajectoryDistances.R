@@ -1,14 +1,17 @@
 #' Community trajectory analysis
 #' 
-#' Given a distance matrix between community states, functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively. 
-#' Function \code{trajectoryLengths} calculates lengths of directed segments and complete trajectories. 
-#' Function \code{trajectoryAngles} calculates the angle between consecutive pairs of directed segments.
-#' Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\link{cmdscale}}) and draws trajectories in the ordination scatterplot.
-#' Function \code{trajectoryProjection} projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.
-#' Function \code{trajectoryConvergence} performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.
-#' Function \code{trajectoryDirectionality} returns (for each trajectory) a statistic that measures directionality of the whole trajectory.
-#' Function \code{centerTrajectories} shifts all trajectories to the center of the compositional space and returns a modified distance matrix.
-#' 
+#' Set of functions for trajectory analysis
+#' \itemize{
+#' \item{Given a distance matrix between community states, functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively.}
+#' \item{Function \code{trajectoryLengths} calculates lengths of directed segments and complete trajectories.}
+#' \item{Function \code{trajectoryAngles} calculates the angle between consecutive pairs of directed segments.}
+#' \item{Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\link{cmdscale}}) and draws trajectories in the ordination scatterplot.}
+#' \item{Function \code{trajectoryPlot} Draws trajectories in a scatterplot corresponding to the input coordinates.}
+#' \item{Function \code{trajectoryProjection} projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.}
+#' \item{Function \code{trajectoryConvergence} performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.}
+#' \item{Function \code{trajectoryDirectionality} returns (for each trajectory) a statistic that measures directionality of the whole trajectory.}
+#' \item{Function \code{centerTrajectories} shifts all trajectories to the center of the compositional space and returns a modified distance matrix.}
+#' }
 #' These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
 #' By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
 #' Details of calculations are given in De \enc{Cáceres}{Caceres} et al (submitted)
@@ -468,10 +471,49 @@ trajectoryPCoA<-function(d, sites, surveys = NULL, selection = NULL, traj.colors
       else arrows(x[niini],y[niini],x[nifin],y[nifin], ...)
     }
   }
-  #Draw legend
+  #Return cmdscale result
   invisible(cmd_D2)
 }
 
+#' @rdname trajectories
+#' @param x A data.frame or matrix where rows are community states and columns are coordinates in an arbitrary space
+#' @param selection A numeric or logical vector of the same length as \code{sites}, indicating a subset of site trajectories to be plotted.
+#' @param traj.colors A vector of colors (one per site). If \code{selection != NULL} the length of the color vector should be equal to the number of sites selected.
+#' @param axes The pair of axes to be plotted.
+#' @param ... Additional parameters for function \code{\link{arrows}}.
+trajectoryPlot<-function(x, sites, surveys = NULL, selection = NULL, traj.colors = NULL, axes=c(1,2), ...) {
+  siteIDs = unique(sites)
+  nsite = length(siteIDs)
+  
+  #Apply site selection
+  
+  if(is.null(selection)) selection = 1:nsite 
+  else {
+    if(is.character(selection)) selection = (siteIDs %in% selection)
+  }
+  selIDs = siteIDs[selection]
+  
+  xp =x[sites %in% selIDs, axes[1]]
+  yp<-x[sites %in% selIDs,axes[2]]
+  plot(xp,yp, type="n", asp=1, xlab=paste0("Axis ",axes[1]), 
+       ylab=paste0("Axis ",axes[2]))
+  
+  sitesred = sites[sites %in% selIDs]
+  if(!is.null(surveys)) surveysred = surveys[sites %in% selIDs]
+  else surveysred = NULL
+  #Draw arrows
+  for(i in 1:length(selIDs)) {
+    ind_surv = which(sitesred==selIDs[i])
+    #Surveys may not be in order
+    if(!is.null(surveysred)) ind_surv = ind_surv[order(surveysred[sitesred==selIDs[i]])]
+    for(t in 1:(length(ind_surv)-1)) {
+      niini =ind_surv[t]
+      nifin =ind_surv[t+1]
+      if(!is.null(traj.colors)) arrows(xp[niini],yp[niini],xp[nifin],yp[nifin], col = traj.colors[i], ...)
+      else arrows(xp[niini],yp[niini],xp[nifin],yp[nifin], ...)
+    }
+  }
+}
 
 #' @rdname trajectories
 #' @param target An integer vector of the community states to be projected.
