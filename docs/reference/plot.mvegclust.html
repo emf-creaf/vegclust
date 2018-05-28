@@ -25,10 +25,15 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
 <meta property="og:title" content="Plots clustering results — plot.mvegclust" />
 
 <meta property="og:description" content="Create plots used to study vegclust clustering results for an increasing number of clusters" />
 <meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -51,8 +56,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">vegclust</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">vegclust</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.7.4</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -84,6 +93,7 @@
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -91,22 +101,25 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Plots clustering results</h1>
     
+    <div class="hidden name"><code>plot.mvegclust.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Create plots used to study vegclust clustering results for an increasing number of clusters</p>
     
+    </div>
 
     <pre class="usage"><span class='co'># S3 method for mvegclust</span>
 <span class='fu'>plot</span>(<span class='no'>x</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"hnc"</span>, <span class='kw'>excludeFixed</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>verbose</span><span class='kw'>=</span><span class='fl'>FALSE</span>, <span class='kw'>ylim</span><span class='kw'>=</span><span class='kw'>NULL</span>,
                          <span class='kw'>xlab</span><span class='kw'>=</span><span class='kw'>NULL</span>, <span class='kw'>ylab</span><span class='kw'>=</span><span class='kw'>NULL</span>, <span class='kw'>maxvar</span><span class='kw'>=</span><span class='fl'>0.6</span>, <span class='kw'>minsize</span><span class='kw'>=</span><span class='fl'>20</span>,<span class='no'>...</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -172,17 +185,17 @@
 #&gt; PROCESSING 4 MOBILE CLUSTERS
 #&gt; PROCESSING 5 MOBILE CLUSTERS</div><div class='input'>
 <span class='co'>## Plot changes in the number of objects falling into the noise cluster</span>
-<span class='fu'>plot</span>(<span class='no'>wetland.nc</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"hnc"</span>)</div><div class='img'><img src='plot.mvegclust-1.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+<span class='fu'>plot</span>(<span class='no'>wetland.nc</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"hnc"</span>)</div><div class='img'><img src='plot.mvegclust-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## Plots the number of objects falling into "true" clusters, </span>
 <span class='co'>## the number of objects considered intermediate, </span>
 <span class='co'>## and the number of objects falling into the noise</span>
-<span class='fu'>plot</span>(<span class='no'>wetland.nc</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"hmemb"</span>)</div><div class='img'><img src='plot.mvegclust-2.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+<span class='fu'>plot</span>(<span class='no'>wetland.nc</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"hmemb"</span>)</div><div class='img'><img src='plot.mvegclust-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## Plot minimum, maximum and average cluster size</span>
-<span class='fu'>plot</span>(<span class='no'>wetland.nc</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"hcs"</span>)</div><div class='img'><img src='plot.mvegclust-3.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+<span class='fu'>plot</span>(<span class='no'>wetland.nc</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"hcs"</span>)</div><div class='img'><img src='plot.mvegclust-3.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## Plot minimum, maximum and average cluster variance</span>
-<span class='fu'>plot</span>(<span class='no'>wetland.nc</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"var"</span>)</div><div class='img'><img src='plot.mvegclust-4.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+<span class='fu'>plot</span>(<span class='no'>wetland.nc</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"var"</span>)</div><div class='img'><img src='plot.mvegclust-4.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## Plot number of groups with high variance, low membership or both</span>
-<span class='fu'>plot</span>(<span class='no'>wetland.nc</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"valid"</span>)</div><div class='img'><img src='plot.mvegclust-5.png' alt='' width='700' height='432.632880098887' /></div></pre>
+<span class='fu'>plot</span>(<span class='no'>wetland.nc</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"valid"</span>)</div><div class='img'><img src='plot.mvegclust-5.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -203,7 +216,7 @@ Miquel De Cáceres, Forest Science Center of Catalonia
 
       <footer>
       <div class="copyright">
-  <p>Developed by Miquel De Caceres.</p>
+  <p>Developed by Miquel De Cáceres.</p>
 </div>
 
 <div class="pkgdown">
@@ -212,6 +225,8 @@ Miquel De Cáceres, Forest Science Center of Catalonia
 
       </footer>
    </div>
+
+  
 
   </body>
 </html>

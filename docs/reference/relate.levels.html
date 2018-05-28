@@ -25,10 +25,15 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
 <meta property="og:title" content="Relates two clustering level results. — relate.levels" />
 
 <meta property="og:description" content="Analyzes how lower level clusters are assigned into upper level ones. The analysis is made for several number of clusters." />
 <meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -51,8 +56,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">vegclust</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">vegclust</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.7.4</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -84,6 +93,7 @@
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -91,20 +101,23 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Relates two clustering level results.</h1>
     
+    <div class="hidden name"><code>relate.levels.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Analyzes how lower level clusters are assigned into upper level ones. The analysis is made for several number of clusters.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>relate.levels</span>(<span class='no'>lower</span>, <span class='no'>upper</span>, <span class='kw'>defuzzify</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>excludeFixed</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span><span class='kw'>=</span><span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -149,7 +162,7 @@
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p><code><a href='vegclust.html'>vegclust</a></code>, <code><a href='vegclass.html'>vegclass</a></code>, <code><a href='defuzzify.html'>defuzzify</a></code></p>
+    <div class='dont-index'><p><code><a href='vegclust.html'>vegclust</a></code>, <code><a href='vegclass.html'>vegclass</a></code>, <code><a href='defuzzify.html'>defuzzify</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -226,7 +239,7 @@ Miquel De Cáceres, Forest Science Center of Catalonia
 
       <footer>
       <div class="copyright">
-  <p>Developed by Miquel De Caceres.</p>
+  <p>Developed by Miquel De Cáceres.</p>
 </div>
 
 <div class="pkgdown">
@@ -235,6 +248,8 @@ Miquel De Cáceres, Forest Science Center of Catalonia
 
       </footer>
    </div>
+
+  
 
   </body>
 </html>

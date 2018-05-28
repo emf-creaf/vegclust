@@ -18,7 +18,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -27,8 +27,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">vegclust</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">vegclust</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.7.4</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -66,30 +70,28 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Community trajectory analysis</h1>
                         <h4 class="author">Miquel De Cáceres</h4>
             
-            <h4 class="date">2018-05-24</h4>
+            <h4 class="date">2018-05-28</h4>
       
       
+      <div class="hidden name"><code>CTA.Rmd</code></div>
 
     </div>
 
     
     
-<div class="contents">
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>1. Introduction</h2>
 <p>In this vignette you will learn how to conduct community trajectory analysis (CTA), as implemented in package <strong>vegclust</strong>.</p>
 <p>We begin by loading the libraries:</p>
-<pre class="sourceCode r" id="cb1"><code class="sourceCode r"><div class="sourceLine" id="cb1-1" data-line-number="1">
-<span class="kw">library</span>(vegclust)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(vegclust)</code></pre></div>
 <pre><code>## Loading required package: Rcpp</code></pre>
-<pre class="sourceCode r" id="cb3"><code class="sourceCode r"><div class="sourceLine" id="cb3-1" data-line-number="1">
-<span class="kw">library</span>(RColorBrewer)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(RColorBrewer)</code></pre></div>
 </div>
 <div id="simple-example" class="section level2">
 <h2 class="hasAnchor">
@@ -99,39 +101,27 @@
 <h3 class="hasAnchor">
 <a href="#trajectory-data" class="anchor"></a>2.1 Trajectory data</h3>
 <p>To specify community dynamics, we need three data items: (a) a set of community states (i.e. coordinates in a space <span class="math inline">\(\Omega\)</span>), described using a distance matrix <span class="math inline">\(d\)</span>; (b) a vector specifying the site corresponding to each community state; (c) a vector specifying the survey corresponding to each community state. Let’s first define the vectors that describe the site and the survey of each community state:</p>
-<pre class="sourceCode r" id="cb4"><code class="sourceCode r"><div class="sourceLine" id="cb4-1" data-line-number="1"><span class="co">#Description of sites and surveys</span></div>
-<div class="sourceLine" id="cb4-2" data-line-number="2">sites =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>)</div>
-<div class="sourceLine" id="cb4-3" data-line-number="3">surveys=<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Description of sites and surveys</span>
+sites =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>)
+surveys=<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>)</code></pre></div>
 <p>We then build a matrix with the coordinates corresponding to the community states of the three sites during each survey. We assume that the community space <span class="math inline">\(\Omega\)</span> has 2 dimensions:</p>
-<pre class="sourceCode r" id="cb5"><code class="sourceCode r"><div class="sourceLine" id="cb5-1" data-line-number="1"><span class="co">#Raw data table</span></div>
-<div class="sourceLine" id="cb5-2" data-line-number="2">xy&lt;-<span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow=</span><span class="dv">12</span>, <span class="dt">ncol=</span><span class="dv">2</span>)</div>
-<div class="sourceLine" id="cb5-3" data-line-number="3">xy[<span class="dv">2</span>,<span class="dv">2</span>]&lt;-<span class="dv">1</span>
-</div>
-<div class="sourceLine" id="cb5-4" data-line-number="4">xy[<span class="dv">3</span>,<span class="dv">2</span>]&lt;-<span class="dv">2</span>
-</div>
-<div class="sourceLine" id="cb5-5" data-line-number="5">xy[<span class="dv">4</span>,<span class="dv">2</span>]&lt;-<span class="dv">3</span>
-</div>
-<div class="sourceLine" id="cb5-6" data-line-number="6">xy[<span class="dv">5</span><span class="op">:</span><span class="dv">6</span>,<span class="dv">2</span>] &lt;-<span class="st"> </span>xy[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,<span class="dv">2</span>]</div>
-<div class="sourceLine" id="cb5-7" data-line-number="7">xy[<span class="dv">7</span>,<span class="dv">2</span>]&lt;-<span class="fl">1.5</span>
-</div>
-<div class="sourceLine" id="cb5-8" data-line-number="8">xy[<span class="dv">8</span>,<span class="dv">2</span>]&lt;-<span class="fl">2.0</span>
-</div>
-<div class="sourceLine" id="cb5-9" data-line-number="9">xy[<span class="dv">5</span><span class="op">:</span><span class="dv">6</span>,<span class="dv">1</span>] &lt;-<span class="st"> </span><span class="fl">0.25</span>
-</div>
-<div class="sourceLine" id="cb5-10" data-line-number="10">xy[<span class="dv">7</span>,<span class="dv">1</span>]&lt;-<span class="fl">0.5</span>
-</div>
-<div class="sourceLine" id="cb5-11" data-line-number="11">xy[<span class="dv">8</span>,<span class="dv">1</span>]&lt;-<span class="fl">1.0</span>
-</div>
-<div class="sourceLine" id="cb5-12" data-line-number="12">xy[<span class="dv">9</span><span class="op">:</span><span class="dv">10</span>,<span class="dv">1</span>] &lt;-<span class="st"> </span>xy[<span class="dv">5</span><span class="op">:</span><span class="dv">6</span>,<span class="dv">1</span>]<span class="op">+</span><span class="fl">0.25</span>
-</div>
-<div class="sourceLine" id="cb5-13" data-line-number="13">xy[<span class="dv">11</span>,<span class="dv">1</span>] &lt;-<span class="st"> </span><span class="fl">1.0</span>
-</div>
-<div class="sourceLine" id="cb5-14" data-line-number="14">xy[<span class="dv">12</span>,<span class="dv">1</span>] &lt;-<span class="fl">1.5</span>
-</div>
-<div class="sourceLine" id="cb5-15" data-line-number="15">xy[<span class="dv">9</span><span class="op">:</span><span class="dv">10</span>,<span class="dv">2</span>] &lt;-<span class="st"> </span>xy[<span class="dv">5</span><span class="op">:</span><span class="dv">6</span>,<span class="dv">2</span>]</div>
-<div class="sourceLine" id="cb5-16" data-line-number="16">xy[<span class="dv">11</span><span class="op">:</span><span class="dv">12</span>,<span class="dv">2</span>]&lt;-<span class="kw">c</span>(<span class="fl">1.25</span>,<span class="fl">1.0</span>)</div>
-<div class="sourceLine" id="cb5-17" data-line-number="17">
-<span class="kw">cbind</span>(sites,surveys,xy)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Raw data table</span>
+xy&lt;-<span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow=</span><span class="dv">12</span>, <span class="dt">ncol=</span><span class="dv">2</span>)
+xy[<span class="dv">2</span>,<span class="dv">2</span>]&lt;-<span class="dv">1</span>
+xy[<span class="dv">3</span>,<span class="dv">2</span>]&lt;-<span class="dv">2</span>
+xy[<span class="dv">4</span>,<span class="dv">2</span>]&lt;-<span class="dv">3</span>
+xy[<span class="dv">5</span><span class="op">:</span><span class="dv">6</span>,<span class="dv">2</span>] &lt;-<span class="st"> </span>xy[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,<span class="dv">2</span>]
+xy[<span class="dv">7</span>,<span class="dv">2</span>]&lt;-<span class="fl">1.5</span>
+xy[<span class="dv">8</span>,<span class="dv">2</span>]&lt;-<span class="fl">2.0</span>
+xy[<span class="dv">5</span><span class="op">:</span><span class="dv">6</span>,<span class="dv">1</span>] &lt;-<span class="st"> </span><span class="fl">0.25</span>
+xy[<span class="dv">7</span>,<span class="dv">1</span>]&lt;-<span class="fl">0.5</span>
+xy[<span class="dv">8</span>,<span class="dv">1</span>]&lt;-<span class="fl">1.0</span>
+xy[<span class="dv">9</span><span class="op">:</span><span class="dv">10</span>,<span class="dv">1</span>] &lt;-<span class="st"> </span>xy[<span class="dv">5</span><span class="op">:</span><span class="dv">6</span>,<span class="dv">1</span>]<span class="op">+</span><span class="fl">0.25</span>
+xy[<span class="dv">11</span>,<span class="dv">1</span>] &lt;-<span class="st"> </span><span class="fl">1.0</span>
+xy[<span class="dv">12</span>,<span class="dv">1</span>] &lt;-<span class="fl">1.5</span>
+xy[<span class="dv">9</span><span class="op">:</span><span class="dv">10</span>,<span class="dv">2</span>] &lt;-<span class="st"> </span>xy[<span class="dv">5</span><span class="op">:</span><span class="dv">6</span>,<span class="dv">2</span>]
+xy[<span class="dv">11</span><span class="op">:</span><span class="dv">12</span>,<span class="dv">2</span>]&lt;-<span class="kw">c</span>(<span class="fl">1.25</span>,<span class="fl">1.0</span>)
+<span class="kw">cbind</span>(sites,surveys,xy)</code></pre></div>
 <pre><code>##       sites surveys          
 ##  [1,]     1       1 0.00 0.00
 ##  [2,]     1       2 0.00 1.00
@@ -146,9 +136,9 @@
 ## [11,]     3       3 1.00 1.25
 ## [12,]     3       4 1.50 1.00</code></pre>
 <p>The matrix of Euclidean distances <span class="math inline">\(d\)</span> between community states in <span class="math inline">\(\Omega\)</span> is then:</p>
-<pre class="sourceCode r" id="cb7"><code class="sourceCode r"><div class="sourceLine" id="cb7-1" data-line-number="1"><span class="co">#Distance matrix</span></div>
-<div class="sourceLine" id="cb7-2" data-line-number="2">D =<span class="st"> </span><span class="kw">dist</span>(xy)</div>
-<div class="sourceLine" id="cb7-3" data-line-number="3">D</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Distance matrix</span>
+D =<span class="st"> </span><span class="kw">dist</span>(xy)
+D</code></pre></div>
 <pre><code>##            1         2         3         4         5         6         7
 ## 2  1.0000000                                                            
 ## 3  2.0000000 1.0000000                                                  
@@ -178,11 +168,9 @@
 <h3 class="hasAnchor">
 <a href="#display-trajectories" class="anchor"></a>2.2 Display trajectories</h3>
 <p>To begin our analysis of the three trajectories we display them in an ordination space, using function <code>trajectoryPCoA</code>. Since <span class="math inline">\(\Omega\)</span> has only two dimensions, the Principal Coordinates Analysis (PCoA) on <span class="math inline">\(d\)</span> displays the complete space:</p>
-<pre class="sourceCode r" id="cb9"><code class="sourceCode r"><div class="sourceLine" id="cb9-1" data-line-number="1">
-<span class="kw">trajectoryPCoA</span>(D, sites, surveys, <span class="dt">traj.colors =</span> <span class="kw">c</span>(<span class="st">"black"</span>,<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lwd =</span> <span class="dv">2</span>)</div>
-<div class="sourceLine" id="cb9-2" data-line-number="2">
-<span class="kw">legend</span>(<span class="st">"topleft"</span>, <span class="dt">col=</span><span class="kw">c</span>(<span class="st">"black"</span>,<span class="st">"red"</span>, <span class="st">"blue"</span>), </div>
-<div class="sourceLine" id="cb9-3" data-line-number="3">       <span class="dt">legend=</span><span class="kw">c</span>(<span class="st">"Trajectory 1"</span>, <span class="st">"Trajectory 2"</span>, <span class="st">"Trajectory 3"</span>), <span class="dt">bty=</span><span class="st">"n"</span>, <span class="dt">lty=</span><span class="dv">1</span>, <span class="dt">lwd =</span> <span class="dv">2</span>)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryPCoA</span>(D, sites, surveys, <span class="dt">traj.colors =</span> <span class="kw">c</span>(<span class="st">"black"</span>,<span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="dt">lwd =</span> <span class="dv">2</span>)
+<span class="kw">legend</span>(<span class="st">"topleft"</span>, <span class="dt">col=</span><span class="kw">c</span>(<span class="st">"black"</span>,<span class="st">"red"</span>, <span class="st">"blue"</span>), 
+       <span class="dt">legend=</span><span class="kw">c</span>(<span class="st">"Trajectory 1"</span>, <span class="st">"Trajectory 2"</span>, <span class="st">"Trajectory 3"</span>), <span class="dt">bty=</span><span class="st">"n"</span>, <span class="dt">lty=</span><span class="dv">1</span>, <span class="dt">lwd =</span> <span class="dv">2</span>)</code></pre></div>
 <p><img src="CTA_files/figure-html/pcoa-1.png" width="480" style="display: block; margin: auto;"></p>
 <p>While trajectory of site ‘1’ (black arrows) is made of three segments of the same length and direction, trajectory of site ‘2’ (red arrows) has a second and third segments that bend and are shorter than that of the segond segment of site ‘1’. Trajectory of site ‘3’ includes a stronger change in direction and shorter segments.</p>
 </div>
@@ -190,22 +178,19 @@
 <h3 class="hasAnchor">
 <a href="#trajectory-lengths-angles-and-directionality" class="anchor"></a>2.3 Trajectory lengths, angles and directionality</h3>
 <p>We can obtain the length of trajectory segments using function <code>trajectoryLengths</code> and the angles between consecutive segments, using function <code>trajectoryAngles</code>:</p>
-<pre class="sourceCode r" id="cb10"><code class="sourceCode r"><div class="sourceLine" id="cb10-1" data-line-number="1">
-<span class="kw">trajectoryLengths</span>(D, sites, surveys)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryLengths</span>(D, sites, surveys)</code></pre></div>
 <pre><code>##   S1       S2        S3 Trajectory
 ## 1  1 1.000000 1.0000000   3.000000
 ## 2  1 0.559017 0.7071068   2.266124
 ## 3  1 0.559017 0.5590170   2.118034</code></pre>
-<pre class="sourceCode r" id="cb12"><code class="sourceCode r"><div class="sourceLine" id="cb12-1" data-line-number="1">
-<span class="kw">trajectoryAngles</span>(D, sites, surveys)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryAngles</span>(D, sites, surveys)</code></pre></div>
 <pre><code>##      S1-S2    S2-S3     mean       sd
 ## 1 180.0000 180.0000 180.0000 0.000000
 ## 2 153.4349 161.5651 157.5000 5.748851
 ## 3 116.5651 126.8699 121.7175 7.286627</code></pre>
 <p>where some segments are shorter and angles are smaller for trajectories of site ‘2’ and ‘3’. In this case, the same information could be obtained by inspecting the PCoA representation, but in a case of <span class="math inline">\(\Omega\)</span> having many dimensions, the PCoA representation will correspond to a reduced space and hence, angles and lengths will not correspond exactly to those of functions <code>trajectoryLengths</code> and <code>trajectoryAngles</code>, which take into account the full space.</p>
 <p>One way of determining the degree to which trajectories follow directional trends (i.e. more or less straight pathways) involves considering all pairs of triplets in the trajectory. This approach is implemented in function <code>trajectoryDirectionality</code>:</p>
-<pre class="sourceCode r" id="cb14"><code class="sourceCode r"><div class="sourceLine" id="cb14-1" data-line-number="1">
-<span class="kw">trajectoryDirectionality</span>(D, sites, surveys)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryDirectionality</span>(D, sites, surveys)</code></pre></div>
 <pre><code>##         1         2         3 
 ## 1.0000000 0.9643643 0.7861495</code></pre>
 <p>As expected, trajectory of site ‘2’ is less straight than trajectory of site ‘1’ and that of site ‘3’ has the lowest directionality value. Although it would be desirable, the function only computes a descriptive statistic, i.e. it does not perform any statistical test on directionality.</p>
@@ -214,15 +199,13 @@
 <h3 class="hasAnchor">
 <a href="#relative-positions-within-trajectories" class="anchor"></a>2.4 Relative positions within trajectories</h3>
 <p>Community states occupy a position within their trajectory that depends on their position along the total pathway of the trajectory. By adding the length of segments prior to a given state and dividing the sum by the total length of the trajectory we obtain the relative position of the community state. Function <code>trajectoryProjection</code> allows obtaining the relative position of each point of a trajectory. To use it for this purpose one should use as parameters the distance matrix between state and the indices that conform the trajectory. For example for the two example trajectories we would have:</p>
-<pre class="sourceCode r" id="cb16"><code class="sourceCode r"><div class="sourceLine" id="cb16-1" data-line-number="1">
-<span class="kw">trajectoryProjection</span>(D, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryProjection</span>(D, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>)</code></pre></div>
 <pre><code>##   distanceToTrajectory segment relativePosition
 ## 1                    0       1        0.0000000
 ## 2                    0       1        0.3333333
 ## 3                    0       2        0.6666667
 ## 4                    0       3        1.0000000</code></pre>
-<pre class="sourceCode r" id="cb18"><code class="sourceCode r"><div class="sourceLine" id="cb18-1" data-line-number="1">
-<span class="kw">trajectoryProjection</span>(D, <span class="dv">5</span><span class="op">:</span><span class="dv">8</span>, <span class="dv">5</span><span class="op">:</span><span class="dv">8</span>)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryProjection</span>(D, <span class="dv">5</span><span class="op">:</span><span class="dv">8</span>, <span class="dv">5</span><span class="op">:</span><span class="dv">8</span>)</code></pre></div>
 <pre><code>##   distanceToTrajectory segment relativePosition
 ## 5                    0       1        0.0000000
 ## 6                    0       1        0.4412822
@@ -230,8 +213,7 @@
 ## 8                   NA      NA               NA</code></pre>
 <p>Because the trajectory of site ‘2’ as the second and third segments that are longer than the first, the relative position of state ‘6’ is lower than 1/3 and that of state ‘7’ is lower than 2/3.</p>
 <p>Function <code>trajectoryProjection</code> can also be used to project arbitrary community states on a given trajectory. For example we can study the projection of third state of the trajectory of site ‘1’ (i.e. state 3) onto the trajectory of site ‘2’ (i.e. states 5 to 8):</p>
-<pre class="sourceCode r" id="cb20"><code class="sourceCode r"><div class="sourceLine" id="cb20-1" data-line-number="1">
-<span class="kw">trajectoryProjection</span>(D, <span class="dv">3</span>, <span class="dv">5</span><span class="op">:</span><span class="dv">8</span>)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryProjection</span>(D, <span class="dv">3</span>, <span class="dv">5</span><span class="op">:</span><span class="dv">8</span>)</code></pre></div>
 <pre><code>##   distanceToTrajectory segment relativePosition
 ## 3            0.7071068       3        0.6879664</code></pre>
 </div>
@@ -239,8 +221,7 @@
 <h3 class="hasAnchor">
 <a href="#trajectory-convergence" class="anchor"></a>2.5 Trajectory convergence</h3>
 <p>When trajectories have been sampled the same number of times, function <code>trajectoryConvergence</code> allows performing tests of convergence based on the trend analysis of the sequences of distances between points of the two trajectories (i.e. first-first, second-second, …):</p>
-<pre class="sourceCode r" id="cb22"><code class="sourceCode r"><div class="sourceLine" id="cb22-1" data-line-number="1">
-<span class="kw">trajectoryConvergence</span>(D, sites, surveys, <span class="dt">symmetric =</span> <span class="ot">TRUE</span>)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryConvergence</span>(D, sites, surveys, <span class="dt">symmetric =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## $tau
 ##           1         2         3
 ## 1        NA 0.9128709 0.9128709
@@ -253,8 +234,7 @@
 ## 2 0.1485617        NA 0.1485617
 ## 3 0.1485617 0.1485617        NA</code></pre>
 <p>Actually, the function performs the Mann-Whitney trend test. Values of the statistic (‘tau’) larger than 0 correspond to trajectories that are diverging, whereas values lower than 0 correspond to trajectories that are converging. By setting <code>symmetric = FALSE</code> the convergence test becomes asymmetric. In this case the sequence of distances is that of points of one trajectory projected onto the other:</p>
-<pre class="sourceCode r" id="cb24"><code class="sourceCode r"><div class="sourceLine" id="cb24-1" data-line-number="1">
-<span class="kw">trajectoryConvergence</span>(D, sites, surveys, <span class="dt">symmetric =</span> <span class="ot">FALSE</span>)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryConvergence</span>(D, sites, surveys, <span class="dt">symmetric =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <pre><code>## WARNING: Error exit, tauk2. IFAULT =  12</code></pre>
 <pre><code>## $tau
 ##           1         2         3
@@ -272,8 +252,8 @@
 <h3 class="hasAnchor">
 <a href="#distances-between-segments-and-trajectories" class="anchor"></a>2.6 Distances between segments and trajectories</h3>
 <p>To start comparing trajectories between sites, one important step is the calculation of distances between directed segments, which can be obtained by calling function <code>segmentDistances</code>:</p>
-<pre class="sourceCode r" id="cb27"><code class="sourceCode r"><div class="sourceLine" id="cb27-1" data-line-number="1">Ds =<span class="st"> </span><span class="kw"><a href="../reference/trajectories.html">segmentDistances</a></span>(D, sites, surveys)<span class="op">$</span>Dseg</div>
-<div class="sourceLine" id="cb27-2" data-line-number="2">Ds</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Ds =<span class="st"> </span><span class="kw"><a href="../reference/trajectories.html">segmentDistances</a></span>(D, sites, surveys)<span class="op">$</span>Dseg
+Ds</code></pre></div>
 <pre><code>##           1[1-2]    1[2-3]    1[3-4]    2[1-2]    2[2-3]    2[3-4]
 ## 1[2-3] 1.0000000                                                  
 ## 1[3-4] 2.0000000 1.0000000                                        
@@ -293,26 +273,20 @@
 ## 3[2-3] 1.0000000          
 ## 3[3-4] 1.5590170 0.5590170</code></pre>
 <p>Distances between segments are affected by differences in both <em>position</em> and <em>direction</em>. Hence, among the six segments of this example, the distance is maximum between the last segment of trajectory ‘1’ and the first segment of trajectory ‘3’.</p>
-<pre class="sourceCode r" id="cb29"><code class="sourceCode r"><div class="sourceLine" id="cb29-1" data-line-number="1">xret =<span class="st"> </span><span class="kw">cmdscale</span>(Ds)</div>
-<div class="sourceLine" id="cb29-2" data-line-number="2">
-<span class="kw">par</span>(<span class="dt">mar=</span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">1</span>))</div>
-<div class="sourceLine" id="cb29-3" data-line-number="3">
-<span class="kw">plot</span>(xret, <span class="dt">xlab=</span><span class="st">"axis 1"</span>, <span class="dt">ylab =</span> <span class="st">"axis 2"</span>, <span class="dt">asp=</span><span class="dv">1</span>, <span class="dt">pch=</span><span class="dv">21</span>,</div>
-<div class="sourceLine" id="cb29-4" data-line-number="4">     <span class="dt">bg=</span><span class="kw">c</span>(<span class="kw">rep</span>(<span class="st">"black"</span>,<span class="dv">3</span>), <span class="kw">rep</span>(<span class="st">"red"</span>,<span class="dv">3</span>), <span class="kw">rep</span>(<span class="st">"blue"</span>,<span class="dv">3</span>)), </div>
-<div class="sourceLine" id="cb29-5" data-line-number="5">     <span class="dt">xlim=</span><span class="kw">c</span>(<span class="op">-</span><span class="fl">1.5</span>,<span class="dv">1</span>), <span class="dt">ylim=</span><span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="fl">1.5</span>))</div>
-<div class="sourceLine" id="cb29-6" data-line-number="6">
-<span class="kw">text</span>(xret, <span class="dt">labels=</span><span class="kw">rep</span>(<span class="kw">paste0</span>(<span class="st">"s"</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>),<span class="dv">3</span>), <span class="dt">pos=</span><span class="dv">1</span>)</div>
-<div class="sourceLine" id="cb29-7" data-line-number="7">
-<span class="kw">legend</span>(<span class="st">"topleft"</span>, <span class="dt">pt.bg=</span><span class="kw">c</span>(<span class="st">"black"</span>,<span class="st">"red"</span>,<span class="st">"blue"</span>), <span class="dt">pch=</span><span class="dv">21</span>, <span class="dt">bty=</span><span class="st">"n"</span>, <span class="dt">legend=</span><span class="kw">c</span>(<span class="st">"Trajectory 1"</span>, <span class="st">"Trajectory 2"</span>, <span class="st">"Trajectory 3"</span>))</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">xret =<span class="st"> </span><span class="kw">cmdscale</span>(Ds)
+<span class="kw">par</span>(<span class="dt">mar=</span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">1</span>))
+<span class="kw">plot</span>(xret, <span class="dt">xlab=</span><span class="st">"axis 1"</span>, <span class="dt">ylab =</span> <span class="st">"axis 2"</span>, <span class="dt">asp=</span><span class="dv">1</span>, <span class="dt">pch=</span><span class="dv">21</span>,
+     <span class="dt">bg=</span><span class="kw">c</span>(<span class="kw">rep</span>(<span class="st">"black"</span>,<span class="dv">3</span>), <span class="kw">rep</span>(<span class="st">"red"</span>,<span class="dv">3</span>), <span class="kw">rep</span>(<span class="st">"blue"</span>,<span class="dv">3</span>)), 
+     <span class="dt">xlim=</span><span class="kw">c</span>(<span class="op">-</span><span class="fl">1.5</span>,<span class="dv">1</span>), <span class="dt">ylim=</span><span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="fl">1.5</span>))
+<span class="kw">text</span>(xret, <span class="dt">labels=</span><span class="kw">rep</span>(<span class="kw">paste0</span>(<span class="st">"s"</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>),<span class="dv">3</span>), <span class="dt">pos=</span><span class="dv">1</span>)
+<span class="kw">legend</span>(<span class="st">"topleft"</span>, <span class="dt">pt.bg=</span><span class="kw">c</span>(<span class="st">"black"</span>,<span class="st">"red"</span>,<span class="st">"blue"</span>), <span class="dt">pch=</span><span class="dv">21</span>, <span class="dt">bty=</span><span class="st">"n"</span>, <span class="dt">legend=</span><span class="kw">c</span>(<span class="st">"Trajectory 1"</span>, <span class="st">"Trajectory 2"</span>, <span class="st">"Trajectory 3"</span>))</code></pre></div>
 <p><img src="CTA_files/figure-html/unnamed-chunk-11-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>Distances between segments are internally calculated when comparing whole trajectories using function <code>trajectoryDistances</code>. Here we show the dissimilarity between the two trajectories as assessed using either the <em>Hausdorff</em> distance (equal to the maximum distance between directed segments) or the <em>directed segment path distance</em> (an average of distances between segments):</p>
-<pre class="sourceCode r" id="cb30"><code class="sourceCode r"><div class="sourceLine" id="cb30-1" data-line-number="1">
-<span class="kw">trajectoryDistances</span>(D, sites, surveys, <span class="dt">distance.type =</span> <span class="st">"Hausdorff"</span>)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryDistances</span>(D, sites, surveys, <span class="dt">distance.type =</span> <span class="st">"Hausdorff"</span>)</code></pre></div>
 <pre><code>##          1        2
 ## 2 2.015564         
 ## 3 2.061553 1.500000</code></pre>
-<pre class="sourceCode r" id="cb32"><code class="sourceCode r"><div class="sourceLine" id="cb32-1" data-line-number="1">
-<span class="kw">trajectoryDistances</span>(D, sites, surveys, <span class="dt">distance.type =</span> <span class="st">"DSPD"</span>)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryDistances</span>(D, sites, surveys, <span class="dt">distance.type =</span> <span class="st">"DSPD"</span>)</code></pre></div>
 <pre><code>##           1         2
 ## 2 0.7214045          
 ## 3 1.1345910 0.5714490</code></pre>
@@ -322,42 +296,33 @@
 <h2 class="hasAnchor">
 <a href="#structural-dynamics-in-permanent-plots" class="anchor"></a>3. Structural dynamics in permanent plots</h2>
 <p>In this example we analyze the dynamics of 8 permanent forest plots located on slopes of a valley in the New Zealand Alps. The study area is mountainous and centered on the Craigieburn Range (Southern Alps), South Island, New Zealand. Forests plots are almost monospecific, being the mountain beech (<em>Fuscospora cliffortioides</em>) the main dominant tree species. Previously forests consisted of largely mature stands, but some of them were affected by different disturbances during the sampling period (1972-2009) which includes 9 surveys. We begin our example by loading the data set, which includes 72 plot observations:</p>
-<pre class="sourceCode r" id="cb34"><code class="sourceCode r"><div class="sourceLine" id="cb34-1" data-line-number="1">
-<span class="kw">data</span>(<span class="st">"avoca"</span>)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">"avoca"</span>)</code></pre></div>
 <p>Community data is in form of an object <code>stratifiedvegdata</code>. To account for differences in tree diameter, while emphasizing regeneration, the data contains individual counts to represent tree abundance and trees are classified in 19 quadratic diameter bins (in cm): {(2.25, 4], (4, 6.25], (6.25, 9], … (110.25, 121]}. The data set also includes vectors <code>avoca_surveys</code> and <code>avoca_sites</code> that indicate the survey and forest plot corresponding to each forest state.</p>
 <p>Before starting community trajectory analysis, we have to use function <code>vegdiststruct</code>to calculate distances between forest plot states in terms of structure and composition:</p>
-<pre class="sourceCode r" id="cb35"><code class="sourceCode r"><div class="sourceLine" id="cb35-1" data-line-number="1">avoca_D_man =<span class="st"> </span><span class="kw"><a href="../reference/vegdiststruct.html">vegdiststruct</a></span>(avoca_strat, <span class="dt">method=</span><span class="st">"manhattan"</span>, <span class="dt">transform =</span> <span class="cf">function</span>(x){<span class="kw">log</span>(x<span class="op">+</span><span class="dv">1</span>)})</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">avoca_D_man =<span class="st"> </span><span class="kw"><a href="../reference/vegdiststruct.html">vegdiststruct</a></span>(avoca_strat, <span class="dt">method=</span><span class="st">"manhattan"</span>, <span class="dt">transform =</span> <span class="cf">function</span>(x){<span class="kw">log</span>(x<span class="op">+</span><span class="dv">1</span>)})</code></pre></div>
 <p>Distances in <code>avoca_D_man</code> are calculated using the Manhattan metric.</p>
 <div id="display-trajectories-in-pcoa" class="section level3">
 <h3 class="hasAnchor">
 <a href="#display-trajectories-in-pcoa" class="anchor"></a>3.1 Display trajectories in PCoA</h3>
 <p>The distance matrix <code>avoca_D_man</code> conforms our definition of <span class="math inline">\(\Omega\)</span>. We use <code>trajectoryPCoA</code> to display the relations between forest plot states in this space and to draw the trajectory of each plot:</p>
-<pre class="sourceCode r" id="cb36"><code class="sourceCode r"><div class="sourceLine" id="cb36-1" data-line-number="1">
-<span class="kw">trajectoryPCoA</span>(avoca_D_man,  avoca_sites, avoca_surveys,</div>
-<div class="sourceLine" id="cb36-2" data-line-number="2">               <span class="dt">traj.colors =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer">brewer.pal</a></span>(<span class="dv">8</span>,<span class="st">"Accent"</span>), </div>
-<div class="sourceLine" id="cb36-3" data-line-number="3">               <span class="dt">axes=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="dt">length=</span><span class="fl">0.1</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</div>
-<div class="sourceLine" id="cb36-4" data-line-number="4">
-<span class="kw">legend</span>(<span class="st">"topright"</span>, <span class="dt">bty=</span><span class="st">"n"</span>, <span class="dt">legend =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">8</span>, <span class="dt">col =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer">brewer.pal</a></span>(<span class="dv">8</span>,<span class="st">"Accent"</span>), <span class="dt">lwd=</span><span class="dv">2</span>)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryPCoA</span>(avoca_D_man,  avoca_sites, avoca_surveys,
+               <span class="dt">traj.colors =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer">brewer.pal</a></span>(<span class="dv">8</span>,<span class="st">"Accent"</span>), 
+               <span class="dt">axes=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="dt">length=</span><span class="fl">0.1</span>, <span class="dt">lwd=</span><span class="dv">2</span>)
+<span class="kw">legend</span>(<span class="st">"topright"</span>, <span class="dt">bty=</span><span class="st">"n"</span>, <span class="dt">legend =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">8</span>, <span class="dt">col =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer">brewer.pal</a></span>(<span class="dv">8</span>,<span class="st">"Accent"</span>), <span class="dt">lwd=</span><span class="dv">2</span>)</code></pre></div>
 <p><img src="CTA_files/figure-html/avoca_pcoa-1.png" width="576" style="display: block; margin: auto;"> Note that in this case, the full <span class="math inline">\(\Omega\)</span> include more than two dimensions, and PCoA is representing 43% of total variance (correction for negative eigenvalues is included in the call to <code>cmdscale</code> from <code>trajectoryPCoA</code>), so one has to be careful when interpreting trajectories visually.</p>
 <p>One can inspect specific trajectories using argument <code>selection</code> in function <code>trajectoryPCoA</code>. This allows getting a better view of particular trajectories, here that of forest plot ‘3’:</p>
-<pre class="sourceCode r" id="cb37"><code class="sourceCode r"><div class="sourceLine" id="cb37-1" data-line-number="1">
-<span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</div>
-<div class="sourceLine" id="cb37-2" data-line-number="2">
-<span class="kw">trajectoryPCoA</span>(avoca_D_man,  avoca_sites, avoca_surveys,</div>
-<div class="sourceLine" id="cb37-3" data-line-number="3">               <span class="dt">selection=</span> <span class="dv">3</span>,</div>
-<div class="sourceLine" id="cb37-4" data-line-number="4">               <span class="dt">length=</span><span class="fl">0.1</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</div>
-<div class="sourceLine" id="cb37-5" data-line-number="5">
-<span class="kw">plotTrajDiamDist</span>(<span class="dv">3</span>)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
+<span class="kw">trajectoryPCoA</span>(avoca_D_man,  avoca_sites, avoca_surveys,
+               <span class="dt">selection=</span> <span class="dv">3</span>,
+               <span class="dt">length=</span><span class="fl">0.1</span>, <span class="dt">lwd=</span><span class="dv">2</span>)
+<span class="kw">plotTrajDiamDist</span>(<span class="dv">3</span>)</code></pre></div>
 <p><img src="CTA_files/figure-html/trajectory_3-1.png" width="768" style="display: block; margin: auto;"></p>
 <p>In the right hand, we added a representation of the change in the mountain beech tree diameter distribution through time for trajectory of forest plot ‘3’. The dynamics of this plot include mostly growth, which results in individuals moving from one diameter class to the other. The whole trajectory looks mostly directional. Let’s now inspect the trajectory of forest plot ‘4’:</p>
-<pre class="sourceCode r" id="cb38"><code class="sourceCode r"><div class="sourceLine" id="cb38-1" data-line-number="1">
-<span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</div>
-<div class="sourceLine" id="cb38-2" data-line-number="2">
-<span class="kw">trajectoryPCoA</span>(avoca_D_man,  avoca_sites, avoca_surveys,</div>
-<div class="sourceLine" id="cb38-3" data-line-number="3">               <span class="dt">selection=</span> <span class="dv">4</span>,</div>
-<div class="sourceLine" id="cb38-4" data-line-number="4">               <span class="dt">length=</span><span class="fl">0.1</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</div>
-<div class="sourceLine" id="cb38-5" data-line-number="5">
-<span class="kw">plotTrajDiamDist</span>(<span class="dv">4</span>)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
+<span class="kw">trajectoryPCoA</span>(avoca_D_man,  avoca_sites, avoca_surveys,
+               <span class="dt">selection=</span> <span class="dv">4</span>,
+               <span class="dt">length=</span><span class="fl">0.1</span>, <span class="dt">lwd=</span><span class="dv">2</span>)
+<span class="kw">plotTrajDiamDist</span>(<span class="dv">4</span>)</code></pre></div>
 <p><img src="CTA_files/figure-html/trajectory_4-1.png" width="768" style="display: block; margin: auto;"></p>
 <p>This second trajectory is less straight and seems to include a turn by the end of the sampling period, corresponding to the recruitment of new saplings.</p>
 </div>
@@ -365,8 +330,7 @@
 <h3 class="hasAnchor">
 <a href="#trajectory-lengths-angles-and-directionality-1" class="anchor"></a>3.2 Trajectory lengths, angles and directionality</h3>
 <p>While trajectory lengths and angles can be inspected visually in ordination diagrams, it is better to calculate them using the full <span class="math inline">\(\Omega\)</span> space (i.e., from matrix <code>avoca_D_man</code>). Using function <code>trajectoryLengths</code> we can see that the trajectory of forest plot ‘4’ is lengthier than that of plot ‘3’, mostly because includes a lengthier last segment (i.e. the recruitment of new individuals):</p>
-<pre class="sourceCode r" id="cb39"><code class="sourceCode r"><div class="sourceLine" id="cb39-1" data-line-number="1">
-<span class="kw">trajectoryLengths</span>(avoca_D_man, avoca_sites, avoca_surveys)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryLengths</span>(avoca_D_man, avoca_sites, avoca_surveys)</code></pre></div>
 <pre><code>##          S1        S2        S3        S4        S5        S6        S7
 ## 1 1.2173214 1.5911988 1.0976965 2.1173501 0.5238760 1.5863283 1.5750365
 ## 2 0.5971165 1.7469687 0.9866591 0.9413060 1.3687614 0.6280231 1.4565581
@@ -386,8 +350,7 @@
 ## 7 1.7518489   8.113223
 ## 8 1.5107357  10.681940</code></pre>
 <p>If we calculate the angles between consecutive segments (using function <code>trajectoryLengths</code>) we see that indeed the trajectory of ‘3’ is rather directional, but the angles of trajectory of ‘4’ are not that low:</p>
-<pre class="sourceCode r" id="cb41"><code class="sourceCode r"><div class="sourceLine" id="cb41-1" data-line-number="1">
-<span class="kw">trajectoryAngles</span>(avoca_D_man, avoca_sites, avoca_surveys)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryAngles</span>(avoca_D_man, avoca_sites, avoca_surveys)</code></pre></div>
 <pre><code>##          S1-S2     S2-S3     S3-S4     S4-S5     S5-S6     S6-S7     S7-S8
 ## 1 1.382519e+02  93.30194 105.98125 153.05862  66.59343  79.32932  77.80037
 ## 2 1.118511e+02 145.33494 180.00000 180.00000 154.02889 180.00000 180.00000
@@ -407,8 +370,7 @@
 ## 7 129.8512 40.11229
 ## 8 106.8190 67.49925</code></pre>
 <p>By calling function <code>trajectoryDirectionality</code> we can confirm that the trajectory for site ‘4’ is less straight than that of site ‘3’:</p>
-<pre class="sourceCode r" id="cb43"><code class="sourceCode r"><div class="sourceLine" id="cb43-1" data-line-number="1">
-<span class="kw">trajectoryDirectionality</span>(avoca_D_man, avoca_sites, avoca_surveys)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryDirectionality</span>(avoca_D_man, avoca_sites, avoca_surveys)</code></pre></div>
 <pre><code>##         1         2         3         4         5         6         7 
 ## 0.8765513 0.8632656 0.9689678 0.7379840 0.8820482 0.8988080 0.9214587 
 ##         8 
@@ -427,81 +389,70 @@
 ## 7 4.024 3.291 4.365 4.993 4.389 6.205      
 ## 8 9.797 9.747 5.591 4.611 6.383 5.043 6.949</code></pre>
 <p>The closest trajectories are those of plots ‘1’ and ‘2’. They looked rather close in <em>position</em> in the PCoA ordination of <span class="math inline">\(\Omega\)</span> with all trajectories, so probably it is position, rather than <em>shape</em> which has influenced this low value. The next pair of similar trajectories are those of the ‘3’-‘5’ pair. We can use <code>cmdscale</code> to produce an ordination of resemblances between trajectories:</p>
-<pre class="sourceCode r" id="cb46"><code class="sourceCode r"><div class="sourceLine" id="cb46-1" data-line-number="1">cmd_D2&lt;-<span class="kw">cmdscale</span>(avoca_D_traj_man, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">eig=</span><span class="ot">TRUE</span>, <span class="dt">k=</span><span class="dv">7</span>)</div>
-<div class="sourceLine" id="cb46-2" data-line-number="2">x&lt;-cmd_D2<span class="op">$</span>points[,<span class="dv">1</span>]</div>
-<div class="sourceLine" id="cb46-3" data-line-number="3">y&lt;-cmd_D2<span class="op">$</span>points[,<span class="dv">2</span>]</div>
-<div class="sourceLine" id="cb46-4" data-line-number="4">
-<span class="kw">plot</span>(x,y, <span class="dt">type=</span><span class="st">"p"</span>, <span class="dt">asp=</span><span class="dv">1</span>, <span class="dt">xlab=</span><span class="kw">paste0</span>(<span class="st">"PCoA 1 ("</span>, <span class="kw">round</span>(<span class="dv">100</span><span class="op">*</span>cmd_D2<span class="op">$</span>eig[<span class="dv">1</span>]<span class="op">/</span><span class="kw">sum</span>(cmd_D2<span class="op">$</span>eig)),<span class="st">"%)"</span>), </div>
-<div class="sourceLine" id="cb46-5" data-line-number="5">     <span class="dt">ylab=</span><span class="kw">paste0</span>(<span class="st">"PCoA 2 ("</span>, <span class="kw">round</span>(<span class="dv">100</span><span class="op">*</span>cmd_D2<span class="op">$</span>eig[<span class="dv">2</span>]<span class="op">/</span><span class="kw">sum</span>(cmd_D2<span class="op">$</span>eig)),<span class="st">"%)"</span>), <span class="dt">col=</span><span class="st">"black"</span>,</div>
-<div class="sourceLine" id="cb46-6" data-line-number="6">     <span class="dt">bg=</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer">brewer.pal</a></span>(<span class="dv">8</span>,<span class="st">"Accent"</span>), <span class="dt">pch=</span><span class="dv">21</span>)</div>
-<div class="sourceLine" id="cb46-7" data-line-number="7">
-<span class="kw">text</span>(x,y, <span class="dt">labels=</span><span class="dv">1</span><span class="op">:</span><span class="dv">8</span>, <span class="dt">pos=</span><span class="dv">2</span>)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cmd_D2&lt;-<span class="kw">cmdscale</span>(avoca_D_traj_man, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">eig=</span><span class="ot">TRUE</span>, <span class="dt">k=</span><span class="dv">7</span>)
+x&lt;-cmd_D2<span class="op">$</span>points[,<span class="dv">1</span>]
+y&lt;-cmd_D2<span class="op">$</span>points[,<span class="dv">2</span>]
+<span class="kw">plot</span>(x,y, <span class="dt">type=</span><span class="st">"p"</span>, <span class="dt">asp=</span><span class="dv">1</span>, <span class="dt">xlab=</span><span class="kw">paste0</span>(<span class="st">"PCoA 1 ("</span>, <span class="kw">round</span>(<span class="dv">100</span><span class="op">*</span>cmd_D2<span class="op">$</span>eig[<span class="dv">1</span>]<span class="op">/</span><span class="kw">sum</span>(cmd_D2<span class="op">$</span>eig)),<span class="st">"%)"</span>), 
+     <span class="dt">ylab=</span><span class="kw">paste0</span>(<span class="st">"PCoA 2 ("</span>, <span class="kw">round</span>(<span class="dv">100</span><span class="op">*</span>cmd_D2<span class="op">$</span>eig[<span class="dv">2</span>]<span class="op">/</span><span class="kw">sum</span>(cmd_D2<span class="op">$</span>eig)),<span class="st">"%)"</span>), <span class="dt">col=</span><span class="st">"black"</span>,
+     <span class="dt">bg=</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer">brewer.pal</a></span>(<span class="dv">8</span>,<span class="st">"Accent"</span>), <span class="dt">pch=</span><span class="dv">21</span>)
+<span class="kw">text</span>(x,y, <span class="dt">labels=</span><span class="dv">1</span><span class="op">:</span><span class="dv">8</span>, <span class="dt">pos=</span><span class="dv">2</span>)</code></pre></div>
 <p><img src="CTA_files/figure-html/avoca_DT_PCoA-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 </div>
-<div id="bray-curtis-dissimilarity-and-trajectories" class="section level2">
+<div id="square-root-transformation-and-community-trajectories" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bray-curtis-dissimilarity-and-trajectories" class="anchor"></a>4. Bray-Curtis dissimilarity and trajectories</h2>
+<a href="#square-root-transformation-and-community-trajectories" class="anchor"></a>4. Square root transformation and community trajectories</h2>
 <div id="introduction-1" class="section level3">
 <h3 class="hasAnchor">
 <a href="#introduction-1" class="anchor"></a>4.1 Introduction</h3>
-<p>The percentage difference (alias Bray-Curtis) is a popular dissimilarity coefficient in community ecology. Mathematically, however, it has the drawback of being a semi-metric (i.e. triangle inequality is not ensured), which also means it is not Euclidean (a stronger requirement). In order to use this coefficient for multivariate analyses that require these properties a common transformation is the square root. This document tries to illustrate that applying this transformation has consequences for trajectory analysis.</p>
+<p>Some dissimilarity coefficients that are popular in community ecology, such as the percentage difference (alias Bray-Curtis), have the drawback of being a non-Euclidean (dissimilarity matrices do not allow a representation in a Cartesian space), or even semi-metric (i.e. triangle inequality is not ensured). In order to use these coefficients in multivariate analyses that require these properties a common transformation is the square root. This document tries to illustrate that applying this transformation has consequences for trajectory analysis.</p>
 </div>
 <div id="simple-directional-trajectory" class="section level3">
 <h3 class="hasAnchor">
 <a href="#simple-directional-trajectory" class="anchor"></a>4.2 Simple directional trajectory</h3>
 <p>Here we use an example of a single synthetic community to illustrate the effect of square root transformation on a community trajectory. We begin by defining the species data of the trajectory itself. The dataset consists of four rows (i.e. surveys) and four columns (species). The dynamics in this example consist in an constant increase in the number of individuals of the first species and a corresponding decrease of the others, while keeping a total abundance of 100 individuals:</p>
-<pre class="sourceCode r" id="cb47"><code class="sourceCode r"><div class="sourceLine" id="cb47-1" data-line-number="1">sites =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,<span class="dv">4</span>)</div>
-<div class="sourceLine" id="cb47-2" data-line-number="2">surveys=<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>
-</div>
-<div class="sourceLine" id="cb47-3" data-line-number="3">spdata =<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">c</span>(<span class="dv">35</span>,<span class="dv">30</span>,<span class="dv">20</span>,<span class="dv">15</span>),</div>
-<div class="sourceLine" id="cb47-4" data-line-number="4">               <span class="kw">c</span>(<span class="dv">50</span>,<span class="dv">25</span>,<span class="dv">15</span>,<span class="dv">10</span>),</div>
-<div class="sourceLine" id="cb47-5" data-line-number="5">               <span class="kw">c</span>(<span class="dv">65</span>,<span class="dv">20</span>,<span class="dv">10</span>,<span class="dv">5</span>),</div>
-<div class="sourceLine" id="cb47-6" data-line-number="6">               <span class="kw">c</span>(<span class="dv">80</span>,<span class="dv">15</span>,<span class="dv">5</span>,<span class="dv">0</span>))</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sites =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,<span class="dv">4</span>)
+surveys=<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>
+spdata =<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">c</span>(<span class="dv">35</span>,<span class="dv">30</span>,<span class="dv">20</span>,<span class="dv">15</span>),
+               <span class="kw">c</span>(<span class="dv">50</span>,<span class="dv">25</span>,<span class="dv">15</span>,<span class="dv">10</span>),
+               <span class="kw">c</span>(<span class="dv">65</span>,<span class="dv">20</span>,<span class="dv">10</span>,<span class="dv">5</span>),
+               <span class="kw">c</span>(<span class="dv">80</span>,<span class="dv">15</span>,<span class="dv">5</span>,<span class="dv">0</span>))</code></pre></div>
 <p>We now use function <code>vegdist</code> from package <code>vegan</code> to calculate the Bray-Curtis coefficient:</p>
-<pre class="sourceCode r" id="cb48"><code class="sourceCode r"><div class="sourceLine" id="cb48-1" data-line-number="1">D =<span class="st"> </span>vegan<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vegan/topics/vegdist">vegdist</a></span>(spdata, <span class="st">"bray"</span>)</div>
-<div class="sourceLine" id="cb48-2" data-line-number="2">D</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">D =<span class="st"> </span>vegan<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vegan/topics/vegdist">vegdist</a></span>(spdata, <span class="st">"bray"</span>)
+D</code></pre></div>
 <pre><code>##      1    2    3
 ## 2 0.15          
 ## 3 0.30 0.15     
 ## 4 0.45 0.30 0.15</code></pre>
 <p>If we draw the resemblance space corresponding to this dissimilarity matrix we see a straight trajectory:</p>
-<pre class="sourceCode r" id="cb50"><code class="sourceCode r"><div class="sourceLine" id="cb50-1" data-line-number="1">
-<span class="kw">trajectoryPCoA</span>(D,sites,surveys)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryPCoA</span>(D,sites,surveys)</code></pre></div>
 <p><img src="CTA_files/figure-html/unnamed-chunk-15-1.png" width="576" style="display: block; margin: auto;"> Here we see that Bray-Curtis dissimilarity responds linearly to the proposed sequence of community dynamics. To confirm this geometry, we can calculate the geometric properties of the trajectory (i.e. length, angle between consecutive segments and overall directionality):</p>
-<pre class="sourceCode r" id="cb51"><code class="sourceCode r"><div class="sourceLine" id="cb51-1" data-line-number="1">
-<span class="kw">trajectoryLengths</span>(D,sites,surveys)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryLengths</span>(D,sites,surveys)</code></pre></div>
 <pre><code>##     S1   S2   S3 Trajectory
 ## 1 0.15 0.15 0.15       0.45</code></pre>
-<pre class="sourceCode r" id="cb53"><code class="sourceCode r"><div class="sourceLine" id="cb53-1" data-line-number="1">
-<span class="kw">trajectoryAngles</span>(D,sites,surveys)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryAngles</span>(D,sites,surveys)</code></pre></div>
 <pre><code>##   S1-S2 S2-S3 mean sd
 ## 1   180   180  180  0</code></pre>
-<pre class="sourceCode r" id="cb55"><code class="sourceCode r"><div class="sourceLine" id="cb55-1" data-line-number="1">
-<span class="kw">trajectoryDirectionality</span>(D,sites,surveys)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryDirectionality</span>(D,sites,surveys)</code></pre></div>
 <pre><code>## 1 
 ## 1</code></pre>
 <p>Angles are 180 degrees and overall directionality is maximum (i.e. 1), in accordance with the plot and the data. We now proceed to take the square root of the dissimilarity values, as would be necessary to achieve a metric (and Euclidean) space in a more complex data set:</p>
-<pre class="sourceCode r" id="cb57"><code class="sourceCode r"><div class="sourceLine" id="cb57-1" data-line-number="1">sqrtD =<span class="st"> </span><span class="kw">sqrt</span>(D)</div>
-<div class="sourceLine" id="cb57-2" data-line-number="2">sqrtD</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sqrtD =<span class="st"> </span><span class="kw">sqrt</span>(D)
+sqrtD</code></pre></div>
 <pre><code>##           1         2         3
 ## 2 0.3872983                    
 ## 3 0.5477226 0.3872983          
 ## 4 0.6708204 0.5477226 0.3872983</code></pre>
 <p>The transformation increases all dissimilarity values (because the original values are smaller than 1), but the increase is larger for smaller values, so the ratio between large dissimilarities and small dissimilarities decreases. This has an effect on the overall shape of the trajectory, which surprisingly now looks like:</p>
-<pre class="sourceCode r" id="cb59"><code class="sourceCode r"><div class="sourceLine" id="cb59-1" data-line-number="1">
-<span class="kw">trajectoryPCoA</span>(sqrtD,sites,surveys)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryPCoA</span>(sqrtD,sites,surveys)</code></pre></div>
 <p><img src="CTA_files/figure-html/unnamed-chunk-18-1.png" width="576" style="display: block; margin: auto;"> In addition to the distortion observed, the number of dimensions of the data have increased (i.e the sum of variance explained by the two axes is 88% &lt; 100%), so we cannot be sure that the angles are well represented. If we re-calculate the properties of the trajectory taking into account all dimensions we obtain:</p>
-<pre class="sourceCode r" id="cb60"><code class="sourceCode r"><div class="sourceLine" id="cb60-1" data-line-number="1">
-<span class="kw">trajectoryLengths</span>(sqrtD,sites,surveys)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryLengths</span>(sqrtD,sites,surveys)</code></pre></div>
 <pre><code>##          S1        S2        S3 Trajectory
 ## 1 0.3872983 0.3872983 0.3872983   1.161895</code></pre>
-<pre class="sourceCode r" id="cb62"><code class="sourceCode r"><div class="sourceLine" id="cb62-1" data-line-number="1">
-<span class="kw">trajectoryAngles</span>(sqrtD,sites,surveys)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryAngles</span>(sqrtD,sites,surveys)</code></pre></div>
 <pre><code>##   S1-S2 S2-S3 mean sd
 ## 1    90    90   90  0</code></pre>
-<pre class="sourceCode r" id="cb64"><code class="sourceCode r"><div class="sourceLine" id="cb64-1" data-line-number="1">
-<span class="kw">trajectoryDirectionality</span>(sqrtD,sites,surveys)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryDirectionality</span>(sqrtD,sites,surveys)</code></pre></div>
 <pre><code>##         1 
 ## 0.7127576</code></pre>
 <p>The length of segments and the trajectory have increased, but all segments are still the same size, in agreement with the original trajectory. In contrast, the angles are now 90 degrees and the directionality of the trajectory has decreased substantially.</p>
@@ -510,72 +461,59 @@
 <h3 class="hasAnchor">
 <a href="#longer-trajectories" class="anchor"></a>4.3 Longer trajectories</h3>
 <p>Do the results of the previous section hold for a more complex trajectory? Here we use simulated dynamics to build another trajectory with more species (20) and more time steps. We begin by setting the number of time steps (50) and the size of the community (100 individuals):</p>
-<pre class="sourceCode r" id="cb66"><code class="sourceCode r"><div class="sourceLine" id="cb66-1" data-line-number="1">Nsteps =<span class="st"> </span><span class="dv">50</span>
-</div>
-<div class="sourceLine" id="cb66-2" data-line-number="2">CC =<span class="st"> </span><span class="dv">100</span>
-</div>
-<div class="sourceLine" id="cb66-3" data-line-number="3">Nreplace &lt;-<span class="st"> </span>CC<span class="op">*</span><span class="fl">0.05</span>
-</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Nsteps =<span class="st"> </span><span class="dv">50</span>
+CC =<span class="st"> </span><span class="dv">100</span>
+Nreplace &lt;-<span class="st"> </span>CC<span class="op">*</span><span class="fl">0.05</span></code></pre></div>
 <p><code>Nreplace</code> is the number of individuals to be replaced each time step (5%). Now we define the initial community vector and the vector with the probabilities of offspring for each species according to some ecological conditions:</p>
-<pre class="sourceCode r" id="cb67"><code class="sourceCode r"><div class="sourceLine" id="cb67-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">67</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">6</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">1</span>, <span class="dv">6</span>, <span class="dv">0</span>)</div>
-<div class="sourceLine" id="cb67-2" data-line-number="2">poffspring &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.002</span>, <span class="fl">0.661</span> ,<span class="dv">0</span> ,<span class="dv">0</span>, <span class="fl">0.037</span>, <span class="fl">0.281</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.008</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.005</span>, <span class="fl">0.003</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">67</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">6</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">1</span>, <span class="dv">6</span>, <span class="dv">0</span>)
+poffspring &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.002</span>, <span class="fl">0.661</span> ,<span class="dv">0</span> ,<span class="dv">0</span>, <span class="fl">0.037</span>, <span class="fl">0.281</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.008</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.005</span>, <span class="fl">0.003</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)</code></pre></div>
 <p>We can now simulate the dynamics by sequentially applying stochastic deaths and recruitment:</p>
-<pre class="sourceCode r" id="cb68"><code class="sourceCode r"><div class="sourceLine" id="cb68-1" data-line-number="1">m &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow=</span>Nsteps<span class="op">+</span><span class="dv">1</span>, <span class="dt">ncol=</span><span class="kw">length</span>(x))</div>
-<div class="sourceLine" id="cb68-2" data-line-number="2">m[<span class="dv">1</span>, ] =<span class="st"> </span>x</div>
-<div class="sourceLine" id="cb68-3" data-line-number="3">
-<span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>Nsteps) {</div>
-<div class="sourceLine" id="cb68-4" data-line-number="4">  pdeath &lt;-x<span class="op">/</span><span class="kw">sum</span>(x) <span class="co">#Equal probability of dying</span>
-</div>
-<div class="sourceLine" id="cb68-5" data-line-number="5">  deaths&lt;-<span class="kw">rmultinom</span>(<span class="dv">1</span>,Nreplace, pdeath)</div>
-<div class="sourceLine" id="cb68-6" data-line-number="6">  x &lt;-<span class="st"> </span><span class="kw">pmax</span>(x <span class="op">-</span><span class="st"> </span>deaths,<span class="dv">0</span>)</div>
-<div class="sourceLine" id="cb68-7" data-line-number="7">  offspring =<span class="st"> </span><span class="kw">rmultinom</span>(<span class="dv">1</span>,Nreplace, <span class="kw">as.vector</span>(poffspring))</div>
-<div class="sourceLine" id="cb68-8" data-line-number="8">  x &lt;-<span class="st"> </span>x <span class="op">+</span><span class="st"> </span>offspring</div>
-<div class="sourceLine" id="cb68-9" data-line-number="9">  m[k<span class="op">+</span><span class="dv">1</span>, ]&lt;-x</div>
-<div class="sourceLine" id="cb68-10" data-line-number="10">}</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow=</span>Nsteps<span class="op">+</span><span class="dv">1</span>, <span class="dt">ncol=</span><span class="kw">length</span>(x))
+m[<span class="dv">1</span>, ] =<span class="st"> </span>x
+<span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>Nsteps) {
+  pdeath &lt;-x<span class="op">/</span><span class="kw">sum</span>(x) <span class="co">#Equal probability of dying</span>
+  deaths&lt;-<span class="kw">rmultinom</span>(<span class="dv">1</span>,Nreplace, pdeath)
+  x &lt;-<span class="st"> </span><span class="kw">pmax</span>(x <span class="op">-</span><span class="st"> </span>deaths,<span class="dv">0</span>)
+  offspring =<span class="st"> </span><span class="kw">rmultinom</span>(<span class="dv">1</span>,Nreplace, <span class="kw">as.vector</span>(poffspring))
+  x &lt;-<span class="st"> </span>x <span class="op">+</span><span class="st"> </span>offspring
+  m[k<span class="op">+</span><span class="dv">1</span>, ]&lt;-x
+}</code></pre></div>
 <p>Then we decide how frequently (with respect to the simulated step) a sample of the community is taken, here every four steps:</p>
-<pre class="sourceCode r" id="cb69"><code class="sourceCode r"><div class="sourceLine" id="cb69-1" data-line-number="1">Sj &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">51</span>, <span class="dt">by=</span><span class="dv">4</span>) <span class="co">#Sample every four steps</span>
-</div>
-<div class="sourceLine" id="cb69-2" data-line-number="2">mj &lt;-<span class="st"> </span>m[Sj,]</div>
-<div class="sourceLine" id="cb69-3" data-line-number="3">surveys =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(Sj)</div>
-<div class="sourceLine" id="cb69-4" data-line-number="4">sites =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,<span class="kw">length</span>(Sj))</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Sj &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">51</span>, <span class="dt">by=</span><span class="dv">4</span>) <span class="co">#Sample every four steps</span>
+mj &lt;-<span class="st"> </span>m[Sj,]
+surveys =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(Sj)
+sites =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,<span class="kw">length</span>(Sj))</code></pre></div>
 <p>Now we are ready to calculate the Bray-Curtis dissimilarity and to plot the resulting trajectory:</p>
-<pre class="sourceCode r" id="cb70"><code class="sourceCode r"><div class="sourceLine" id="cb70-1" data-line-number="1">D &lt;-<span class="st"> </span>vegan<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vegan/topics/vegdist">vegdist</a></span>(mj,<span class="st">"bray"</span>)</div>
-<div class="sourceLine" id="cb70-2" data-line-number="2">
-<span class="kw">trajectoryPCoA</span>(D, sites, surveys, <span class="dt">selection=</span><span class="dv">1</span>,<span class="dt">length=</span><span class="fl">0.1</span>, <span class="dt">axes=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">D &lt;-<span class="st"> </span>vegan<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/vegan/topics/vegdist">vegdist</a></span>(mj,<span class="st">"bray"</span>)
+<span class="kw">trajectoryPCoA</span>(D, sites, surveys, <span class="dt">selection=</span><span class="dv">1</span>,<span class="dt">length=</span><span class="fl">0.1</span>, <span class="dt">axes=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</code></pre></div>
 <p><img src="CTA_files/figure-html/unnamed-chunk-24-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>The trajectory looks rather directional, although it has some twists derived from stochasticity in death and recruitment. Let’s now look at the square root of the Bray-Curtis dissimilarity:</p>
-<pre class="sourceCode r" id="cb71"><code class="sourceCode r"><div class="sourceLine" id="cb71-1" data-line-number="1">sqrtD =<span class="st"> </span><span class="kw">sqrt</span>(D)</div>
-<div class="sourceLine" id="cb71-2" data-line-number="2">
-<span class="kw">trajectoryPCoA</span>(sqrtD, sites, surveys, <span class="dt">selection=</span><span class="dv">1</span>,<span class="dt">length=</span><span class="fl">0.1</span>, <span class="dt">axes=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sqrtD =<span class="st"> </span><span class="kw">sqrt</span>(D)
+<span class="kw">trajectoryPCoA</span>(sqrtD, sites, surveys, <span class="dt">selection=</span><span class="dv">1</span>,<span class="dt">length=</span><span class="fl">0.1</span>, <span class="dt">axes=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</code></pre></div>
 <p><img src="CTA_files/figure-html/unnamed-chunk-25-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>While they look different, the differences are not so striking as with the simple example. In other words, the overall shape of the trajectory looks similar in the two plots. From this, we might conclude that the square root transformation did not distort the trajectory significantly. However, note that the proportion of variance explained by the two axes has decreased after the transformation, so there might be changes in trajectory shape that are hidden in the dimensions of the data that we do not see. If we calculate geometric properties we are not limited by the ordination plot and we can take into account all dimensions. In contrast with the ordination plot, the angles of the trajectory are strongly affected by the square root transformation:</p>
-<pre class="sourceCode r" id="cb72"><code class="sourceCode r"><div class="sourceLine" id="cb72-1" data-line-number="1">
-<span class="kw">trajectoryAngles</span>(D,sites,surveys)</div></code></pre>
-<pre><code>##   S1-S2    S2-S3    S3-S4 S4-S5    S5-S6 S6-S7        S7-S8    S8-S9
-## 1   180 125.0996 110.4873   180 121.8554   180 8.537736e-07 33.55731
-##     S9-S10  S10-S11  S11-S12     mean      sd
-## 1 80.40593 84.26083 106.2602 109.2661 58.7866</code></pre>
-<pre class="sourceCode r" id="cb74"><code class="sourceCode r"><div class="sourceLine" id="cb74-1" data-line-number="1">
-<span class="kw">trajectoryAngles</span>(sqrtD,sites,surveys)</div></code></pre>
-<pre><code>##   S1-S2    S2-S3    S3-S4 S4-S5   S5-S6 S6-S7    S7-S8    S8-S9   S9-S10
-## 1    90 83.58072 80.90256    90 83.2319    90 41.81031 49.79703 73.22135
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryAngles</span>(D,sites,surveys)</code></pre></div>
+<pre><code>##   S1-S2    S2-S3 S3-S4    S4-S5    S5-S6 S6-S7    S7-S8 S8-S9   S9-S10
+## 1   180 134.6183   180 104.4775 97.18076   180 48.18969   180 24.74725
 ##    S10-S11  S11-S12     mean       sd
-## 1 77.07903 78.46304 76.18963 16.09934</code></pre>
+## 1 73.39845 82.81924 116.8574 57.48969</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryAngles</span>(sqrtD,sites,surveys)</code></pre></div>
+<pre><code>##   S1-S2    S2-S3 S3-S4    S4-S5    S5-S6 S6-S7    S7-S8 S8-S9   S9-S10
+## 1    90 85.57514    90 78.22177 75.52249    90 54.73561    90 38.21321
+##    S10-S11  S11-S12    mean       sd
+## 1 67.79235 75.52249 75.9621 16.81797</code></pre>
 <p>And so does the overall directionality:</p>
-<pre class="sourceCode r" id="cb76"><code class="sourceCode r"><div class="sourceLine" id="cb76-1" data-line-number="1">
-<span class="kw">trajectoryDirectionality</span>(D,sites,surveys)</div></code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryDirectionality</span>(D,sites,surveys)</code></pre></div>
 <pre><code>##         1 
-## 0.9134964</code></pre>
-<pre class="sourceCode r" id="cb78"><code class="sourceCode r"><div class="sourceLine" id="cb78-1" data-line-number="1">
-<span class="kw">trajectoryDirectionality</span>(sqrtD,sites,surveys)</div></code></pre>
+## 0.8663347</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trajectoryDirectionality</span>(sqrtD,sites,surveys)</code></pre></div>
 <pre><code>##         1 
-## 0.6963258</code></pre>
+## 0.6712361</code></pre>
 </div>
 <div id="conclusions" class="section level3">
 <h3 class="hasAnchor">
 <a href="#conclusions" class="anchor"></a>4.4 Conclusions</h3>
 <p>In this small study we have shown how the square root transformation distorts the angles and overall directionality of trajectories on the space defined by the percentage difference (alias Bray-Curtis) dissimilarity index. We suspect that this negative effect of square root transformation on angles happens no matter which coefficient is used to derive the initial distance matrix. Therefore, we advocate for avoiding its use when conducting community trajectory analysis (in particular for angles). However, the square root transformation may still be advised for the representation of (especially complex) trajectories in ordination diagrams, because the alternative is to discard the information corresponding to negative eigenvalues of the distance matrix.</p>
-</div>
 </div>
 </div>
   </div>
@@ -588,7 +526,7 @@
 <li><a href="#introduction">1. Introduction</a></li>
       <li><a href="#simple-example">2. Simple example</a></li>
       <li><a href="#structural-dynamics-in-permanent-plots">3. Structural dynamics in permanent plots</a></li>
-      <li><a href="#bray-curtis-dissimilarity-and-trajectories">4. Bray-Curtis dissimilarity and trajectories</a></li>
+      <li><a href="#square-root-transformation-and-community-trajectories">4. Square root transformation and community trajectories</a></li>
       </ul>
 </div>
       </div>
@@ -597,7 +535,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Miquel De Caceres.</p>
+  <p>Developed by Miquel De Cáceres.</p>
 </div>
 
 <div class="pkgdown">
@@ -606,6 +544,8 @@
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>

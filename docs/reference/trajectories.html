@@ -25,6 +25,9 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
 <meta property="og:title" content="Community trajectory analysis — trajectories" />
 
 <meta property="og:description" content="Set of functions for trajectory analysis
@@ -41,6 +44,8 @@ These functions consider community dynamics as trajectories in a chosen space of
 By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
 Details of calculations are given in De Cáceres et al (submitted)" />
 <meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -63,8 +68,12 @@ Details of calculations are given in De Cáceres et al (submitted)" />
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">vegclust</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">vegclust</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.7.4</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -96,6 +105,7 @@ Details of calculations are given in De Cáceres et al (submitted)" />
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -103,13 +113,15 @@ Details of calculations are given in De Cáceres et al (submitted)" />
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Community trajectory analysis</h1>
     
+    <div class="hidden name"><code>trajectories.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Set of functions for trajectory analysis</p><ul>
 <li><p>Given a distance matrix between community states, functions <code>segmentDistances</code> and <code>trajectoryDistances</code> calculate the distance between pairs of directed segments and community trajectories, respectively.</p></li>
@@ -125,6 +137,7 @@ Details of calculations are given in De Cáceres et al (submitted)" />
 By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
 Details of calculations are given in De Cáceres et al (submitted)</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>segmentDistances</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>distance.type</span> <span class='kw'>=</span> <span class='st'>"directed-segment"</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
@@ -151,7 +164,7 @@ Details of calculations are given in De Cáceres et al (submitted)</p>
 
 <span class='fu'>centerTrajectories</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -262,7 +275,7 @@ Function <code>centerTrajectory</code> returns an object of class <code>dist</co
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p><code>cmdscale</code></p>
+    <div class='dont-index'><p><code>cmdscale</code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -297,7 +310,7 @@ Function <code>centerTrajectory</code> returns an object of class <code>dist</co
 #&gt; 2 1.414214</div><div class='input'>  <span class='fu'>trajectoryDistances</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='no'>surveys</span>, <span class='kw'>distance.type</span> <span class='kw'>=</span> <span class='st'>"DSPD"</span>)</div><div class='output co'>#&gt;      1
 #&gt; 2 0.75</div><div class='input'>
   <span class='co'>#Draw trajectories</span>
-  <span class='fu'>trajectoryPCoA</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>traj.colors</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"black"</span>,<span class='st'>"red"</span>), <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='img'><img src='trajectories-1.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+  <span class='fu'>trajectoryPCoA</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>traj.colors</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"black"</span>,<span class='st'>"red"</span>), <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='img'><img src='trajectories-1.png' alt='' width='700' height='433' /></div><div class='input'>
 
   <span class='co'>#Should give the same results if surveys are not in order </span>
   <span class='co'>#(here we switch surveys for site 2)</span>
@@ -339,7 +352,7 @@ Miquel De Cáceres, Forest Sciences Center of Catalonia
 
       <footer>
       <div class="copyright">
-  <p>Developed by Miquel De Caceres.</p>
+  <p>Developed by Miquel De Cáceres.</p>
 </div>
 
 <div class="pkgdown">
@@ -348,6 +361,8 @@ Miquel De Cáceres, Forest Sciences Center of Catalonia
 
       </footer>
    </div>
+
+  
 
   </body>
 </html>

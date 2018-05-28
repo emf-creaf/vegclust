@@ -25,10 +25,15 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
 <meta property="og:title" content="Draws a cummulative abundance surface — plot.CAS" />
 
 <meta property="og:description" content="Create plots used to inspect one or more cumulative abundance profiles." />
 <meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -51,8 +56,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">vegclust</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">vegclust</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.7.4</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -84,6 +93,7 @@
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -91,23 +101,26 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Draws a cummulative abundance surface</h1>
     
+    <div class="hidden name"><code>plot.CAS.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Create plots used to inspect one or more cumulative abundance profiles.</p>
     
+    </div>
 
     <pre class="usage"><span class='co'># S3 method for CAS</span>
 <span class='fu'>plot</span>(<span class='no'>x</span>, <span class='kw'>plot</span><span class='kw'>=</span><span class='kw'>NULL</span>, <span class='kw'>species</span><span class='kw'>=</span><span class='kw'>NULL</span>, <span class='kw'>sizes1</span><span class='kw'>=</span><span class='kw'>NULL</span>, <span class='kw'>sizes2</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
                    <span class='kw'>palette</span> <span class='kw'>=</span> <span class='fu'>colorRampPalette</span>(<span class='fu'>c</span>( <span class='st'>"light blue"</span>,<span class='st'>"light green"</span>,<span class='st'>"white"</span>,
                    <span class='st'>"yellow"</span>,<span class='st'>"orange"</span>,<span class='st'>"red"</span>)), <span class='kw'>zlim</span><span class='kw'>=</span><span class='kw'>NULL</span>,<span class='no'>...</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -150,7 +163,7 @@
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p><code><a href='CAS.html'>CAS</a></code>, <code>persp</code></p>
+    <div class='dont-index'><p><code><a href='CAS.html'>CAS</a></code>, <code>persp</code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -185,7 +198,7 @@
 <span class='co'>## Plot the surface of species '1' in plot '1' using heights and diameters</span>
 <span class='fu'>plot</span>(<span class='no'>Y</span>, <span class='kw'>species</span><span class='kw'>=</span><span class='fl'>1</span>, <span class='kw'>sizes1</span><span class='kw'>=</span><span class='no'>heights</span>[-<span class='fl'>1</span>], <span class='kw'>xlab</span><span class='kw'>=</span><span class='st'>"height (m)"</span>,
      <span class='kw'>ylab</span><span class='kw'>=</span><span class='st'>"diameter (cm)"</span>, <span class='kw'>sizes2</span><span class='kw'>=</span><span class='no'>diams</span>[-<span class='fl'>1</span>], <span class='kw'>zlab</span><span class='kw'>=</span><span class='st'>"Basal area (m2)"</span>,
-     <span class='kw'>zlim</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0</span>,<span class='fl'>6</span>), <span class='kw'>main</span><span class='kw'>=</span><span class='st'>"Species 1"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: surface extends beyond the box</span></div><div class='img'><img src='plot.CAS-1.png' alt='' width='700' height='432.632880098887' /></div></pre>
+     <span class='kw'>zlim</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0</span>,<span class='fl'>6</span>), <span class='kw'>main</span><span class='kw'>=</span><span class='st'>"Species 1"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: surface extends beyond the box</span></div><div class='img'><img src='plot.CAS-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -208,7 +221,7 @@ Miquel De Cáceres, Forest Science Center of Catalonia
 
       <footer>
       <div class="copyright">
-  <p>Developed by Miquel De Caceres.</p>
+  <p>Developed by Miquel De Cáceres.</p>
 </div>
 
 <div class="pkgdown">
@@ -217,6 +230,8 @@ Miquel De Cáceres, Forest Science Center of Catalonia
 
       </footer>
    </div>
+
+  
 
   </body>
 </html>
