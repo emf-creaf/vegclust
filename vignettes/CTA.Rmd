@@ -274,11 +274,11 @@ plot(x,y, type="p", asp=1, xlab=paste0("PCoA 1 (", round(100*cmd_D2$eig[1]/sum(c
 text(x,y, labels=1:8, pos=2)
 ```
 
-## 4. Bray-Curtis dissimilarity and trajectories
+## 4. Square root transformation and community trajectories
 
 ### 4.1 Introduction
 
-The percentage difference (alias Bray-Curtis) is a popular dissimilarity coefficient in community ecology. Mathematically, however, it has the drawback of being a semi-metric (i.e. triangle inequality is not ensured), which also means it is not Euclidean (a stronger requirement). In order to use this coefficient for multivariate analyses that require these properties a common transformation is the square root. This document tries to illustrate that applying this transformation has consequences for trajectory analysis.
+Some dissimilarity coefficients that are popular in community ecology, such as the percentage difference (alias Bray-Curtis), have the drawback of being a non-Euclidean (dissimilarity matrices do not allow a representation in a Cartesian space), or even semi-metric (i.e. triangle inequality is not ensured). In order to use these coefficients in multivariate analyses that require these properties a common transformation is the square root. This document tries to illustrate that applying this transformation has consequences for trajectory analysis.
 
 ### 4.2 Simple directional trajectory
 Here we use an example of a single synthetic community to illustrate the effect of square root transformation on a community trajectory. We begin by defining the species data of the trajectory itself. The dataset consists of four rows (i.e. surveys) and four columns (species). The dynamics in this example consist in an constant increase in the number of individuals of the first species and a corresponding decrease of the others, while keeping a total abundance of 100 individuals:  
