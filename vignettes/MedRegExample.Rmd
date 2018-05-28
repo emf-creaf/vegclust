@@ -78,8 +78,8 @@ The concept of cumulative abundance profile can be extended to two structural va
 ```{r}
 pl = rep(1,100) # All trees in the same plot
 sp = ifelse(runif(100)>0.5,1,2) # Random species identity (species 1 or 2)
-h=rgamma(100,10,2) # Heights (m)
-d = rpois(100, lambda=h^2) # Diameters (cm)
+h = pmin(100,rgamma(100,10,2)) # Heights (m)
+d = pmin(150,rpois(100, lambda=h^2)) # Diameters (cm)
 m = data.frame(plot=pl,species=sp, height=h,diameter=d) 
 ```
 
@@ -96,8 +96,8 @@ print(head(m))
 
 We start our analysis by defining two sets of size classes, one for height and the other for diameter:
 ```{r}
-heights = seq(0,4, by=.25)^2 # Quadratic classes
-diams = seq(0,130, by=5) # Linear classes
+heights = seq(0,5, by=.25)^2 # Quadratic classes
+diams = seq(0,150, by=5) # Linear classes
 ```
 
 We are ready to stratify the data set:

@@ -635,36 +635,6 @@ trajectoryConvergence<-function(d, sites, surveys = NULL, symmetric = FALSE, ver
   return(list(tau = tau, p.value = p.value))
 }
 
-#' trajectoryAutocorrelation<-function(d, sites, surveys = NULL, permutations = 999, verbose = FALSE) {
-#'   if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
-#'   if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
-#'   siteIDs = unique(sites)
-#'   nsite = length(siteIDs)
-#'   nsurveysite<-numeric(nsite)
-#'   for(i in 1:nsite) nsurveysite[i] = sum(sites==siteIDs[i])
-#'   if(sum(nsurveysite<3)>0) stop("All sites need to be surveyed at least three times")
-#' 
-#'   dmat = as.matrix(d)
-#'   #Init output
-#'   res = data.frame(r = rep(NA, nsite), p.value = rep(NA, nsite),  row.names = siteIDs)
-#'   if(verbose) {
-#'     cat("\nAssessing trajectory autocorrelation...\n")
-#'     tb = txtProgressBar(1, nsite, style=3)
-#'   }
-#'   for(i1 in 1:nsite) {
-#'     if(verbose) setTxtProgressBar(tb, i1)
-#'     ind_surv1 = which(sites==siteIDs[i1])
-#'     #Surveys may not be in order
-#'     if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
-#'     d1 = dist(dmat[ind_surv1, ind_surv1])
-#'     mt = mantel(d1, dist(1:length(ind_surv1)), permutations = permutations)
-#'     # print(names(mt))
-#'     res[i1,"r"] = mt$statistic
-#'     res[i1,"p.value"] = mt$signif
-#'   }
-#'   return(res)
-#' }
-
 
 #' @rdname trajectories
 trajectoryDirectionality<-function(d, sites, surveys = NULL, verbose = FALSE) {
