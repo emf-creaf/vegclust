@@ -19,11 +19,13 @@ knitr::opts_chunk$set(echo = TRUE)
 ## 1. Introduction
 In this vignette you will learn how to conduct community trajectory analysis (CTA), as implemented in package **vegclust**.
 
-We begin by loading the libraries:
+We begin by loading `vegclust` and other libraries needed in this document:
 
 ```{r load libraries, echo = T}
 library(vegclust)
 library(RColorBrewer)
+library(smacof)
+library(MASS)
 ```
 
 
@@ -75,9 +77,17 @@ legend("topleft", col=c("black","red", "blue"),
        legend=c("Trajectory 1", "Trajectory 2", "Trajectory 3"), bty="n", lty=1, lwd = 2)
 ```
 
-While trajectory of site '1' (black arrows) is made of three segments of the same length and direction, trajectory of site '2' (red arrows) has a second and third segments that bend and are shorter than that of the segond segment of site '1'. Trajectory of site '3' includes a stronger change in direction and shorter segments.
+While trajectory of site '1' (black arrows) is made of three segments of the same length and direction, trajectory of site '2' (red arrows) has a second and third segments that bend and are shorter than that of the segond segment of site '1'. Trajectory of site '3' includes a stronger change in direction and shorter segments. 
 
-### 2.3 Trajectory lengths, angles and directionality
+As this example has two dimensions and we used Euclidean distance, the same plot (albeit rotated) can be straightforwardly obtained using matrix `xy` and function `trajectoryPlot`:
+
+```{r xy, fig = TRUE, fig.height=5, fig.width=5, fig.align = "center"}
+trajectoryPlot(xy, sites, surveys, traj.colors = c("black","red", "blue"), lwd = 2)
+legend("topright", col=c("black","red", "blue"), 
+       legend=c("Trajectory 1", "Trajectory 2", "Trajectory 3"), bty="n", lty=1, lwd = 2)
+```
+
+### 2.3 Trajectory lengths, angles and overall directionality
 
 We can obtain the length of trajectory segments using function `trajectoryLengths` and the angles between consecutive segments, using function `trajectoryAngles`:
 
@@ -85,9 +95,13 @@ We can obtain the length of trajectory segments using function `trajectoryLength
 trajectoryLengths(D, sites, surveys)
 trajectoryAngles(D, sites, surveys)
 ```
-where some segments are shorter and angles are smaller for trajectories of site '2' and '3'. In this case, the same information could be obtained by inspecting the PCoA representation, but in a case of $\Omega$ having many dimensions, the PCoA representation will correspond to a reduced space and hence, angles and lengths will not correspond exactly to those of functions `trajectoryLengths` and `trajectoryAngles`, which take into account the full space.
+Zero angles indicate that consecutive segments are in a straight line. The larger the angle value, the more is trajectory changing in direction. Mean and standard deviation statistics of angles are calculated according to circular statistics (see R package `circular`). While site '1' has a linear trajectoy, some segments are shorter and angles are > 0 for trajectories of site '2' and '3', denoting the change in direction. In this case, the same information could be obtained by inspecting the PCoA representation, but in a case where $\Omega$ has many dimensions, the PCoA representation will correspond to a reduced space and hence, angles and lengths will not correspond exactly to those of functions `trajectoryLengths` and `trajectoryAngles`, which take into account the full space. Angles can be calculated for all four triplets of ordered community states, whether of consecutive segments or not (i.e., between points 1-2-3, 1-2-4, 1-3-4 and 2-3-4). This is done by specifying `all=TRUE` in `trajectoryAngles`:
 
-One way of determining the degree to which trajectories follow directional trends (i.e. more or less straight pathways) involves considering all pairs of triplets in the trajectory. This approach is implemented in function `trajectoryDirectionality`:
+```{r} 
+trajectoryAngles(D, sites, surveys, all=TRUE)
+```
+
+One way of determining the degree to which a trajectory follows a single direction (i.e. more or less straight pathways) involves considering the angles corresponding to all pairs of ordered triplets in the trajectory and calculating the *mean resultant length* of circular statistics (column `rho` of the previous result), which takes values between 0 and 1. This approach, however, uses only angular information and does not take into account the length of segments. For this reason, we recommend using another statistic that is sensitive to both angles and segment lengths and is implemented in function `trajectoryDirectionality`:
 ```{r} 
 trajectoryDirectionality(D, sites, surveys)
 ```  
@@ -172,7 +186,8 @@ trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
 legend("topright", bty="n", legend = 1:8, col = brewer.pal(8,"Accent"), lwd=2)
 
 ```
-Note that in this case, the full $\Omega$ include more than two dimensions, and PCoA is representing 43% of total variance (correction for negative eigenvalues is included in the call to `cmdscale` from `trajectoryPCoA`), so one has to be careful when interpreting trajectories visually.
+
+Note that in this case, the full $\Omega$ includes more than two dimensions, and PCoA is representing 43% of total variance (correction for negative eigenvalues is included in the call to `cmdscale` from `trajectoryPCoA`), so one has to be careful when interpreting trajectories visually.
 
 ```{r int1, echo=FALSE}
 plotTrajDiamDist<-function(cli = 7) {
@@ -235,7 +250,7 @@ plotTrajDiamDist(4)
 
 This second trajectory is less straight and seems to include a turn by the end of the sampling period, corresponding to the recruitment of new saplings.
 
-### 3.2 Trajectory lengths, angles and directionality
+### 3.2 Trajectory lengths, angles and overall directionality
 
 While trajectory lengths and angles can be inspected visually in ordination diagrams, it is better to calculate them using the full $\Omega$ space (i.e., from matrix `avoca_D_man`). Using function `trajectoryLengths` we can see that the trajectory of forest plot '4' is lengthier than that of plot '3', mostly because includes a lengthier last segment (i.e. the recruitment of new individuals):
 
@@ -243,16 +258,28 @@ While trajectory lengths and angles can be inspected visually in ordination diag
 trajectoryLengths(avoca_D_man, avoca_sites, avoca_surveys)
 ```
 
-If we calculate the angles between consecutive segments (using function `trajectoryLengths`) we see that indeed the trajectory of '3' is rather directional, but the angles of trajectory of '4' are not that low:
+If we calculate the angles between consecutive segments (using function `trajectoryLengths`) we see that indeed the trajectory of '3' is rather directional, but the angles of trajectory of '4' are larger, on aveerage:
 
 ```{r trajectory angles, echo=T}
-trajectoryAngles(avoca_D_man, avoca_sites, avoca_surveys)
+avoca_ang <- trajectoryAngles(avoca_D_man, avoca_sites, avoca_surveys)
+avoca_ang
 ```
 
 By calling function `trajectoryDirectionality` we can confirm that the trajectory for site '4' is less straight than that of site '3':
 
 ```{r trajectory directionality, echo=T}
-trajectoryDirectionality(avoca_D_man, avoca_sites, avoca_surveys)
+avoca_dir <- trajectoryDirectionality(avoca_D_man, avoca_sites, avoca_surveys)
+avoca_dir
+```
+
+The following code displays the relationship between the statistic in `trajectoryDirectionality` and the mean resultant vector length that uses angular information only:
+
+```{r, echo=TRUE, fig = TRUE, fig.height=5, fig.width=5, fig.align="center"}
+avoca_rho = trajectoryAngles(avoca_D_man, avoca_sites, avoca_surveys, all=TRUE)$rho
+par(mar=c(4,4,1,1))
+plot(avoca_rho, avoca_dir, xlab = "rho(T)", ylab = "dir(T)", xlim=c(0.7,1), ylim= c(0.7,1), asp=1, type="n")
+text(avoca_rho, avoca_dir, as.character(1:8))
+abline(a=0, b=1, col="red")
 ```
 
 
@@ -274,14 +301,14 @@ plot(x,y, type="p", asp=1, xlab=paste0("PCoA 1 (", round(100*cmd_D2$eig[1]/sum(c
 text(x,y, labels=1:8, pos=2)
 ```
 
-## 4. Square root transformation and community trajectories
+## 4. Transformation of dissimilarities in community trajectory analysis
 
 ### 4.1 Introduction
 
-Some dissimilarity coefficients that are popular in community ecology, such as the percentage difference (alias Bray-Curtis), have the drawback of being a non-Euclidean (dissimilarity matrices do not allow a representation in a Cartesian space), or even semi-metric (i.e. triangle inequality is not ensured). In order to use these coefficients in multivariate analyses that require these properties a common transformation is the square root. This document tries to illustrate that applying this transformation has consequences for trajectory analysis.
+Some dissimilarity coefficients that are popular in community ecology, such as the percentage difference (alias Bray-Curtis), have the drawback of being a non-Euclidean (dissimilarity matrices do not allow a representation in a Cartesian space), or even semi-metric (i.e. triangle inequality is not ensured). In order to use these coefficients in multivariate analyses that require these properties a transformation of the original space will normally be in order. In this section, we compare different alternatives and provide some recommendations on this issue. 
 
-### 4.2 Simple directional trajectory
-Here we use an example of a single synthetic community to illustrate the effect of square root transformation on a community trajectory. We begin by defining the species data of the trajectory itself. The dataset consists of four rows (i.e. surveys) and four columns (species). The dynamics in this example consist in an constant increase in the number of individuals of the first species and a corresponding decrease of the others, while keeping a total abundance of 100 individuals:  
+### 4.2 Effect of square root on a simple directional trajectory
+Here, we use an example of a single synthetic community to illustrate the effect of square root transformation on a community trajectory. We begin by defining the species data of the trajectory itself. The dataset consists of four rows (i.e. surveys) and four columns (species). The dynamics in this example consist in an constant increase in the number of individuals of the first species and a corresponding decrease of the others, while keeping a total abundance of 100 individuals:  
 
 ```{r}
 sites = rep(1,4)
@@ -291,11 +318,15 @@ spdata = rbind(c(35,30,20,15),
                c(65,20,10,5),
                c(80,15,5,0))
 ```
+
 We now use function `vegdist` from package `vegan` to calculate the Bray-Curtis coefficient:
 ```{r}
 D = vegan::vegdist(spdata, "bray")
+is.metric(D)
 D
 ```
+This dissimilarity matrix is a metric, so one would not need any transformation for CTA. However, it is a good example to illustrate the effect of the square root transformation. 
+
 If we draw the resemblance space corresponding to this dissimilarity matrix we see a straight trajectory:
 ```{r, echo=TRUE, fig = TRUE, fig.height=4, fig.width=6, fig.align="center"}
 trajectoryPCoA(D,sites,surveys)
@@ -306,17 +337,19 @@ trajectoryLengths(D,sites,surveys)
 trajectoryAngles(D,sites,surveys)
 trajectoryDirectionality(D,sites,surveys)
 ```
-Angles are 180 degrees and overall directionality is maximum (i.e. 1), in accordance with the plot and the data. We now proceed to take the square root of the dissimilarity values, as would be necessary to achieve a metric (and Euclidean) space in a more complex data set:
+Angles are 0 degrees and overall directionality is maximum (i.e. 1), in accordance with the plot and the data. We now proceed to take the square root of the dissimilarity values, as would be necessary to achieve a metric (and Euclidean) space in a more complex data set:
 
 ```{r}
 sqrtD = sqrt(D)
 sqrtD
 
 ```
+
 The transformation increases all dissimilarity values (because the original values are smaller than 1), but the increase is larger for smaller values, so the ratio between large dissimilarities and small dissimilarities decreases. This has an effect on the overall shape of the trajectory, which surprisingly now looks like:
 ```{r, echo=TRUE, fig = TRUE, fig.height=4, fig.width=6, fig.align="center"}
 trajectoryPCoA(sqrtD,sites,surveys)
 ```
+
 In addition to the distortion observed, the number of dimensions of the data have increased (i.e the sum of variance explained by the two axes is 88% < 100%), so we cannot be sure that the angles are well represented. If we re-calculate the properties of the trajectory taking into account all dimensions we obtain:
 
 ```{r}
@@ -324,21 +357,31 @@ trajectoryLengths(sqrtD,sites,surveys)
 trajectoryAngles(sqrtD,sites,surveys)
 trajectoryDirectionality(sqrtD,sites,surveys)
 ```
-The length of segments and the trajectory have increased, but all segments are still the same size, in agreement with the original trajectory. In contrast, the angles are now 90 degrees and the directionality of the trajectory has decreased substantially.
+The length of segments and the trajectory have increased, but all segments are of the same length, in agreement with the original trajectory. In contrast, the angles are now 90 degrees and the directionality of the trajectory has decreased substantially. In sum, the square root transformation is not recommended when examining the angular properties of trajectories.
 
-### 4.3 Longer trajectories
+### 4.3 Effect of different transformations on more complex trajectories
 
-Do the results of the previous section hold for a more complex trajectory? Here we use simulated dynamics to build another trajectory with more species (20) and more time steps. We begin by setting the number of time steps (50) and the size of the community (100 individuals):
+Here we use simulated data to compare four transformation approaches:
+
+1. Local transformation of semi-metric dissimilarities (such as the percentage difference) in every triplet when the triangle inequality is required. This is done by default in the CTA functions of package `vegclust`.
+2. Global transformation of dissimilarities, using the square root. 
+3. Global transformation of dissimilarities by using Principal Coordinates Analysis (classical multidimensional scaling) with eigenvalue correction. 
+4. Global transformation of dissimilarities by using metric multidimensional scaling (metric MDS).
+5. Global transformation of dissimilarities by using non-metric multidimensional scaling (non-metric MDS).
+
+We use simulated dynamics to build another trajectory with more species (20) and more time steps. We begin by setting the number of time steps (50) and the size of the community (50 individuals):
 ```{r}
 Nsteps = 50
-CC = 100
+CC = 50
 Nreplace <- CC*0.05
 ```
+
 `Nreplace` is the number of individuals to be replaced each time step (5\%). Now we define the initial community vector and the vector with the probabilities of offspring for each species according to some ecological conditions:
 ```{r}
 x <- c(0, 1, 0, 67, 1, 3, 0, 2, 2, 2, 1, 6, 2, 0, 0, 2, 5, 1, 6, 0)
 poffspring <- c(0, 0, 0.002, 0.661 ,0 ,0, 0.037, 0.281, 0, 0, 0, 0.008, 0, 0, 0.005, 0.003, 0, 0, 0, 0)
 ```
+
 We can now simulate the dynamics by sequentially applying stochastic deaths and recruitment:
 ```{r}
 m <- matrix(0, nrow=Nsteps+1, ncol=length(x))
@@ -352,38 +395,90 @@ for(k in 1:Nsteps) {
   m[k+1, ]<-x
 }
 ```
+
 Then we decide how frequently (with respect to the simulated step) a sample of the community is taken, here every four steps:
 ```{r}
-Sj <- seq(1,51, by=4) #Sample every four steps
+Sj <- seq(1,Nsteps+1, by=4) #Sample every four steps
 mj <- m[Sj,]
 surveys = 1:length(Sj)
 sites = rep(1,length(Sj))
 ```
-Now we are ready to calculate the Bray-Curtis dissimilarity and to plot the resulting trajectory:
-```{r, echo=TRUE, fig = TRUE, fig.height=5, fig.width=6, fig.align="center"}
+
+Now we are ready to calculate the Bray-Curtis dissimilarity:
+```{r}
 D <- vegan::vegdist(mj,"bray")
-trajectoryPCoA(D, sites, surveys, selection=1,length=0.1, axes=c(1,2))
 ```
 
-The trajectory looks rather directional, although it has some twists derived from stochasticity in death and recruitment. Let's now look at the square root of the Bray-Curtis dissimilarity:
+In this more complex trajectory, some triangles may not obey the triangle inequality (depending on the simulation). This can be inspected using function `is.metric`:
+```{r}
+is.metric(D, tol=0.0000001)
+```
+
+Deviations from a metric space, if they exist, will be small, so that local transformation of triangles will be very small.
+
+Local transformations are not possible to display trajectories. When we plot the trajectory using function `trajectoryPCoA` the global transformation of principal coordinates analysis (PCoA) with negative eigenvalue correction is performed. This is fine to display trajectories, but has problems when measuring angular properties, as we will see.
+
+```{r, echo=TRUE, fig = TRUE, fig.height=5, fig.width=6, fig.align="center"}
+pcoa<-trajectoryPCoA(D, sites, surveys, selection=1,length=0.1, axes=c(1,2))
+pcoaD = dist(pcoa$points)
+```
+
+The trajectory has some twists derived from stochasticity in death and recruitment. Let's now look at the square root of the Bray-Curtis dissimilarity:
 ```{r, echo=TRUE, fig = TRUE, fig.height=5, fig.width=6, fig.align="center"}
 sqrtD = sqrt(D)
-trajectoryPCoA(sqrtD, sites, surveys, selection=1,length=0.1, axes=c(1,2))
+pcoaSqrt = trajectoryPCoA(sqrtD, sites, surveys, selection=1,length=0.1, axes=c(1,2))
 ```
 
-While they look different, the differences are not so striking as with the simple example. In other words, the overall shape of the trajectory looks similar in the two plots. From this, we might conclude that the square root transformation did not distort the trajectory significantly. However, note that the proportion of variance explained by the two axes has decreased after the transformation, so there might be changes in trajectory shape that are hidden in the dimensions of the data that we do not see. If we calculate geometric properties we are not limited by the ordination plot and we can take into account all dimensions. In contrast with the ordination plot, the angles of the trajectory are strongly affected by the square root transformation:
+Finally, we also transform dissimilarities using metric multidimensional scaling (mMDS), provided by package `smacof`:
+
+```{r, echo=TRUE, fig = TRUE, fig.height=5, fig.width=6, fig.align="center"}
+res <- mds(D, ndim = length(Sj)-1, type = "interval")
+mmdsD <- dist(res$conf)
+trajectoryPlot(res$conf, sites, surveys, selection=1,length=0.1, axes=c(1,2))
+```
+
+Finally, we also try the configuration provided by non-metric MDS, as implemented in function `isoMDS` of package `MASS`:
+```{r, echo=TRUE, fig = TRUE, fig.height=5, fig.width=6, fig.align="center"}
+nmds <- isoMDS(D, y=res$conf, k = length(Sj)-1)
+nmdsD <- dist(nmds$points)
+trajectoryPlot(nmds$points, sites, surveys, selection=1,length=0.1, axes=c(1,2))
+```
+
+While the three plots look different, the differences are not striking (besides rotation issues). We can compare the stress of the global solutions:
+```{r}
+stress0(D,pcoaSqrt$points, type="interval")
+stress0(D,pcoa$points, type="interval")
+stress0(D,res$conf, type="interval")
+stress0(D,nmds$points, type="interval")
+```
+
+Where we see that the square root leads to the strongest alteration of original dissimilarities. If we calculate geometric properties we are not limited by ordination plots and we can take into account all dimensions.
 
 ```{r}
-trajectoryAngles(D,sites,surveys)
-trajectoryAngles(sqrtD,sites,surveys)
+anglesD = trajectoryAngles(D,sites,surveys)
+anglesSqrtD = trajectoryAngles(sqrtD,sites,surveys)
+anglesPcoaD = trajectoryAngles(pcoaD,sites,surveys)
+anglesmmdsD = trajectoryAngles(mmdsD,sites,surveys)
+anglesnmdsD = trajectoryAngles(nmdsD,sites,surveys)
+
+df<-as.data.frame(rbind(anglesD, anglesSqrtD, anglesPcoaD, anglesmmdsD, anglesnmdsD))
+row.names(df)<-c("local", "global.sqrt", "global.pcoa", "global.mmds", "global.nmds")
+round(df,2)
 ```
-And so does the overall directionality:
+The first call to `trajectoryAngles` with matrix `D` represents the default strategy of transforming triangles locally, which involves the weakest transformation of all and can be taken as reference. Both the square root and PCoA with negative eigenvalue correction induce a strong transformation of trajectory angles. The global solution of metric MDS leads to angles that are more similar to those of the local transformation strategy.
+
+
+If we inspect the overall directionality, the global solution of metric MDS provides a value that is again closer to that of local transformation, compared to PCoA and the square root:
 ```{r}
 trajectoryDirectionality(D,sites,surveys)
 trajectoryDirectionality(sqrtD,sites,surveys)
+trajectoryDirectionality(pcoaD,sites,surveys)
+trajectoryDirectionality(mmdsD,sites,surveys)
+trajectoryDirectionality(nmdsD,sites,surveys)
 ```
+
 
 ### 4.4 Conclusions
 
-In this small study we have shown how the square root transformation distorts the angles and overall directionality of trajectories on the space defined by the percentage difference (alias Bray-Curtis) dissimilarity index. We suspect that this negative effect of square root transformation on angles happens no matter which coefficient is used to derive the initial distance matrix. Therefore, we advocate for avoiding its use when conducting community trajectory analysis (in particular for angles). However, the square root transformation may still be advised for the representation of (especially complex) trajectories in ordination diagrams, because the alternative is to discard the information corresponding to negative eigenvalues of the distance matrix. 
+In this small study we compared the effect of different solutions to violation of the triangle inequality. If function `is.metric` returns TRUE for a given data set one should not worry about violations of the triangle inequality. Local solutions are those that imply the smallest number of changes, but these will not be consistent across triplets, so users may desire to apply a global transformation that produces euclidean spaces. This should be done with care. We have shown how the square root transformation distorts the angles and overall directionality of trajectories on the space defined by the percentage difference (alias Bray-Curtis) dissimilarity index. We suspect that this negative effect of square root transformation on angles happens no matter which coefficient is used to derive the initial distance matrix. Therefore, we advocate for avoiding its use when conducting community trajectory analysis (in particular for angles). The global transformation consisting in the application of PCoA with negative eigenvalue correction is less strong than the square root, but it still strongly change the angles between segments. Perhaps, the less harmful global transformation is provided by metric Multidimensional Scaling, but the need to embed distances in an Euclidean space of all three transformations implies a stronger requirement than being a metric, and results in distortions.
 

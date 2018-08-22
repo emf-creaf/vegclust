@@ -93,7 +93,7 @@ double angularAttributeConsecutive(double d12, double d23, double d13, bool add 
   }
   double alpha = acos(a1/d12)*(180.0/PI);
   double beta = acos(a2/d23)*(180.0/PI);
-  return(180.0 - alpha - beta);
+  return(alpha + beta); //Angle between the direction of the first segment and the direction of the second
 }
 
 //

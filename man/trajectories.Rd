@@ -12,15 +12,8 @@
 \alias{trajectoryConvergence}
 \alias{trajectoryDirectionality}
 \alias{centerTrajectories}
-\alias{trajectoryDistances}
-\alias{trajectoryLengths}
-\alias{trajectoryAngles}
-\alias{trajectoryPCoA}
 \alias{trajectoryPlot}
-\alias{trajectoryProjection}
-\alias{trajectoryConvergence}
-\alias{trajectoryDirectionality}
-\alias{centerTrajectories}
+\alias{is.metric}
 \title{Community trajectory analysis}
 \usage{
 segmentDistances(d, sites, surveys = NULL,
@@ -31,7 +24,8 @@ trajectoryDistances(d, sites, surveys = NULL, distance.type = "DSPD",
 
 trajectoryLengths(d, sites, surveys = NULL, verbose = FALSE)
 
-trajectoryAngles(d, sites, surveys = NULL, all = FALSE, verbose = FALSE)
+trajectoryAngles(d, sites, surveys = NULL, all = FALSE, stats = TRUE,
+  verbose = FALSE)
 
 trajectoryPCoA(d, sites, surveys = NULL, selection = NULL,
   traj.colors = NULL, axes = c(1, 2), ...)
@@ -47,6 +41,8 @@ trajectoryConvergence(d, sites, surveys = NULL, symmetric = FALSE,
 trajectoryDirectionality(d, sites, surveys = NULL, verbose = FALSE)
 
 centerTrajectories(d, sites, surveys = NULL, verbose = FALSE)
+
+is.metric(d, tol = 1e-04)
 }
 \arguments{
 \item{d}{A symmetric \code{\link{matrix}} or an object of class \code{\link{dist}} containing the distance values between pairs of community states.}
@@ -72,7 +68,9 @@ whereas for \code{trajectoryDistances} the available indices are:
 
 \item{symmetrization}{Function used to obtain a symmetric distance, so that DSPD(T1,T2) = DSPD(T2,T1) (e.g., \code{mean} or \code{min}).}
 
-\item{all}{A flag to indicate that angles are desired for all triangles in the trajectory}
+\item{all}{A flag to indicate that angles are desired for all triangles (i.e. all pairs of segments) in the trajectory. If FALSE, angles are calculated for consecutive segments only.}
+
+\item{stats}{A flag to indicate that circular statistics are desired (mean, standard deviation and mean resultant length, i.e. rho)}
 
 \item{selection}{A numeric or logical vector of the same length as \code{sites}, indicating a subset of site trajectories to be plotted.}
 
@@ -104,7 +102,7 @@ Function \code{trajectoryDistances} returns an object of class \code{\link{dist}
 
 Function \code{trajectoryLengths} returns a data frame with the length of each segment on each trajectory and the total length of all trajectories. Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
 
-Function \code{trajectoryAngles} returns a data frame with the angle between each pair of segments on each trajectory and the mean and standard deviation of those angles across each trajectory. 
+Function \code{trajectoryAngles} returns a data frame with angle values on each trajectory. If \code{stats=TRUE}, then the mean, standard deviation and mean resultant length of those angles are also returned. 
 
 Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
 
@@ -129,17 +127,22 @@ Set of functions for trajectory analysis
 \itemize{
 \item{Given a distance matrix between community states, functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively.}
 \item{Function \code{trajectoryLengths} calculates lengths of directed segments and complete trajectories.}
-\item{Function \code{trajectoryAngles} calculates the angle between consecutive pairs of directed segments.}
+\item{Function \code{trajectoryAngles} calculates the angle between consecutive pairs of directed segments or between all ordered triplets of points.}
 \item{Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\link{cmdscale}}) and draws trajectories in the ordination scatterplot.}
 \item{Function \code{trajectoryPlot} Draws trajectories in a scatterplot corresponding to the input coordinates.}
 \item{Function \code{trajectoryProjection} projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.}
 \item{Function \code{trajectoryConvergence} performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.}
 \item{Function \code{trajectoryDirectionality} returns (for each trajectory) a statistic that measures directionality of the whole trajectory.}
 \item{Function \code{centerTrajectories} shifts all trajectories to the center of the compositional space and returns a modified distance matrix.}
+\item{Function \code{is.metric} checks whether the input dissimilarity matrix is metric (i.e. all triplets fulfill the triangle inequality).}
 }
 These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
 By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
 Details of calculations are given in De \enc{Cáceres}{Caceres} et al (submitted)
+}
+\details{
+Function \code{trajectoryAngles} calculates angles between consecutive segments (or between the segments corresponding to all ordered triplets) in degrees. For each pair of segments, the angle between the two is defined on the plane that contains the two segments, and measures the change in direction (in degrees) from one segment to the other. 
+Angles are always positive, with zero values indicating segments that are in a straight line, and values equal to 180 degrees for segments that are in opposite directions.
 }
 \examples{
   #Description of sites and surveys

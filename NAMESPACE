@@ -6,6 +6,7 @@ importFrom("vegan", "decostand")
 importFrom("stats", "as.dist", "cutree", "dist", "quantile", "var", "cmdscale", "sd")
 importFrom("utils", "setTxtProgressBar", "txtProgressBar", "combn")
 importFrom("Kendall", "MannKendall")
+importFrom("circular", "circular", "mean.circular", "sd.circular", "rho.circular")
 importFrom(Rcpp, evalCpp)
 useDynLib(vegclust)
 

@@ -3,14 +3,15 @@
 #' Set of functions for trajectory analysis
 #' \itemize{
 #' \item{Given a distance matrix between community states, functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively.}
-#' \item{Function \code{trajectoryLengths} calculates lengths of directed segments and complete trajectories.}
-#' \item{Function \code{trajectoryAngles} calculates the angle between consecutive pairs of directed segments.}
+#' \item{Function \code{trajectoryLengths} calculates lengths of directed segments and total path lengths of trajectories.}
+#' \item{Function \code{trajectoryAngles} calculates the angle between consecutive pairs of directed segments or between segments of ordered triplets of points.}
 #' \item{Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\link{cmdscale}}) and draws trajectories in the ordination scatterplot.}
 #' \item{Function \code{trajectoryPlot} Draws trajectories in a scatterplot corresponding to the input coordinates.}
 #' \item{Function \code{trajectoryProjection} projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.}
 #' \item{Function \code{trajectoryConvergence} performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.}
 #' \item{Function \code{trajectoryDirectionality} returns (for each trajectory) a statistic that measures directionality of the whole trajectory.}
 #' \item{Function \code{centerTrajectories} shifts all trajectories to the center of the compositional space and returns a modified distance matrix.}
+#' \item{Function \code{is.metric} checks whether the input dissimilarity matrix is metric (i.e. all triplets fulfill the triangle inequality).}
 #' }
 #' These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
 #' By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
@@ -41,6 +42,9 @@
 #' @param symmetrization Function used to obtain a symmetric distance, so that DSPD(T1,T2) = DSPD(T2,T1) (e.g., \code{mean} or \code{min}).
 #' @param verbose Provides console output informing about process (useful for large dataset).
 #' 
+#' @details Function \code{trajectoryAngles} calculates angles between consecutive segments (or between the segments corresponding to all ordered triplets) in degrees. For each pair of segments, the angle between the two is defined on the plane that contains the two segments, and measures the change in direction (in degrees) from one segment to the other. 
+#' Angles are always positive, with zero values indicating segments that are in a straight line, and values equal to 180 degrees for segments that are in opposite directions.
+#' 
 #' @return Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories. Function \code{trajectorySegments} returns a list with the following elements:
 #' \itemize{
 #'   \item{\code{Dseg}: Distance matrix between segments.}
@@ -52,7 +56,7 @@
 #' 
 #' Function \code{trajectoryLengths} returns a data frame with the length of each segment on each trajectory and the total length of all trajectories. Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
 #' 
-#' Function \code{trajectoryAngles} returns a data frame with the angle between each pair of segments on each trajectory and the mean and standard deviation of those angles across each trajectory. 
+#' Function \code{trajectoryAngles} returns a data frame with angle values on each trajectory. If \code{stats=TRUE}, then the mean, standard deviation and mean resultant length of those angles are also returned. 
 #' 
 #' Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
 #' 
@@ -372,8 +376,9 @@ trajectoryLengths<-function(d, sites, surveys=NULL, verbose= FALSE) {
 }
 
 #' @rdname trajectories
-#' @param all A flag to indicate that angles are desired for all triangles in the trajectory
-trajectoryAngles<-function(d, sites, surveys=NULL, all = FALSE, verbose= FALSE) {
+#' @param all A flag to indicate that angles are desired for all triangles (i.e. all pairs of segments) in the trajectory. If FALSE, angles are calculated for consecutive segments only.
+#' @param stats A flag to indicate that circular statistics are desired (mean, standard deviation and mean resultant length, i.e. rho)
+trajectoryAngles<-function(d, sites, surveys=NULL, all = FALSE, stats = TRUE, verbose= FALSE) {
   if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
   if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
   
@@ -388,9 +393,9 @@ trajectoryAngles<-function(d, sites, surveys=NULL, all = FALSE, verbose= FALSE) 
   n = nrow(dmat)
   
   maxnsurveys = max(nsurveysite)
-  if(!all) angles = matrix(NA, nrow=nsite, ncol=maxnsurveys)
+  if(!all) angles = matrix(NA, nrow=nsite, ncol=maxnsurveys+1)
   else {
-    angles = matrix(NA, nrow=nsite, ncol=choose(maxnsurveys,3)+2)
+    angles = matrix(NA, nrow=nsite, ncol=choose(maxnsurveys,3)+3)
   }
   if(verbose) {
     cat("\nCalculating trajectory angles...\n")
@@ -409,8 +414,10 @@ trajectoryAngles<-function(d, sites, surveys=NULL, all = FALSE, verbose= FALSE) 
         angles[i1, s1] = .angleConsecutiveC(d12,d23,d13, TRUE)
         # cat(paste(i1,s1,":", d12,d23,d13,.angleConsecutiveC(d12,d23,d13, TRUE),"\n"))
       }
-      angles[i1, maxnsurveys-1] = mean(angles[i1,1:(nsurveysite[i1]-2)], na.rm=T)
-      angles[i1, maxnsurveys] = sd(angles[i1,1:(nsurveysite[i1]-2)], na.rm=T)
+      x <- circular::circular(angles[i1,1:(nsurveysite[i1]-2)]*(pi/180)) #angles in radians as an object of class circular
+      angles[i1, ncol(angles)-2] = (180/pi)*circular::mean.circular(x, na.rm=T)
+      angles[i1, ncol(angles)-1] = (180/pi)*circular::sd.circular(x, na.rm=T)
+      angles[i1, ncol(angles)] = circular::rho.circular(x, na.rm=T)
     } else {
       cs = combn(length(ind_surv1),3)
       dsub = dmat[ind_surv1, ind_surv1]
@@ -420,14 +427,17 @@ trajectoryAngles<-function(d, sites, surveys=NULL, all = FALSE, verbose= FALSE) 
         d13 = dsub[cs[1,s],cs[3,s]]
         angles[i1, s] = .angleConsecutiveC(d12,d23,d13, TRUE)
       }
-      angles[i1, ncol(angles)-1] = mean(angles[i1,], na.rm=T)
-      angles[i1, ncol(angles)] = sd(angles[i1,], na.rm=T)
+      x <- circular::circular(angles[i1,]*(pi/180)) #angles in radians as an object of class circular
+      angles[i1, ncol(angles)-2] = (180/pi)*circular::mean.circular(x, na.rm=T)
+      angles[i1, ncol(angles)-1] = (180/pi)*circular::sd.circular(x, na.rm=T)
+      angles[i1, ncol(angles)] = circular::rho.circular(x, na.rm=T)
     }
   }
   angles = as.data.frame(angles)
   row.names(angles)<-siteIDs
-  if(!all) names(angles)<-c(paste0("S",as.character(1:(maxnsurveys-2)),"-S",as.character(2:(maxnsurveys-1))),"mean", "sd")
-  else names(angles)<-c(paste0("A",as.character(1:(ncol(angles)-2))),"mean", "sd")
+  if(!all) names(angles)<-c(paste0("S",as.character(1:(maxnsurveys-2)),"-S",as.character(2:(maxnsurveys-1))),"mean", "sd", "rho")
+  else names(angles)<-c(paste0("A",as.character(1:(ncol(angles)-3))),"mean", "sd", "rho")
+  if(!stats) angles = angles[,1:(ncol(angles)-3), drop=FALSE]
   return(angles)
 }
 
@@ -514,7 +524,7 @@ trajectoryPlot<-function(x, sites, surveys = NULL, selection = NULL, traj.colors
 #' @rdname trajectories
 #' @param target An integer vector of the community states to be projected.
 #' @param trajectory An integer vector of the trajectory onto which target states are to be projected.
-#' @param tol Numerical tolerance value to determine that projection of a point lies within the trajectory.
+#' @param tol Numerical tolerance value to determine that projection of a point lies within the trajectory (or for metricity check).
 trajectoryProjection<-function(d, target, trajectory, tol = 0.000001) {
   if(length(trajectory)<2) stop("Trajectory needs to include at least two states")
   dmat = as.matrix(d)
@@ -654,6 +664,7 @@ trajectoryDirectionality<-function(d, sites, surveys = NULL, verbose = FALSE) {
     cat("\nAssessing trajectory directionality...\n")
     tb = txtProgressBar(1, nsite, style=3)
   }
+
   for(i1 in 1:nsite) {
     if(verbose) setTxtProgressBar(tb, i1)
     ind_surv1 = which(sites==siteIDs[i1])
@@ -710,4 +721,9 @@ centerTrajectories<-function(d, sites, surveys = NULL, verbose = FALSE) {
     x[ind_surv1, ] = scale(x[ind_surv1, ], scale=FALSE)
   }
   return(dist(x))
+}
+
+#' @rdname trajectories
+is.metric<-function(d, tol=0.0001) {
+  return(.ismetricC(as.matrix(d), tol))
 }
