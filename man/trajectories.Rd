@@ -86,7 +86,7 @@ whereas for \code{trajectoryDistances} the available indices are:
 
 \item{trajectory}{An integer vector of the trajectory onto which target states are to be projected.}
 
-\item{tol}{Numerical tolerance value to determine that projection of a point lies within the trajectory.}
+\item{tol}{Numerical tolerance value to determine that projection of a point lies within the trajectory (or for metricity check).}
 
 \item{symmetric}{A logical flag to indicate a symmetric convergence comparison of trajectories.}
 }
@@ -126,8 +126,8 @@ Function \code{centerTrajectory} returns an object of class \code{\link{dist}}.
 Set of functions for trajectory analysis
 \itemize{
 \item{Given a distance matrix between community states, functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively.}
-\item{Function \code{trajectoryLengths} calculates lengths of directed segments and complete trajectories.}
-\item{Function \code{trajectoryAngles} calculates the angle between consecutive pairs of directed segments or between all ordered triplets of points.}
+\item{Function \code{trajectoryLengths} calculates lengths of directed segments and total path lengths of trajectories.}
+\item{Function \code{trajectoryAngles} calculates the angle between consecutive pairs of directed segments or between segments of ordered triplets of points.}
 \item{Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\link{cmdscale}}) and draws trajectories in the ordination scatterplot.}
 \item{Function \code{trajectoryPlot} Draws trajectories in a scatterplot corresponding to the input coordinates.}
 \item{Function \code{trajectoryProjection} projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.}

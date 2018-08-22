@@ -367,7 +367,6 @@ Here we use simulated data to compare four transformation approaches:
 2. Global transformation of dissimilarities, using the square root. 
 3. Global transformation of dissimilarities by using Principal Coordinates Analysis (classical multidimensional scaling) with eigenvalue correction. 
 4. Global transformation of dissimilarities by using metric multidimensional scaling (metric MDS).
-5. Global transformation of dissimilarities by using non-metric multidimensional scaling (non-metric MDS).
 
 We use simulated dynamics to build another trajectory with more species (20) and more time steps. We begin by setting the number of time steps (50) and the size of the community (50 individuals):
 ```{r}
@@ -437,19 +436,12 @@ mmdsD <- dist(res$conf)
 trajectoryPlot(res$conf, sites, surveys, selection=1,length=0.1, axes=c(1,2))
 ```
 
-Finally, we also try the configuration provided by non-metric MDS, as implemented in function `isoMDS` of package `MASS`:
-```{r, echo=TRUE, fig = TRUE, fig.height=5, fig.width=6, fig.align="center"}
-nmds <- isoMDS(D, y=res$conf, k = length(Sj)-1)
-nmdsD <- dist(nmds$points)
-trajectoryPlot(nmds$points, sites, surveys, selection=1,length=0.1, axes=c(1,2))
-```
 
 While the three plots look different, the differences are not striking (besides rotation issues). We can compare the stress of the global solutions:
 ```{r}
 stress0(D,pcoaSqrt$points, type="interval")
 stress0(D,pcoa$points, type="interval")
 stress0(D,res$conf, type="interval")
-stress0(D,nmds$points, type="interval")
 ```
 
 Where we see that the square root leads to the strongest alteration of original dissimilarities. If we calculate geometric properties we are not limited by ordination plots and we can take into account all dimensions.
@@ -459,10 +451,9 @@ anglesD = trajectoryAngles(D,sites,surveys)
 anglesSqrtD = trajectoryAngles(sqrtD,sites,surveys)
 anglesPcoaD = trajectoryAngles(pcoaD,sites,surveys)
 anglesmmdsD = trajectoryAngles(mmdsD,sites,surveys)
-anglesnmdsD = trajectoryAngles(nmdsD,sites,surveys)
 
-df<-as.data.frame(rbind(anglesD, anglesSqrtD, anglesPcoaD, anglesmmdsD, anglesnmdsD))
-row.names(df)<-c("local", "global.sqrt", "global.pcoa", "global.mmds", "global.nmds")
+df<-as.data.frame(rbind(anglesD, anglesSqrtD, anglesPcoaD, anglesmmdsD))
+row.names(df)<-c("local", "global.sqrt", "global.pcoa", "global.mmds")
 round(df,2)
 ```
 The first call to `trajectoryAngles` with matrix `D` represents the default strategy of transforming triangles locally, which involves the weakest transformation of all and can be taken as reference. Both the square root and PCoA with negative eigenvalue correction induce a strong transformation of trajectory angles. The global solution of metric MDS leads to angles that are more similar to those of the local transformation strategy.
@@ -474,7 +465,6 @@ trajectoryDirectionality(D,sites,surveys)
 trajectoryDirectionality(sqrtD,sites,surveys)
 trajectoryDirectionality(pcoaD,sites,surveys)
 trajectoryDirectionality(mmdsD,sites,surveys)
-trajectoryDirectionality(nmdsD,sites,surveys)
 ```
 
 

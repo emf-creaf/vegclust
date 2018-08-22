@@ -414,9 +414,9 @@ trajectoryAngles<-function(d, sites, surveys=NULL, all = FALSE, stats = TRUE, ve
         angles[i1, s1] = .angleConsecutiveC(d12,d23,d13, TRUE)
         # cat(paste(i1,s1,":", d12,d23,d13,.angleConsecutiveC(d12,d23,d13, TRUE),"\n"))
       }
-      x <- circular::circular(angles[i1,1:(nsurveysite[i1]-2)]*(pi/180)) #angles in radians as an object of class circular
-      angles[i1, ncol(angles)-2] = (180/pi)*circular::mean.circular(x, na.rm=T)
-      angles[i1, ncol(angles)-1] = (180/pi)*circular::sd.circular(x, na.rm=T)
+      x <- circular::circular(angles[i1,1:(nsurveysite[i1]-2)], units="degrees") 
+      angles[i1, ncol(angles)-2] = circular::mean.circular(x, na.rm=T)
+      angles[i1, ncol(angles)-1] = circular::sd.circular(x, na.rm=T)
       angles[i1, ncol(angles)] = circular::rho.circular(x, na.rm=T)
     } else {
       cs = combn(length(ind_surv1),3)
@@ -427,9 +427,9 @@ trajectoryAngles<-function(d, sites, surveys=NULL, all = FALSE, stats = TRUE, ve
         d13 = dsub[cs[1,s],cs[3,s]]
         angles[i1, s] = .angleConsecutiveC(d12,d23,d13, TRUE)
       }
-      x <- circular::circular(angles[i1,]*(pi/180)) #angles in radians as an object of class circular
-      angles[i1, ncol(angles)-2] = (180/pi)*circular::mean.circular(x, na.rm=T)
-      angles[i1, ncol(angles)-1] = (180/pi)*circular::sd.circular(x, na.rm=T)
+      x <- circular::circular(angles[i1,], units="degrees") 
+      angles[i1, ncol(angles)-2] = circular::mean.circular(x, na.rm=T)
+      angles[i1, ncol(angles)-1] = circular::sd.circular(x, na.rm=T)
       angles[i1, ncol(angles)] = circular::rho.circular(x, na.rm=T)
     }
   }
@@ -672,8 +672,11 @@ trajectoryDirectionality<-function(d, sites, surveys = NULL, verbose = FALSE) {
     if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
     dsub = dmat[ind_surv1, ind_surv1]
     n = length(ind_surv1)
-    den = 0
-    num = 0
+    # den = 0
+    # num = 0
+    asum = 0
+    bsum =0
+    wsum = 0
     if(n>2) {
       for(i in 1:(n-2)) {
         for(j in (i+1):(n-1)) {
@@ -681,12 +684,26 @@ trajectoryDirectionality<-function(d, sites, surveys = NULL, verbose = FALSE) {
             da = dsub[i,j]
             db = dsub[j,k]
             dab = dsub[i,k]
-            den = den + da + db
-            num = num + dab
+            # den = den + da + db
+            # num = num + dab
+            theta = .angleConsecutiveC(da,db,dab, TRUE)
+            if(!is.na(theta)) {
+              thetarad = (pi/180)*theta
+              asum = asum + (da+db)*cos(thetarad)
+              bsum = bsum + (da+db)*sin(thetarad)
+              wsum = wsum + da + db
+            }
           }
         }
       }
-      dir[i1] = num/den
+      # dir[i1] = num/den
+      a = (asum/wsum)
+      b = (bsum/wsum)
+      if(wsum==0) {
+        a = 0
+        b = 0
+      }
+      dir[i1] = sqrt((a^2) + (b^2))
     }
   }
   return(dir)
