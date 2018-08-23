@@ -15,5 +15,5 @@ LazyLoad: yes
 Encoding: UTF-8
 NeedsCompilation: yes
 RoxygenNote: 6.1.0
-Suggests: knitr, rmarkdown, RColorBrewer, smacof
+Suggests: knitr, rmarkdown, RColorBrewer, smacof, MASS
 VignetteBuilder: utils, knitr
