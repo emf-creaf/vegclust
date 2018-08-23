@@ -21,9 +21,11 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
@@ -32,18 +34,20 @@
 
 <meta property="og:description" content="Set of functions for trajectory analysis
 Given a distance matrix between community states, functions segmentDistances and trajectoryDistances calculate the distance between pairs of directed segments and community trajectories, respectively.
-Function trajectoryLengths calculates lengths of directed segments and complete trajectories.
-Function trajectoryAngles calculates the angle between consecutive pairs of directed segments.
+Function trajectoryLengths calculates lengths of directed segments and total path lengths of trajectories.
+Function trajectoryAngles calculates the angle between consecutive pairs of directed segments or between segments of ordered triplets of points.
 Function trajectoryPCoA performs principal coordinates analysis (cmdscale) and draws trajectories in the ordination scatterplot.
 Function trajectoryPlot Draws trajectories in a scatterplot corresponding to the input coordinates.
 Function trajectoryProjection projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.
 Function trajectoryConvergence performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.
 Function trajectoryDirectionality returns (for each trajectory) a statistic that measures directionality of the whole trajectory.
 Function centerTrajectories shifts all trajectories to the center of the compositional space and returns a modified distance matrix.
+Function is.metric checks whether the input dissimilarity matrix is metric (i.e. all triplets fulfill the triangle inequality).
 These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
 By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
 Details of calculations are given in De Cáceres et al (submitted)" />
 <meta name="twitter:card" content="summary" />
+
 
 
 <!-- mathjax -->
@@ -70,7 +74,7 @@ Details of calculations are given in De Cáceres et al (submitted)" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vegclust</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.7.4</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.7.5</span>
       </span>
     </div>
 
@@ -125,14 +129,15 @@ Details of calculations are given in De Cáceres et al (submitted)" />
     
     <p>Set of functions for trajectory analysis</p><ul>
 <li><p>Given a distance matrix between community states, functions <code>segmentDistances</code> and <code>trajectoryDistances</code> calculate the distance between pairs of directed segments and community trajectories, respectively.</p></li>
-<li><p>Function <code>trajectoryLengths</code> calculates lengths of directed segments and complete trajectories.</p></li>
-<li><p>Function <code>trajectoryAngles</code> calculates the angle between consecutive pairs of directed segments.</p></li>
+<li><p>Function <code>trajectoryLengths</code> calculates lengths of directed segments and total path lengths of trajectories.</p></li>
+<li><p>Function <code>trajectoryAngles</code> calculates the angle between consecutive pairs of directed segments or between segments of ordered triplets of points.</p></li>
 <li><p>Function <code>trajectoryPCoA</code> performs principal coordinates analysis (<code>cmdscale</code>) and draws trajectories in the ordination scatterplot.</p></li>
 <li><p>Function <code>trajectoryPlot</code> Draws trajectories in a scatterplot corresponding to the input coordinates.</p></li>
 <li><p>Function <code>trajectoryProjection</code> projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.</p></li>
 <li><p>Function <code>trajectoryConvergence</code> performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.</p></li>
 <li><p>Function <code>trajectoryDirectionality</code> returns (for each trajectory) a statistic that measures directionality of the whole trajectory.</p></li>
 <li><p>Function <code>centerTrajectories</code> shifts all trajectories to the center of the compositional space and returns a modified distance matrix.</p></li>
+<li><p>Function <code>is.metric</code> checks whether the input dissimilarity matrix is metric (i.e. all triplets fulfill the triangle inequality).</p></li>
 </ul><p>These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
 By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
 Details of calculations are given in De Cáceres et al (submitted)</p>
@@ -147,7 +152,8 @@ Details of calculations are given in De Cáceres et al (submitted)</p>
 
 <span class='fu'>trajectoryLengths</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
-<span class='fu'>trajectoryAngles</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>all</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>trajectoryAngles</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>all</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>stats</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
 <span class='fu'>trajectoryPCoA</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>selection</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>traj.colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>axes</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>2</span>), <span class='no'>...</span>)
@@ -162,7 +168,9 @@ Details of calculations are given in De Cáceres et al (submitted)</p>
 
 <span class='fu'>trajectoryDirectionality</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
-<span class='fu'>centerTrajectories</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+<span class='fu'>centerTrajectories</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='fu'>is.metric</span>(<span class='no'>d</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-04</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -201,7 +209,11 @@ Details of calculations are given in De Cáceres et al (submitted)</p>
     </tr>
     <tr>
       <th>all</th>
-      <td><p>A flag to indicate that angles are desired for all triangles in the trajectory</p></td>
+      <td><p>A flag to indicate that angles are desired for all triangles (i.e. all pairs of segments) in the trajectory. If FALSE, angles are calculated for consecutive segments only.</p></td>
+    </tr>
+    <tr>
+      <th>stats</th>
+      <td><p>A flag to indicate that circular statistics are desired (mean, standard deviation and mean resultant length, i.e. rho)</p></td>
     </tr>
     <tr>
       <th>selection</th>
@@ -233,7 +245,7 @@ Details of calculations are given in De Cáceres et al (submitted)</p>
     </tr>
     <tr>
       <th>tol</th>
-      <td><p>Numerical tolerance value to determine that projection of a point lies within the trajectory.</p></td>
+      <td><p>Numerical tolerance value to determine that projection of a point lies within the trajectory (or for metricity check).</p></td>
     </tr>
     <tr>
       <th>symmetric</th>
@@ -252,7 +264,7 @@ Details of calculations are given in De Cáceres et al (submitted)</p>
 </ul>
 
 <p>Function <code>trajectoryLengths</code> returns a data frame with the length of each segment on each trajectory and the total length of all trajectories. Function <code>trajectoryPCoA</code> returns the result of calling <code>cmdscale</code>.</p>
-<p>Function <code>trajectoryAngles</code> returns a data frame with the angle between each pair of segments on each trajectory and the mean and standard deviation of those angles across each trajectory.</p>
+<p>Function <code>trajectoryAngles</code> returns a data frame with angle values on each trajectory. If <code>stats=TRUE</code>, then the mean, standard deviation and mean resultant length of those angles are also returned.</p>
 <p>Function <code>trajectoryPCoA</code> returns the result of calling <code>cmdscale</code>.</p>
 <p>Function <code>trajectoryProjection</code> returns a data frame with the following columns:</p><ul>
 <li><p><code>distanceToTrajectory</code>: Distances to the trajectory, i.e. rejection (<code>NA</code> for target points whose projection is outside the trajectory).</p></li>
@@ -267,6 +279,11 @@ Details of calculations are given in De Cáceres et al (submitted)</p>
 
 <p>Function <code>trajectoryDirectionality</code> returns a vector with directionality values (one per trajectory).
 Function <code>centerTrajectory</code> returns an object of class <code>dist</code>.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Function <code>trajectoryAngles</code> calculates angles between consecutive segments (or between the segments corresponding to all ordered triplets) in degrees. For each pair of segments, the angle between the two is defined on the plane that contains the two segments, and measures the change in direction (in degrees) from one segment to the other. 
+Angles are always positive, with zero values indicating segments that are in a straight line, and values equal to 180 degrees for segments that are in opposite directions.</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
@@ -301,9 +318,9 @@ Function <code>centerTrajectory</code> returns an object of class <code>dist</co
 #&gt; 6 2.236068 1.414214 1.000000 2.061553 1.118034</div><div class='input'>
   <span class='fu'>trajectoryLengths</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='no'>surveys</span>)</div><div class='output co'>#&gt;   S1       S2 Trajectory
 #&gt; 1  1 1.000000   2.000000
-#&gt; 2  1 1.118034   2.118034</div><div class='input'>  <span class='fu'>trajectoryAngles</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='no'>surveys</span>)</div><div class='output co'>#&gt;      S1-S2     mean sd
-#&gt; 1 180.0000 180.0000 NA
-#&gt; 2 153.4349 153.4349 NA</div><div class='input'>  <span class='fu'>segmentDistances</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='no'>surveys</span>)$<span class='no'>Dseg</span></div><div class='output co'>#&gt;          1[1-2]   1[2-3]   2[1-2]
+#&gt; 2  1 1.118034   2.118034</div><div class='input'>  <span class='fu'>trajectoryAngles</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='no'>surveys</span>)</div><div class='output co'>#&gt;      S1-S2     mean           sd rho
+#&gt; 1  0.00000  0.00000 0.000000e+00   1
+#&gt; 2 26.56505 26.56505 1.490116e-08   1</div><div class='input'>  <span class='fu'>segmentDistances</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='no'>surveys</span>)$<span class='no'>Dseg</span></div><div class='output co'>#&gt;          1[1-2]   1[2-3]   2[1-2]
 #&gt; 1[2-3] 1.000000                  
 #&gt; 2[1-2] 0.500000 1.118034         
 #&gt; 2[2-3] 1.414214 1.000000 1.118034</div><div class='input'>  <span class='fu'>trajectoryDistances</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='no'>surveys</span>, <span class='kw'>distance.type</span> <span class='kw'>=</span> <span class='st'>"Hausdorff"</span>)</div><div class='output co'>#&gt;          1
@@ -335,6 +352,8 @@ Function <code>centerTrajectory</code> returns an object of class <code>dist</co
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
 
       <li><a href="#references">References</a></li>
 
