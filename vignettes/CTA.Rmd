@@ -272,14 +272,13 @@ avoca_dir <- trajectoryDirectionality(avoca_D_man, avoca_sites, avoca_surveys)
 avoca_dir
 ```
 
-The following code displays the relationship between the statistic in `trajectoryDirectionality` and the mean resultant vector length that uses angular information only:
+The following code displays the relationship between the statistic in `trajectoryDirectionality` and the mean resultant vector length that uses angular information only and assesses the constancy of angle values:
 
 ```{r, echo=TRUE, fig = TRUE, fig.height=5, fig.width=5, fig.align="center"}
 avoca_rho = trajectoryAngles(avoca_D_man, avoca_sites, avoca_surveys, all=TRUE)$rho
 par(mar=c(4,4,1,1))
-plot(avoca_rho, avoca_dir, xlab = "rho(T)", ylab = "dir(T)", xlim=c(0.7,1), ylim= c(0.7,1), asp=1, type="n")
+plot(avoca_rho, avoca_dir, xlab = "rho(T)", ylab = "dir(T)", type="n")
 text(avoca_rho, avoca_dir, as.character(1:8))
-abline(a=0, b=1, col="red")
 ```
 
 
@@ -355,9 +354,10 @@ In addition to the distortion observed, the number of dimensions of the data hav
 ```{r}
 trajectoryLengths(sqrtD,sites,surveys)
 trajectoryAngles(sqrtD,sites,surveys)
+trajectoryAngles(sqrtD,sites,surveys, all=TRUE)
 trajectoryDirectionality(sqrtD,sites,surveys)
 ```
-The length of segments and the trajectory have increased, but all segments are of the same length, in agreement with the original trajectory. In contrast, the angles are now 90 degrees and the directionality of the trajectory has decreased substantially. In sum, the square root transformation is not recommended when examining the angular properties of trajectories.
+The length of segments and the trajectory have increased, but all segments are of the same length, in agreement with the original trajectory. In contrast, the angles are now 90 degrees and the overall directionality has decreased substantially. 
 
 ### 4.3 Effect of different transformations on more complex trajectories
 

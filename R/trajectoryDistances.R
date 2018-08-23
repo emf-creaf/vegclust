@@ -672,11 +672,8 @@ trajectoryDirectionality<-function(d, sites, surveys = NULL, verbose = FALSE) {
     if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
     dsub = dmat[ind_surv1, ind_surv1]
     n = length(ind_surv1)
-    # den = 0
-    # num = 0
-    asum = 0
-    bsum =0
-    wsum = 0
+    den = 0
+    num = 0
     if(n>2) {
       for(i in 1:(n-2)) {
         for(j in (i+1):(n-1)) {
@@ -684,26 +681,18 @@ trajectoryDirectionality<-function(d, sites, surveys = NULL, verbose = FALSE) {
             da = dsub[i,j]
             db = dsub[j,k]
             dab = dsub[i,k]
-            # den = den + da + db
-            # num = num + dab
             theta = .angleConsecutiveC(da,db,dab, TRUE)
             if(!is.na(theta)) {
-              thetarad = (pi/180)*theta
-              asum = asum + (da+db)*cos(thetarad)
-              bsum = bsum + (da+db)*sin(thetarad)
-              wsum = wsum + da + db
+              den = den + (da + db)
+              num = num + (da + db)*((180-theta)/180)
             }
           }
         }
       }
-      # dir[i1] = num/den
-      a = (asum/wsum)
-      b = (bsum/wsum)
-      if(wsum==0) {
-        a = 0
-        b = 0
+      dir[i1] = num/den
+      if(den==0) {
+        dir[i1] = 0
       }
-      dir[i1] = sqrt((a^2) + (b^2))
     }
   }
   return(dir)
