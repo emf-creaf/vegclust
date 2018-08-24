@@ -39,13 +39,13 @@
 #'     \item{\code{SPD}: Segment path distance.}
 #'     \item{\code{DSPD}: Directed segment path distance (default).}
 #'   }
-#' @param symmetrization Function used to obtain a symmetric distance, so that DSPD(T1,T2) = DSPD(T2,T1) (e.g., \code{mean} or \code{min}).
+#' @param symmetrization Function used to obtain a symmetric distance, so that DSPD(T1,T2) = DSPD(T2,T1) (e.g., \code{mean} or \code{min}). If \code{symmetrization = NULL} then the symmetrization is not conducted and the output dissimilarity matrix is not symmetric. 
 #' @param verbose Provides console output informing about process (useful for large dataset).
 #' 
 #' @details Function \code{trajectoryAngles} calculates angles between consecutive segments (or between the segments corresponding to all ordered triplets) in degrees. For each pair of segments, the angle between the two is defined on the plane that contains the two segments, and measures the change in direction (in degrees) from one segment to the other. 
 #' Angles are always positive, with zero values indicating segments that are in a straight line, and values equal to 180 degrees for segments that are in opposite directions.
 #' 
-#' @return Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories. Function \code{trajectorySegments} returns a list with the following elements:
+#' @return Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories (if \code{symmetrization = NULL} then the object returned is of class \code{matrix}). Function \code{trajectorySegments} returns a list with the following elements:
 #' \itemize{
 #'   \item{\code{Dseg}: Distance matrix between segments.}
 #'   \item{\code{Dini}: Distance matrix between initial points of segments.}
@@ -250,8 +250,13 @@ trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", symm
         }
         dt21 = dt21/(nsurveysite[i2]-1) #Average of distances between segments of T2 and trajectory T1
         
-        dtraj[i1,i2] = do.call(symmetrization, list(c(dt12,dt21))) #Symmetrization
-        dtraj[i2,i1] = dtraj[i1,i2]
+        if(!is.null(symmetrization)) {
+          dtraj[i1,i2] = do.call(symmetrization, list(c(dt12,dt21))) #Symmetrization
+          dtraj[i2,i1] = dtraj[i1,i2]
+        } else {
+          dtraj[i1,i2] = dt12
+          dtraj[i2,i1] = dt21
+        }
       }
     }
     
@@ -291,8 +296,13 @@ trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", symm
         }
         dt21 = dt21/nsurveysite[i2] #Average of distances between points of T2 and trajectory T1
         
-        dtraj[i1,i2] = (dt12+dt21)/2 #Symmetrization
-        dtraj[i2,i1] = dtraj[i1,i2]
+        if(!is.null(symmetrization)) {
+          dtraj[i1,i2] = (dt12+dt21)/2 #Symmetrization
+          dtraj[i2,i1] = dtraj[i1,i2]
+        } else {
+          dtraj[i1,i2] = dt12
+          dtraj[i2,i1] = dt21
+        }
       }
     }
   }
@@ -335,7 +345,8 @@ trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", symm
     }
   } 
   else stop("Wrong distance type")
-  return(as.dist(dtraj))
+  if(!is.null(symmetrization)) return(as.dist(dtraj))
+  return(dtraj)
 }
 
 #' @rdname trajectories

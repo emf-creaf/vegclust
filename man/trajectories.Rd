@@ -66,7 +66,7 @@ whereas for \code{trajectoryDistances} the available indices are:
 
 \item{verbose}{Provides console output informing about process (useful for large dataset).}
 
-\item{symmetrization}{Function used to obtain a symmetric distance, so that DSPD(T1,T2) = DSPD(T2,T1) (e.g., \code{mean} or \code{min}).}
+\item{symmetrization}{Function used to obtain a symmetric distance, so that DSPD(T1,T2) = DSPD(T2,T1) (e.g., \code{mean} or \code{min}). If \code{symmetrization = NULL} then the symmetrization is not conducted and the output dissimilarity matrix is not symmetric.}
 
 \item{all}{A flag to indicate that angles are desired for all triangles (i.e. all pairs of segments) in the trajectory. If FALSE, angles are calculated for consecutive segments only.}
 
@@ -91,7 +91,7 @@ whereas for \code{trajectoryDistances} the available indices are:
 \item{symmetric}{A logical flag to indicate a symmetric convergence comparison of trajectories.}
 }
 \value{
-Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories. Function \code{trajectorySegments} returns a list with the following elements:
+Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories (if \code{symmetrization = NULL} then the object returned is of class \code{matrix}). Function \code{trajectorySegments} returns a list with the following elements:
 \itemize{
   \item{\code{Dseg}: Distance matrix between segments.}
   \item{\code{Dini}: Distance matrix between initial points of segments.}

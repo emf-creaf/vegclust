@@ -161,6 +161,13 @@ trajectoryDistances(D, sites, surveys, distance.type = "Hausdorff")
 trajectoryDistances(D, sites, surveys, distance.type = "DSPD")
 ```  
 
+DSPD is a symmetrized distance. To calculate non-symmetric distances one uses:
+```{r} 
+trajectoryDistances(D, sites, surveys, distance.type = "DSPD", symmetrization = NULL)
+```  
+
+
+
 ## 3. Structural dynamics in permanent plots
 
 In this example we analyze the dynamics of 8 permanent forest plots located on slopes of a valley in the New Zealand Alps. The study area is mountainous and centered on the Craigieburn Range (Southern Alps), South Island, New Zealand.  Forests plots are almost monospecific, being the mountain beech (*Fuscospora cliffortioides*) the main dominant tree species. Previously forests consisted of largely mature stands, but some of them were affected by different disturbances during the sampling period (1972-2009) which includes 9 surveys. We begin our example by loading the data set, which includes 72 plot observations:
