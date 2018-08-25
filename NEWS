@@ -4,9 +4,10 @@
 
 __Version history__
 
-_Version 1.7.5, May 2018
+_Version 1.7.5, August 2018
 1. Now trajectory angles are measured between the direction of the first segment and the direction of the second segment.
 2. Now mean and sd of trajectory angles are calculated using functions of package 'circular'
+3. Parameter 'add' added to community trajectory analysis to deactivate constant addition in triplets violating the triangle inequality.
 
 _Version 1.7.4, May 2018
 1. Improvement of parameter checking in function 'stratifyvegdata'

@@ -120,7 +120,7 @@ NumericVector distanceToSegment(double dref, double d1, double d2, bool add = tr
 // Distance between two segments
 //
 // [[Rcpp::export(".twoSegmentDistanceC")]]
-double twoSegmentDistance(NumericMatrix dmat12, String type="directed-segment") {
+double twoSegmentDistance(NumericMatrix dmat12, String type="directed-segment", bool add = true) {
   double ds1e1 = dmat12(0,1);
   double ds1s2 = dmat12(0,2);
   double ds1e2 = dmat12(0,3);
@@ -129,10 +129,10 @@ double twoSegmentDistance(NumericMatrix dmat12, String type="directed-segment") 
   double ds2e2 = dmat12(2,3);
   double Ds = NA_REAL; 
   if((type=="Hausdorff") | (type == "directed-segment")) {
-    NumericVector ps1_2 = distanceToSegment(ds2e2,ds1s2, ds1e2);
-    NumericVector pe1_2 = distanceToSegment(ds2e2,de1s2, de1e2);
-    NumericVector ps2_1 = distanceToSegment(ds1e1,ds1s2, de1s2);
-    NumericVector pe2_1 = distanceToSegment(ds1e1,ds1e2, de1e2);
+    NumericVector ps1_2 = distanceToSegment(ds2e2,ds1s2, ds1e2, add);
+    NumericVector pe1_2 = distanceToSegment(ds2e2,de1s2, de1e2, add);
+    NumericVector ps2_1 = distanceToSegment(ds1e1,ds1s2, de1s2, add);
+    NumericVector pe2_1 = distanceToSegment(ds1e1,ds1e2, de1e2, add);
     double ds1_2 = ps1_2[2];
     double de1_2 = pe1_2[2];
     double ds2_1 = ps2_1[2];
@@ -157,8 +157,8 @@ double twoSegmentDistance(NumericMatrix dmat12, String type="directed-segment") 
       ds1e1 = dmat12(2,3);
     }
     //Assumes longer segment is 2
-    NumericVector ps1_2 = distanceToSegment(ds2e2,ds1s2, ds1e2);
-    NumericVector pe1_2 = distanceToSegment(ds2e2,de1s2, de1e2);
+    NumericVector ps1_2 = distanceToSegment(ds2e2,ds1s2, ds1e2, add);
+    NumericVector pe1_2 = distanceToSegment(ds2e2,de1s2, de1e2, add);
     double lp1 = ps1_2[2];
     double lp2 = pe1_2[2];
     double dperpendicular = (pow(lp1,2.0)+pow(lp2,2.0))/(lp1+lp2);

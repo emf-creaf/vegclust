@@ -25,7 +25,7 @@
     .Call('_vegclust_distanceToSegment', PACKAGE = 'vegclust', dref, d1, d2, add)
 }
 
-.twoSegmentDistanceC <- function(dmat12, type = "directed-segment") {
-    .Call('_vegclust_twoSegmentDistance', PACKAGE = 'vegclust', dmat12, type)
+.twoSegmentDistanceC <- function(dmat12, type = "directed-segment", add = TRUE) {
+    .Call('_vegclust_twoSegmentDistance', PACKAGE = 'vegclust', dmat12, type, add)
 }
 

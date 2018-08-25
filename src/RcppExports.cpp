@@ -87,14 +87,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // twoSegmentDistance
-double twoSegmentDistance(NumericMatrix dmat12, String type);
-RcppExport SEXP _vegclust_twoSegmentDistance(SEXP dmat12SEXP, SEXP typeSEXP) {
+double twoSegmentDistance(NumericMatrix dmat12, String type, bool add);
+RcppExport SEXP _vegclust_twoSegmentDistance(SEXP dmat12SEXP, SEXP typeSEXP, SEXP addSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericMatrix >::type dmat12(dmat12SEXP);
     Rcpp::traits::input_parameter< String >::type type(typeSEXP);
-    rcpp_result_gen = Rcpp::wrap(twoSegmentDistance(dmat12, type));
+    Rcpp::traits::input_parameter< bool >::type add(addSEXP);
+    rcpp_result_gen = Rcpp::wrap(twoSegmentDistance(dmat12, type, add));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -106,7 +107,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_vegclust_projection", (DL_FUNC) &_vegclust_projection, 4},
     {"_vegclust_angularAttributeConsecutive", (DL_FUNC) &_vegclust_angularAttributeConsecutive, 4},
     {"_vegclust_distanceToSegment", (DL_FUNC) &_vegclust_distanceToSegment, 4},
-    {"_vegclust_twoSegmentDistance", (DL_FUNC) &_vegclust_twoSegmentDistance, 2},
+    {"_vegclust_twoSegmentDistance", (DL_FUNC) &_vegclust_twoSegmentDistance, 3},
     {NULL, NULL, 0}
 };
 

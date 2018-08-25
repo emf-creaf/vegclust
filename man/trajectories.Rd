@@ -17,15 +17,15 @@
 \title{Community trajectory analysis}
 \usage{
 segmentDistances(d, sites, surveys = NULL,
-  distance.type = "directed-segment", verbose = FALSE)
+  distance.type = "directed-segment", add = TRUE, verbose = FALSE)
 
 trajectoryDistances(d, sites, surveys = NULL, distance.type = "DSPD",
-  symmetrization = "mean", verbose = FALSE)
+  symmetrization = "mean", add = TRUE, verbose = FALSE)
 
 trajectoryLengths(d, sites, surveys = NULL, verbose = FALSE)
 
 trajectoryAngles(d, sites, surveys = NULL, all = FALSE, stats = TRUE,
-  verbose = FALSE)
+  add = TRUE, verbose = FALSE)
 
 trajectoryPCoA(d, sites, surveys = NULL, selection = NULL,
   traj.colors = NULL, axes = c(1, 2), ...)
@@ -33,19 +33,20 @@ trajectoryPCoA(d, sites, surveys = NULL, selection = NULL,
 trajectoryPlot(x, sites, surveys = NULL, selection = NULL,
   traj.colors = NULL, axes = c(1, 2), ...)
 
-trajectoryProjection(d, target, trajectory, tol = 1e-06)
+trajectoryProjection(d, target, trajectory, tol = 1e-06, add = TRUE)
 
 trajectoryConvergence(d, sites, surveys = NULL, symmetric = FALSE,
-  verbose = FALSE)
+  add = TRUE, verbose = FALSE)
 
-trajectoryDirectionality(d, sites, surveys = NULL, verbose = FALSE)
+trajectoryDirectionality(d, sites, surveys = NULL, add = TRUE,
+  verbose = FALSE)
 
 centerTrajectories(d, sites, surveys = NULL, verbose = FALSE)
 
 is.metric(d, tol = 1e-04)
 }
 \arguments{
-\item{d}{A symmetric \code{\link{matrix}} or an object of class \code{\link{dist}} containing the distance values between pairs of community states.}
+\item{d}{A symmetric \code{\link{matrix}} or an object of class \code{\link{dist}} containing the distance values between pairs of community states (see details).}
 
 \item{sites}{A vector indicating the site corresponding to each community state.}
 
@@ -63,6 +64,8 @@ whereas for \code{trajectoryDistances} the available indices are:
     \item{\code{SPD}: Segment path distance.}
     \item{\code{DSPD}: Directed segment path distance (default).}
   }}
+
+\item{add}{Flag to indicate that constant values should be added (local transformation) to correct triplets of distance values that do not fulfill the triangle inequality.}
 
 \item{verbose}{Provides console output informing about process (useful for large dataset).}
 
@@ -86,12 +89,14 @@ whereas for \code{trajectoryDistances} the available indices are:
 
 \item{trajectory}{An integer vector of the trajectory onto which target states are to be projected.}
 
-\item{tol}{Numerical tolerance value to determine that projection of a point lies within the trajectory (or for metricity check).}
+\item{tol}{Numerical tolerance value to determine that projection of a point lies within the trajectory.}
 
 \item{symmetric}{A logical flag to indicate a symmetric convergence comparison of trajectories.}
 }
 \value{
-Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories (if \code{symmetrization = NULL} then the object returned is of class \code{matrix}). Function \code{trajectorySegments} returns a list with the following elements:
+Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories (if \code{symmetrization = NULL} then the object returned is of class \code{matrix}). 
+
+Function \code{trajectorySegments} returns a list with the following elements:
 \itemize{
   \item{\code{Dseg}: Distance matrix between segments.}
   \item{\code{Dini}: Distance matrix between initial points of segments.}
@@ -120,12 +125,14 @@ Function \code{trajectoryConvergence} returns a list with two elements:
 }
 
 Function \code{trajectoryDirectionality} returns a vector with directionality values (one per trajectory).
+
 Function \code{centerTrajectory} returns an object of class \code{\link{dist}}.
 }
 \description{
-Set of functions for trajectory analysis
+Community trajectory analysis (CTA) is a framework to analyze community dynamics described as trajectories in a chosen space of community resemblance.
+CTA takes trajectories as objects to be analyzed and compared geometrically. Given a distance matrix between community states, the set of functions for CTA are:
 \itemize{
-\item{Given a distance matrix between community states, functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively.}
+\item{Functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively.}
 \item{Function \code{trajectoryLengths} calculates lengths of directed segments and total path lengths of trajectories.}
 \item{Function \code{trajectoryAngles} calculates the angle between consecutive pairs of directed segments or between segments of ordered triplets of points.}
 \item{Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\link{cmdscale}}) and draws trajectories in the ordination scatterplot.}
@@ -136,11 +143,16 @@ Set of functions for trajectory analysis
 \item{Function \code{centerTrajectories} shifts all trajectories to the center of the compositional space and returns a modified distance matrix.}
 \item{Function \code{is.metric} checks whether the input dissimilarity matrix is metric (i.e. all triplets fulfill the triangle inequality).}
 }
-These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
-By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
-Details of calculations are given in De \enc{Cáceres}{Caceres} et al (submitted)
 }
 \details{
+Details of calculations are given in De \enc{Cáceres}{Caceres} et al (submitted). 
+The input distance matrix \code{d} should ideally be metric. That is, all subsets of distance triplets should fulfill the triangle inequality (see function \code{is.metric}). 
+All CTA functions that require metricity include a parameter '\code{add}', which by default is TRUE, meaning that whenever the triangle inequality is broken the minimum constant required to fulfill it is added to the three distances.
+If such local (an hence, inconsistent across triplets) corrections are not desired, users should find another way modify \code{d} to achieve metricity, such as PCoA, metric MDS or non-metric MDS (see CTA vignette). 
+If parameter '\code{add}' is set to FALSE and problems of triangle inequality exist, CTA functions may provide missing values in some cases where they should not.
+
+The resemblance between trajectories is done by adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016).   
+
 Function \code{trajectoryAngles} calculates angles between consecutive segments (or between the segments corresponding to all ordered triplets) in degrees. For each pair of segments, the angle between the two is defined on the plane that contains the two segments, and measures the change in direction (in degrees) from one segment to the other. 
 Angles are always positive, with zero values indicating segments that are in a straight line, and values equal to 180 degrees for segments that are in opposite directions.
 }
