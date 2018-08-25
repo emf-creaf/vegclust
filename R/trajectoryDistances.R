@@ -54,6 +54,8 @@
 #' Function \code{trajectoryAngles} calculates angles between consecutive segments (or between the segments corresponding to all ordered triplets) in degrees. For each pair of segments, the angle between the two is defined on the plane that contains the two segments, and measures the change in direction (in degrees) from one segment to the other. 
 #' Angles are always positive, with zero values indicating segments that are in a straight line, and values equal to 180 degrees for segments that are in opposite directions.
 #' 
+#' Function \code{centerTrajectories} performs centering of trajectories using matrix algebra as explained in Anderson (2017).
+#' 
 #' @return Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories (if \code{symmetrization = NULL} then the object returned is of class \code{matrix}). 
 #' 
 #' Function \code{trajectorySegments} returns a list with the following elements:
@@ -94,6 +96,8 @@
 #' Besse, P., Guillouet, B., Loubes, J.-M. & François, R. (2016). Review and perspective for distance based trajectory clustering. IEEE Trans. Intell. Transp. Syst., 17, 3306–3317.
 #' 
 #' De \enc{Cáceres}{Caceres} M, Coll L, Legendre P, Allen RB, Wiser SK, Fortin MJ, Condit R & Hubbell S. (submitted). Trajectory analysis in community ecology.
+#' 
+#' Anderson (2017). Permutational Multivariate Analysis of Variance (PERMANOVA). Wiley StatsRef: Statistics Reference Online. 1-15. Article ID: stat07841.
 #' 
 #' @seealso \code{\link{cmdscale}}
 #' 
@@ -718,34 +722,62 @@ trajectoryDirectionality<-function(d, sites, surveys = NULL, add=TRUE, verbose =
 }
 
 #' @rdname trajectories
-centerTrajectories<-function(d, sites, surveys = NULL, verbose = FALSE) {
+centerTrajectories<-function(d, sites, verbose = FALSE) {
   if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
-  if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
-  siteIDs = unique(sites)
-  nsite = length(siteIDs)
-  nsurveysite<-numeric(nsite)
-  for(i in 1:nsite) nsurveysite[i] = sum(sites==siteIDs[i])
+  # if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
+  # siteIDs = unique(sites)
+  # nsite = length(siteIDs)
+  # nsurveysite<-numeric(nsite)
+  # for(i in 1:nsite) nsurveysite[i] = sum(sites==siteIDs[i])
 
-  if(verbose) {
-    cat("\nPrincipal coordinates Analysis...\n")
-    tb = txtProgressBar(1, nsite, style=3)
+  Dmat <-as.matrix(d)
+  Amat <- (-0.5)*(Dmat^2)
+  n <- nrow(Dmat)
+
+  #Identity matrix  
+  I <- diag(n)
+  #Centering matrix
+  One <- matrix(1, n, n)
+  Cmat <- I - (One/n)
+  #Gower matrix
+  G = Cmat %*% Amat %*% Cmat
+  #model matrix
+  df <- data.frame(a = factor(sites))
+  M <- model.matrix(~a,df, contrasts = list(a = "contr.helmert"))
+  #Projection matrix
+  H <- M%*%MASS::ginv(t(M)%*%M)%*%t(M)
+  #Residual G matrix
+  R <- (I-H)%*%G%*%(I-H)
+  #Backtransform to distances
+  dcent<-matrix(0,n,n)
+  for(i in 1:n) {
+    for(j in i:n) {
+      dsq <- (R[i,i]-2*R[i,j]+R[j,j])
+      if(dsq > 0) dcent[i,j] = sqrt(dsq) #truncate negative squared distances
+      dcent[j,i] = dcent[i,j]
+    }
   }
-  cmd = cmdscale(d, length(sites)-1, add=TRUE)
-  x = cmd$points
-  rm(cmd)
-  if(verbose) {
-    cat("\nAssessing trajectory directionality...\n")
-    tb = txtProgressBar(1, nsite, style=3)
-  }
-  for(i1 in 1:nsite) {
-    if(verbose) setTxtProgressBar(tb, i1)
-    ind_surv1 = which(sites==siteIDs[i1])
-    #Surveys may not be in order
-    if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
-    #Centers trajectory (only positive eigen values (real dimensions))
-    x[ind_surv1, ] = scale(x[ind_surv1, ], scale=FALSE)
-  }
-  return(dist(x))
+  return(as.dist(dcent))
+  # if(verbose) {
+  #   cat("\nPrincipal coordinates Analysis...\n")
+  #   tb = txtProgressBar(1, nsite, style=3)
+  # }
+  # cmd = cmdscale(d, length(sites)-1, add=TRUE)
+  # x = cmd$points
+  # rm(cmd)
+  # if(verbose) {
+  #   cat("\nAssessing trajectory directionality...\n")
+  #   tb = txtProgressBar(1, nsite, style=3)
+  # }
+  # for(i1 in 1:nsite) {
+  #   if(verbose) setTxtProgressBar(tb, i1)
+  #   ind_surv1 = which(sites==siteIDs[i1])
+  #   #Surveys may not be in order
+  #   if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
+  #   #Centers trajectory (only positive eigen values (real dimensions))
+  #   x[ind_surv1, ] = scale(x[ind_surv1, ], scale=FALSE)
+  # }
+  # return(dist(x))
 }
 
 #' @rdname trajectories

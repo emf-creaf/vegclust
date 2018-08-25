@@ -41,7 +41,7 @@ trajectoryConvergence(d, sites, surveys = NULL, symmetric = FALSE,
 trajectoryDirectionality(d, sites, surveys = NULL, add = TRUE,
   verbose = FALSE)
 
-centerTrajectories(d, sites, surveys = NULL, verbose = FALSE)
+centerTrajectories(d, sites, verbose = FALSE)
 
 is.metric(d, tol = 1e-04)
 }
@@ -155,6 +155,8 @@ The resemblance between trajectories is done by adapting concepts and procedures
 
 Function \code{trajectoryAngles} calculates angles between consecutive segments (or between the segments corresponding to all ordered triplets) in degrees. For each pair of segments, the angle between the two is defined on the plane that contains the two segments, and measures the change in direction (in degrees) from one segment to the other. 
 Angles are always positive, with zero values indicating segments that are in a straight line, and values equal to 180 degrees for segments that are in opposite directions.
+
+Function \code{centerTrajectories} performs centering of trajectories using matrix algebra as explained in Anderson (2017).
 }
 \examples{
   #Description of sites and surveys
@@ -200,6 +202,8 @@ Angles are always positive, with zero values indicating segments that are in a s
 Besse, P., Guillouet, B., Loubes, J.-M. & François, R. (2016). Review and perspective for distance based trajectory clustering. IEEE Trans. Intell. Transp. Syst., 17, 3306–3317.
 
 De \enc{Cáceres}{Caceres} M, Coll L, Legendre P, Allen RB, Wiser SK, Fortin MJ, Condit R & Hubbell S. (submitted). Trajectory analysis in community ecology.
+
+Anderson (2017). Permutational Multivariate Analysis of Variance (PERMANOVA). Wiley StatsRef: Statistics Reference Online. 1-15. Article ID: stat07841.
 }
 \seealso{
 \code{\link{cmdscale}}

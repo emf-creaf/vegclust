@@ -8,12 +8,12 @@ Authors@R: c(
 	email='miquelcaceres@gmail.com'))
 Description: A set of functions to perform fuzzy clustering of vegetation data [De Caceres et al. (2010) <doi:10.1111/j.1654-1103.2010.01211.x>] and to assess ecological community ressemblance on the basis of structure and composition [De Caceres et al. (2013): <doi:10.1111/2041-210X.12116>].
 Depends: R (>= 3.4.0), Rcpp (>= 0.12.12)
-Imports: sp, vegan, Kendall, circular
+Imports: sp, vegan, Kendall, circular, MASS
 LinkingTo: Rcpp
 License: GPL (>= 2)
 LazyLoad: yes
 Encoding: UTF-8
 NeedsCompilation: yes
 RoxygenNote: 6.1.0
-Suggests: knitr, rmarkdown, RColorBrewer, smacof, MASS
+Suggests: knitr, rmarkdown, RColorBrewer, smacof
 VignetteBuilder: utils, knitr
