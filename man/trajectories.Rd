@@ -12,6 +12,7 @@
 \alias{trajectoryConvergence}
 \alias{trajectoryDirectionality}
 \alias{centerTrajectories}
+\alias{trajectorySelection}
 \alias{trajectoryPlot}
 \alias{is.metric}
 \title{Community trajectory analysis}
@@ -26,6 +27,8 @@ trajectoryLengths(d, sites, surveys = NULL, verbose = FALSE)
 
 trajectoryAngles(d, sites, surveys = NULL, all = FALSE, stats = TRUE,
   add = TRUE, verbose = FALSE)
+
+trajectorySelection(d, sites, selection)
 
 trajectoryPCoA(d, sites, surveys = NULL, selection = NULL,
   traj.colors = NULL, axes = c(1, 2), ...)
@@ -75,7 +78,7 @@ whereas for \code{trajectoryDistances} the available indices are:
 
 \item{stats}{A flag to indicate that circular statistics are desired (mean, standard deviation and mean resultant length, i.e. rho)}
 
-\item{selection}{A numeric or logical vector of the same length as \code{sites}, indicating a subset of site trajectories to be plotted.}
+\item{selection}{A character vector of sites, a numeric vector of site indices or logical vector of the same length as \code{sites}, indicating a subset of site trajectories to be selected.}
 
 \item{traj.colors}{A vector of colors (one per site). If \code{selection != NULL} the length of the color vector should be equal to the number of sites selected.}
 
@@ -139,6 +142,7 @@ CTA takes trajectories as objects to be analyzed and compared geometrically. Giv
 \item{Function \code{trajectoryPlot} Draws trajectories in a scatterplot corresponding to the input coordinates.}
 \item{Function \code{trajectoryProjection} projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.}
 \item{Function \code{trajectoryConvergence} performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.}
+\item{Function \code{trajectorySelection} allows selecting the submatrix of distances corresponding to a given subset of trajectories.}
 \item{Function \code{trajectoryDirectionality} returns (for each trajectory) a statistic that measures directionality of the whole trajectory.}
 \item{Function \code{centerTrajectories} shifts all trajectories to the center of the compositional space and returns a modified distance matrix.}
 \item{Function \code{is.metric} checks whether the input dissimilarity matrix is metric (i.e. all triplets fulfill the triangle inequality).}

@@ -10,6 +10,7 @@
 #' \item{Function \code{trajectoryPlot} Draws trajectories in a scatterplot corresponding to the input coordinates.}
 #' \item{Function \code{trajectoryProjection} projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.}
 #' \item{Function \code{trajectoryConvergence} performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.}
+#' \item{Function \code{trajectorySelection} allows selecting the submatrix of distances corresponding to a given subset of trajectories.}
 #' \item{Function \code{trajectoryDirectionality} returns (for each trajectory) a statistic that measures directionality of the whole trajectory.}
 #' \item{Function \code{centerTrajectories} shifts all trajectories to the center of the compositional space and returns a modified distance matrix.}
 #' \item{Function \code{is.metric} checks whether the input dissimilarity matrix is metric (i.e. all triplets fulfill the triangle inequality).}
@@ -469,7 +470,23 @@ trajectoryAngles<-function(d, sites, surveys=NULL, all = FALSE, stats = TRUE, ad
 }
 
 #' @rdname trajectories
-#' @param selection A numeric or logical vector of the same length as \code{sites}, indicating a subset of site trajectories to be plotted.
+#' @param selection A character vector of sites, a numeric vector of site indices or logical vector of the same length as \code{sites}, indicating a subset of site trajectories to be selected.
+trajectorySelection<-function(d, sites, selection) {
+  siteIDs = unique(sites)
+  nsite = length(siteIDs)
+  
+  #Apply site selection
+  if(is.null(selection)) selection = 1:nsite 
+  else {
+    if(is.character(selection)) selection = (siteIDs %in% selection)
+  }
+  selIDs = siteIDs[selection]
+  
+  dsel =as.dist(as.matrix(d)[sites %in% selIDs, sites %in% selIDs])
+  return(dsel)
+}
+
+#' @rdname trajectories
 #' @param traj.colors A vector of colors (one per site). If \code{selection != NULL} the length of the color vector should be equal to the number of sites selected.
 #' @param axes The pair of principal coordinates to be plotted.
 #' @param ... Additional parameters for function \code{\link{arrows}}.
@@ -724,16 +741,12 @@ trajectoryDirectionality<-function(d, sites, surveys = NULL, add=TRUE, verbose =
 #' @rdname trajectories
 centerTrajectories<-function(d, sites, verbose = FALSE) {
   if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
-  # if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
-  # siteIDs = unique(sites)
-  # nsite = length(siteIDs)
-  # nsurveysite<-numeric(nsite)
-  # for(i in 1:nsite) nsurveysite[i] = sum(sites==siteIDs[i])
 
   Dmat <-as.matrix(d)
+  
+  # Anderson (2017). Permutational Multivariate Analysis of Variance (PERMANOVA). Wiley StatsRef: Statistics Reference Online. 1-15. Article ID: stat07841.
   Amat <- (-0.5)*(Dmat^2)
   n <- nrow(Dmat)
-
   #Identity matrix  
   I <- diag(n)
   #Centering matrix
@@ -753,31 +766,13 @@ centerTrajectories<-function(d, sites, verbose = FALSE) {
   for(i in 1:n) {
     for(j in i:n) {
       dsq <- (R[i,i]-2*R[i,j]+R[j,j])
-      if(dsq > 0) dcent[i,j] = sqrt(dsq) #truncate negative squared distances
-      dcent[j,i] = dcent[i,j]
+      if(dsq > 0) {
+        dcent[i,j] = sqrt(dsq) #truncate negative squared distances
+        dcent[j,i] = dcent[i,j]
+      }
     }
   }
   return(as.dist(dcent))
-  # if(verbose) {
-  #   cat("\nPrincipal coordinates Analysis...\n")
-  #   tb = txtProgressBar(1, nsite, style=3)
-  # }
-  # cmd = cmdscale(d, length(sites)-1, add=TRUE)
-  # x = cmd$points
-  # rm(cmd)
-  # if(verbose) {
-  #   cat("\nAssessing trajectory directionality...\n")
-  #   tb = txtProgressBar(1, nsite, style=3)
-  # }
-  # for(i1 in 1:nsite) {
-  #   if(verbose) setTxtProgressBar(tb, i1)
-  #   ind_surv1 = which(sites==siteIDs[i1])
-  #   #Surveys may not be in order
-  #   if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
-  #   #Centers trajectory (only positive eigen values (real dimensions))
-  #   x[ind_surv1, ] = scale(x[ind_surv1, ], scale=FALSE)
-  # }
-  # return(dist(x))
 }
 
 #' @rdname trajectories
