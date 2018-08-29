@@ -32,20 +32,20 @@
 
 <meta property="og:title" content="Community trajectory analysis — trajectories" />
 
-<meta property="og:description" content="Set of functions for trajectory analysis
-Given a distance matrix between community states, functions segmentDistances and trajectoryDistances calculate the distance between pairs of directed segments and community trajectories, respectively.
+<meta property="og:description" content="Community trajectory analysis (CTA) is a framework to analyze community dynamics described as trajectories in a chosen space of community resemblance.
+CTA takes trajectories as objects to be analyzed and compared geometrically. Given a distance matrix between community states, the set of functions for CTA are:
+Functions segmentDistances and trajectoryDistances calculate the distance between pairs of directed segments and community trajectories, respectively.
 Function trajectoryLengths calculates lengths of directed segments and total path lengths of trajectories.
 Function trajectoryAngles calculates the angle between consecutive pairs of directed segments or between segments of ordered triplets of points.
 Function trajectoryPCoA performs principal coordinates analysis (cmdscale) and draws trajectories in the ordination scatterplot.
 Function trajectoryPlot Draws trajectories in a scatterplot corresponding to the input coordinates.
 Function trajectoryProjection projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.
 Function trajectoryConvergence performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.
+Function trajectorySelection allows selecting the submatrix of distances corresponding to a given subset of trajectories.
 Function trajectoryDirectionality returns (for each trajectory) a statistic that measures directionality of the whole trajectory.
 Function centerTrajectories shifts all trajectories to the center of the compositional space and returns a modified distance matrix.
 Function is.metric checks whether the input dissimilarity matrix is metric (i.e. all triplets fulfill the triangle inequality).
-These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
-By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
-Details of calculations are given in De Cáceres et al (submitted)" />
+" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -127,33 +127,35 @@ Details of calculations are given in De Cáceres et al (submitted)" />
 
     <div class="ref-description">
     
-    <p>Set of functions for trajectory analysis</p><ul>
-<li><p>Given a distance matrix between community states, functions <code>segmentDistances</code> and <code>trajectoryDistances</code> calculate the distance between pairs of directed segments and community trajectories, respectively.</p></li>
+    <p>Community trajectory analysis (CTA) is a framework to analyze community dynamics described as trajectories in a chosen space of community resemblance.
+CTA takes trajectories as objects to be analyzed and compared geometrically. Given a distance matrix between community states, the set of functions for CTA are:</p><ul>
+<li><p>Functions <code>segmentDistances</code> and <code>trajectoryDistances</code> calculate the distance between pairs of directed segments and community trajectories, respectively.</p></li>
 <li><p>Function <code>trajectoryLengths</code> calculates lengths of directed segments and total path lengths of trajectories.</p></li>
 <li><p>Function <code>trajectoryAngles</code> calculates the angle between consecutive pairs of directed segments or between segments of ordered triplets of points.</p></li>
 <li><p>Function <code>trajectoryPCoA</code> performs principal coordinates analysis (<code>cmdscale</code>) and draws trajectories in the ordination scatterplot.</p></li>
 <li><p>Function <code>trajectoryPlot</code> Draws trajectories in a scatterplot corresponding to the input coordinates.</p></li>
 <li><p>Function <code>trajectoryProjection</code> projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.</p></li>
 <li><p>Function <code>trajectoryConvergence</code> performs the Mann-Kendall trend test on the distances between trajectories (symmetric test) or the distance between points of one trajectory to the other.</p></li>
+<li><p>Function <code>trajectorySelection</code> allows selecting the submatrix of distances corresponding to a given subset of trajectories.</p></li>
 <li><p>Function <code>trajectoryDirectionality</code> returns (for each trajectory) a statistic that measures directionality of the whole trajectory.</p></li>
 <li><p>Function <code>centerTrajectories</code> shifts all trajectories to the center of the compositional space and returns a modified distance matrix.</p></li>
 <li><p>Function <code>is.metric</code> checks whether the input dissimilarity matrix is metric (i.e. all triplets fulfill the triangle inequality).</p></li>
-</ul><p>These functions consider community dynamics as trajectories in a chosen space of community resemblance and takes trajectories as objects to be compared. 
-By adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016), the functions allow assessing the resemblance between trajectories. 
-Details of calculations are given in De Cáceres et al (submitted)</p>
+</ul>
     
     </div>
 
     <pre class="usage"><span class='fu'>segmentDistances</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>distance.type</span> <span class='kw'>=</span> <span class='st'>"directed-segment"</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+  <span class='kw'>distance.type</span> <span class='kw'>=</span> <span class='st'>"directed-segment"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
 <span class='fu'>trajectoryDistances</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>distance.type</span> <span class='kw'>=</span> <span class='st'>"DSPD"</span>,
-  <span class='kw'>symmetrization</span> <span class='kw'>=</span> <span class='st'>"mean"</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+  <span class='kw'>symmetrization</span> <span class='kw'>=</span> <span class='st'>"mean"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
 <span class='fu'>trajectoryLengths</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
 <span class='fu'>trajectoryAngles</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>all</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>stats</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+  <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='fu'>trajectorySelection</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='no'>selection</span>)
 
 <span class='fu'>trajectoryPCoA</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>selection</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>traj.colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>axes</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>2</span>), <span class='no'>...</span>)
@@ -161,14 +163,15 @@ Details of calculations are given in De Cáceres et al (submitted)</p>
 <span class='fu'>trajectoryPlot</span>(<span class='no'>x</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>selection</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>traj.colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>axes</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>2</span>), <span class='no'>...</span>)
 
-<span class='fu'>trajectoryProjection</span>(<span class='no'>d</span>, <span class='no'>target</span>, <span class='no'>trajectory</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>)
+<span class='fu'>trajectoryProjection</span>(<span class='no'>d</span>, <span class='no'>target</span>, <span class='no'>trajectory</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
 <span class='fu'>trajectoryConvergence</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>symmetric</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='fu'>trajectoryDirectionality</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
-<span class='fu'>trajectoryDirectionality</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-
-<span class='fu'>centerTrajectories</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>surveys</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>centerTrajectories</span>(<span class='no'>d</span>, <span class='no'>sites</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
 <span class='fu'>is.metric</span>(<span class='no'>d</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-04</span>)</pre>
     
@@ -177,7 +180,7 @@ Details of calculations are given in De Cáceres et al (submitted)</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>d</th>
-      <td><p>A symmetric <code>matrix</code> or an object of class <code>dist</code> containing the distance values between pairs of community states.</p></td>
+      <td><p>A symmetric <code>matrix</code> or an object of class <code>dist</code> containing the distance values between pairs of community states (see details).</p></td>
     </tr>
     <tr>
       <th>sites</th>
@@ -200,12 +203,16 @@ Details of calculations are given in De Cáceres et al (submitted)</p>
 </ul></td>
     </tr>
     <tr>
+      <th>add</th>
+      <td><p>Flag to indicate that constant values should be added (local transformation) to correct triplets of distance values that do not fulfill the triangle inequality.</p></td>
+    </tr>
+    <tr>
       <th>verbose</th>
       <td><p>Provides console output informing about process (useful for large dataset).</p></td>
     </tr>
     <tr>
       <th>symmetrization</th>
-      <td><p>Function used to obtain a symmetric distance, so that DSPD(T1,T2) = DSPD(T2,T1) (e.g., <code>mean</code> or <code>min</code>).</p></td>
+      <td><p>Function used to obtain a symmetric distance, so that DSPD(T1,T2) = DSPD(T2,T1) (e.g., <code>mean</code> or <code>min</code>). If <code>symmetrization = NULL</code> then the symmetrization is not conducted and the output dissimilarity matrix is not symmetric.</p></td>
     </tr>
     <tr>
       <th>all</th>
@@ -217,7 +224,7 @@ Details of calculations are given in De Cáceres et al (submitted)</p>
     </tr>
     <tr>
       <th>selection</th>
-      <td><p>A numeric or logical vector of the same length as <code>sites</code>, indicating a subset of site trajectories to be plotted.</p></td>
+      <td><p>A character vector of sites, a numeric vector of site indices or logical vector of the same length as <code>sites</code>, indicating a subset of site trajectories to be selected.</p></td>
     </tr>
     <tr>
       <th>traj.colors</th>
@@ -245,7 +252,7 @@ Details of calculations are given in De Cáceres et al (submitted)</p>
     </tr>
     <tr>
       <th>tol</th>
-      <td><p>Numerical tolerance value to determine that projection of a point lies within the trajectory (or for metricity check).</p></td>
+      <td><p>Numerical tolerance value to determine that projection of a point lies within the trajectory.</p></td>
     </tr>
     <tr>
       <th>symmetric</th>
@@ -255,7 +262,8 @@ Details of calculations are given in De Cáceres et al (submitted)</p>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Function <code>trajectoryDistances</code> returns an object of class <code>dist</code> containing the distances between trajectories. Function <code>trajectorySegments</code> returns a list with the following elements:</p><ul>
+    <p>Function <code>trajectoryDistances</code> returns an object of class <code>dist</code> containing the distances between trajectories (if <code>symmetrization = NULL</code> then the object returned is of class <code>matrix</code>).</p>
+<p>Function <code>trajectorySegments</code> returns a list with the following elements:</p><ul>
 <li><p><code>Dseg</code>: Distance matrix between segments.</p></li>
 <li><p><code>Dini</code>: Distance matrix between initial points of segments.</p></li>
 <li><p><code>Dfin</code>: Distance matrix between final points of segments.</p></li>
@@ -277,18 +285,26 @@ Details of calculations are given in De Cáceres et al (submitted)</p>
 <li><p><code>p.value</code>: A matrix with the p-value of the convergence/divergence test between trajectories. If <code>symmetric=TRUE</code> then the matrix is square. Otherwise the p-value indicates the test of the row trajectory approaching the column trajectory.</p></li>
 </ul>
 
-<p>Function <code>trajectoryDirectionality</code> returns a vector with directionality values (one per trajectory).
-Function <code>centerTrajectory</code> returns an object of class <code>dist</code>.</p>
+<p>Function <code>trajectoryDirectionality</code> returns a vector with directionality values (one per trajectory).</p>
+<p>Function <code>centerTrajectory</code> returns an object of class <code>dist</code>.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Function <code>trajectoryAngles</code> calculates angles between consecutive segments (or between the segments corresponding to all ordered triplets) in degrees. For each pair of segments, the angle between the two is defined on the plane that contains the two segments, and measures the change in direction (in degrees) from one segment to the other. 
+    <p>Details of calculations are given in De Cáceres et al (submitted). 
+The input distance matrix <code>d</code> should ideally be metric. That is, all subsets of distance triplets should fulfill the triangle inequality (see function <code>is.metric</code>). 
+All CTA functions that require metricity include a parameter '<code>add</code>', which by default is TRUE, meaning that whenever the triangle inequality is broken the minimum constant required to fulfill it is added to the three distances.
+If such local (an hence, inconsistent across triplets) corrections are not desired, users should find another way modify <code>d</code> to achieve metricity, such as PCoA, metric MDS or non-metric MDS (see CTA vignette). 
+If parameter '<code>add</code>' is set to FALSE and problems of triangle inequality exist, CTA functions may provide missing values in some cases where they should not.</p>
+<p>The resemblance between trajectories is done by adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016).</p>
+<p>Function <code>trajectoryAngles</code> calculates angles between consecutive segments (or between the segments corresponding to all ordered triplets) in degrees. For each pair of segments, the angle between the two is defined on the plane that contains the two segments, and measures the change in direction (in degrees) from one segment to the other. 
 Angles are always positive, with zero values indicating segments that are in a straight line, and values equal to 180 degrees for segments that are in opposite directions.</p>
+<p>Function <code>centerTrajectories</code> performs centering of trajectories using matrix algebra as explained in Anderson (2017).</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Besse, P., Guillouet, B., Loubes, J.-M. &amp; François, R. (2016). Review and perspective for distance based trajectory clustering. IEEE Trans. Intell. Transp. Syst., 17, 3306–3317.</p>
 <p>De Cáceres M, Coll L, Legendre P, Allen RB, Wiser SK, Fortin MJ, Condit R &amp; Hubbell S. (submitted). Trajectory analysis in community ecology.</p>
+<p>Anderson (2017). Permutational Multivariate Analysis of Variance (PERMANOVA). Wiley StatsRef: Statistics Reference Online. 1-15. Article ID: stat07841.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
