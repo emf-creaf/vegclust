@@ -4,6 +4,9 @@
 
 __Version history__
 
+_Version 1.7.6, September 2018
+1. Adapt to Rcpp changes
+
 _Version 1.7.5, August 2018
 1. Now trajectory angles are measured between the direction of the first segment and the direction of the second segment.
 2. Now mean and sd of trajectory angles are calculated using functions of package 'circular'

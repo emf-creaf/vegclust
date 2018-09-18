@@ -91,8 +91,8 @@ double angularAttributeConsecutive(double d12, double d23, double d13, bool add 
     a1 = std::min(a1,d12);
     a2 = std::min(a2,d23);
   }
-  double alpha = acos(a1/d12)*(180.0/PI);
-  double beta = acos(a2/d23)*(180.0/PI);
+  double alpha = acos(a1/d12)*(180.0/M_PI);
+  double beta = acos(a2/d23)*(180.0/M_PI);
   return(alpha + beta); //Angle between the direction of the first segment and the direction of the second
 }
 
