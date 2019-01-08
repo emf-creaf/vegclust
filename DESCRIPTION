@@ -1,8 +1,8 @@
 Package: vegclust
 Type: Package
 Title: Fuzzy Clustering of Vegetation Data
-Version: 1.7.6
-Date: 2018-08-21
+Version: 1.7.7
+Date: 2019-01-08
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com'))
@@ -14,6 +14,6 @@ License: GPL (>= 2)
 LazyLoad: yes
 Encoding: UTF-8
 NeedsCompilation: yes
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Suggests: knitr, rmarkdown, RColorBrewer, smacof
 VignetteBuilder: utils, knitr

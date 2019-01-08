@@ -29,13 +29,13 @@ stratifyvegdata<-function(x,sizes1, sizes2 = NULL, treeSel=NULL, spcodes=NULL, p
     colnames(m) = levels(c1)
     c1 = as.numeric(c1)    
     for(i in 1:nrow(treeDataPlot)) {
-      if(verbose) cat(paste(i,"\n"))
       isp = which(spcodes==treeDataPlot[i,speciesColumnId])
+      if(verbose) cat(paste(i,"_",isp,"_",c1[i],"_",m[isp, c1[i]], ": ", treeDataPlot[i,abundanceColumnId],"\n"))
       if(!cumulative) {
-        if(!counts) m[isp,c1[i]] = m[isp,c1[i]]+treeDataPlot[i,abundanceColumnId]
+        if(!counts) m[isp, c1[i]] = m[isp,c1[i]]+ as.numeric(treeDataPlot[i,abundanceColumnId])
         else m[isp,c1[i]] = m[isp,c1[i]]+1
       } else {
-        if(!counts) m[isp,1:c1[i]] = m[isp,1:c1[i]]+treeDataPlot[i,abundanceColumnId]
+        if(!counts) m[isp,1:c1[i]] = m[isp,1:c1[i]]+as.numeric(treeDataPlot[i,abundanceColumnId])
         else m[isp,1:c1[i]] = m[isp,1:c1[i]]+1  
       }
     }
@@ -59,10 +59,10 @@ stratifyvegdata<-function(x,sizes1, sizes2 = NULL, treeSel=NULL, spcodes=NULL, p
       if(verbose) cat(paste(i,"\n"))
       isp = which(spcodes==treeDataPlot[i,speciesColumnId])
       if(!cumulative){
-        if(!counts) m[isp,c1[i],c2[i]] = m[isp,c1[i],c2[i]]+treeDataPlot[i,abundanceColumnId]
+        if(!counts) m[isp,c1[i],c2[i]] = m[isp,c1[i],c2[i]]+as.numeric(treeDataPlot[i,abundanceColumnId])
         else m[isp,c1[i],c2[i]] = m[isp,c1[i],c2[i]]+1
       } else {
-        if(!counts) m[isp,1:c1[i],1:c2[i]] = m[isp,1:c1[i],1:c2[i]]+treeDataPlot[i,abundanceColumnId]
+        if(!counts) m[isp,1:c1[i],1:c2[i]] = m[isp,1:c1[i],1:c2[i]]+as.numeric(treeDataPlot[i,abundanceColumnId])
         else m[isp,1:c1[i],1:c2[i]] = m[isp,1:c1[i],1:c2[i]]+1
       }
     }
