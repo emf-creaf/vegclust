@@ -1,8 +1,8 @@
 Package: vegclust
 Type: Package
 Title: Fuzzy Clustering of Vegetation Data
-Version: 1.7.7
-Date: 2019-01-08
+Version: 1.7.8
+Date: 2019-06-12
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com'))
@@ -11,6 +11,7 @@ Depends: R (>= 3.4.0), Rcpp (>= 0.12.12)
 Imports: sp, vegan, Kendall, circular, MASS
 LinkingTo: Rcpp
 License: GPL (>= 2)
+URL: https://vegmod.github.io/rpackage/vegclust
 LazyLoad: yes
 Encoding: UTF-8
 NeedsCompilation: yes
