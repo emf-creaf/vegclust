@@ -31,7 +31,7 @@ trajectoryAngles(d, sites, surveys = NULL, all = FALSE, stats = TRUE,
 trajectorySelection(d, sites, selection)
 
 trajectoryPCoA(d, sites, surveys = NULL, selection = NULL,
-  traj.colors = NULL, axes = c(1, 2), ...)
+  traj.colors = NULL, axes = c(1, 2), survey.labels = FALSE, ...)
 
 trajectoryPlot(x, sites, surveys = NULL, selection = NULL,
   traj.colors = NULL, axes = c(1, 2), ...)
@@ -83,6 +83,8 @@ whereas for \code{trajectoryDistances} the available indices are:
 \item{traj.colors}{A vector of colors (one per site). If \code{selection != NULL} the length of the color vector should be equal to the number of sites selected.}
 
 \item{axes}{The pair of principal coordinates to be plotted.}
+
+\item{survey.labels}{A boolean flag to indicate whether surveys should be plotted as text next to arrow endpoints}
 
 \item{...}{Additional parameters for function \code{\link{arrows}}.}
 

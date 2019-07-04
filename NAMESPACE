@@ -1,7 +1,7 @@
 import(vegan,sp)
 importFrom("grDevices", "colorRampPalette", "rainbow")
 importFrom("graphics", "abline", "axis", "legend", "lines", "matlines",
-             "persp", "arrows")
+             "persp", "arrows", "text")
 importFrom("vegan", "decostand")
 importFrom("MASS", "ginv")
 importFrom("stats", "as.dist", "cutree", "dist", "quantile", "model.matrix", "var", "cmdscale", "sd")

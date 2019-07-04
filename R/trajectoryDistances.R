@@ -488,9 +488,10 @@ trajectorySelection<-function(d, sites, selection) {
 
 #' @rdname trajectories
 #' @param traj.colors A vector of colors (one per site). If \code{selection != NULL} the length of the color vector should be equal to the number of sites selected.
+#' @param survey.labels A boolean flag to indicate whether surveys should be plotted as text next to arrow endpoints
 #' @param axes The pair of principal coordinates to be plotted.
 #' @param ... Additional parameters for function \code{\link{arrows}}.
-trajectoryPCoA<-function(d, sites, surveys = NULL, selection = NULL, traj.colors = NULL, axes=c(1,2), ...) {
+trajectoryPCoA<-function(d, sites, surveys = NULL, selection = NULL, traj.colors = NULL, axes=c(1,2), survey.labels = FALSE, ...) {
   siteIDs = unique(sites)
   nsite = length(siteIDs)
   
@@ -523,6 +524,12 @@ trajectoryPCoA<-function(d, sites, surveys = NULL, selection = NULL, traj.colors
       nifin =ind_surv[t+1]
       if(!is.null(traj.colors)) arrows(x[niini],y[niini],x[nifin],y[nifin], col = traj.colors[i], ...)
       else arrows(x[niini],y[niini],x[nifin],y[nifin], ...)
+      if(survey.labels) {
+        text(x[niini],y[niini], labels = ifelse(!is.null(surveysred), surveysred[t],t), pos = 3)
+        if(t==(length(ind_surv)-1)) {
+          text(x[nifin],y[nifin], labels = ifelse(!is.null(surveysred), surveysred[t+1],t+1), pos = 3)
+        }
+      }
     }
   }
   #Return cmdscale result

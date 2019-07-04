@@ -23,7 +23,7 @@ package repository. In addition, the latest stable `vegclust` R package
 can be installed from GitHub as follows:
 
 ``` r
-devtools::install_github("miquelcaceres/vegclust")
+devtools::install_github("vegmod/vegclust")
 ```
 
 ## References
