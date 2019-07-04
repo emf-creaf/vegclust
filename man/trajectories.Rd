@@ -34,7 +34,7 @@ trajectoryPCoA(d, sites, surveys = NULL, selection = NULL,
   traj.colors = NULL, axes = c(1, 2), survey.labels = FALSE, ...)
 
 trajectoryPlot(x, sites, surveys = NULL, selection = NULL,
-  traj.colors = NULL, axes = c(1, 2), ...)
+  traj.colors = NULL, axes = c(1, 2), survey.labels = FALSE, ...)
 
 trajectoryProjection(d, target, trajectory, tol = 1e-06, add = TRUE)
 

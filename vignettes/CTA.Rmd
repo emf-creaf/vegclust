@@ -81,7 +81,8 @@ To begin our analysis of the three trajectories, we display them in an ordinatio
 
 ```{r pcoa, fig = TRUE, fig.height=4, fig.width=4, fig.align = "center"}
 par(mar=c(4,4,1,1))
-trajectoryPCoA(D, sites, surveys, traj.colors = c("black","red", "blue"), lwd = 2)
+trajectoryPCoA(D, sites, surveys, traj.colors = c("black","red", "blue"), lwd = 2,
+               survey.labels = T)
 legend("topleft", col=c("black","red", "blue"), 
        legend=c("Trajectory 1", "Trajectory 2", "Trajectory 3"), bty="n", lty=1, lwd = 2)
 ```
@@ -92,7 +93,8 @@ As this example has two dimensions and we used Euclidean distance, the same plot
 
 ```{r xy, fig = TRUE, fig.height=4, fig.width=4, fig.align = "center"}
 par(mar=c(4,4,1,1))
-trajectoryPlot(xy, sites, surveys, traj.colors = c("black","red", "blue"), lwd = 2)
+trajectoryPlot(xy, sites, surveys, traj.colors = c("black","red", "blue"), lwd = 2,
+               survey.labels = T)
 legend("topright", col=c("black","red", "blue"), 
        legend=c("Trajectory 1", "Trajectory 2", "Trajectory 3"), bty="n", lty=1, lwd = 2)
 ```
@@ -288,7 +290,7 @@ One can inspect specific trajectories using argument `selection` in function `tr
 par(mfrow=c(1,2))
 trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
                selection= 3,
-               length=0.1, lwd=2)
+               length=0.1, lwd=2, survey.labels = T)
 plotTrajDiamDist(3)
 ```
 
@@ -297,7 +299,7 @@ In the right hand, we added a representation of the change in the mountain beech
 par(mfrow=c(1,2))
 trajectoryPCoA(avoca_D_man,  avoca_sites, avoca_surveys,
                selection= 4,
-               length=0.1, lwd=2)
+               length=0.1, lwd=2, survey.labels = T)
 plotTrajDiamDist(4)
 ```
 
@@ -386,7 +388,7 @@ This dissimilarity matrix is a metric, so one would not need any transformation 
 
 If we draw the resemblance space corresponding to this dissimilarity matrix we see a straight trajectory:
 ```{r, echo=TRUE, fig = TRUE, fig.height=4, fig.width=6, fig.align="center"}
-trajectoryPCoA(D,sites,surveys)
+trajectoryPCoA(D,sites,surveys, survey.labels = T)
 ```
 Here we see that Bray-Curtis dissimilarity responds linearly to the proposed sequence of community dynamics. To confirm this geometry, we can calculate the geometric properties of the trajectory (i.e. length, angle between consecutive segments and overall directionality):
 ```{r}
@@ -404,7 +406,7 @@ sqrtD
 
 The transformation increases all dissimilarity values (because the original values are smaller than 1), but the increase is larger for smaller values, so the ratio between large dissimilarities and small dissimilarities decreases. This has an effect on the overall shape of the trajectory, which surprisingly now looks like:
 ```{r, echo=TRUE, fig = TRUE, fig.height=4, fig.width=6, fig.align="center"}
-trajectoryPCoA(sqrtD,sites,surveys)
+trajectoryPCoA(sqrtD,sites,surveys, survey.labels = T)
 ```
 
 In addition to the distortion observed, the number of dimensions of the data have increased (i.e the sum of variance explained by the two axes is 88% < 100%), so we cannot be sure that the angles are well represented. If we re-calculate the properties of the trajectory taking into account all dimensions we obtain:
@@ -476,14 +478,14 @@ Deviations from a metric space, if they exist, will be small, so that local tran
 Local transformations are not possible to display trajectories. When we plot the trajectory using function `trajectoryPCoA` the global transformation of principal coordinates analysis (PCoA) with negative eigenvalue correction is performed. This is fine to display trajectories, but has problems when measuring angular properties, as we will see.
 
 ```{r, echo=TRUE, fig = TRUE, fig.height=5, fig.width=6, fig.align="center"}
-pcoa<-trajectoryPCoA(D, sites, surveys, selection=1,length=0.1, axes=c(1,2))
+pcoa<-trajectoryPCoA(D, sites, surveys, selection=1,length=0.1, axes=c(1,2), survey.labels = T)
 pcoaD = dist(pcoa$points)
 ```
 
 The trajectory has some twists derived from stochasticity in death and recruitment. Let's now look at the square root of the Bray-Curtis dissimilarity:
 ```{r, echo=TRUE, fig = TRUE, fig.height=5, fig.width=6, fig.align="center"}
 sqrtD = sqrt(D)
-pcoaSqrt = trajectoryPCoA(sqrtD, sites, surveys, selection=1,length=0.1, axes=c(1,2))
+pcoaSqrt = trajectoryPCoA(sqrtD, sites, surveys, selection=1,length=0.1, axes=c(1,2), survey.labels = T)
 ```
 
 Finally, we also transform dissimilarities using metric multidimensional scaling (mMDS), provided by package `smacof`:
@@ -491,7 +493,7 @@ Finally, we also transform dissimilarities using metric multidimensional scaling
 ```{r, echo=TRUE, fig = TRUE, fig.height=5, fig.width=6, fig.align="center"}
 res <- mds(D, ndim = length(Sj)-1, type = "interval")
 mmdsD <- dist(res$conf)
-trajectoryPlot(res$conf, sites, surveys, selection=1,length=0.1, axes=c(1,2))
+trajectoryPlot(res$conf, sites, surveys, selection=1,length=0.1, axes=c(1,2), survey.labels = T)
 ```
 
 
