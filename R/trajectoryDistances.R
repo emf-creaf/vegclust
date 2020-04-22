@@ -44,7 +44,7 @@
 #' @param verbose Provides console output informing about process (useful for large dataset).
 #' 
 #' @details 
-#' Details of calculations are given in De \enc{Cáceres}{Caceres} et al (submitted). 
+#' Details of calculations are given in De \enc{Cáceres}{Caceres} et al (2019). 
 #' The input distance matrix \code{d} should ideally be metric. That is, all subsets of distance triplets should fulfill the triangle inequality (see function \code{is.metric}). 
 #' All CTA functions that require metricity include a parameter '\code{add}', which by default is TRUE, meaning that whenever the triangle inequality is broken the minimum constant required to fulfill it is added to the three distances.
 #' If such local (an hence, inconsistent across triplets) corrections are not desired, users should find another way modify \code{d} to achieve metricity, such as PCoA, metric MDS or non-metric MDS (see CTA vignette). 
@@ -52,8 +52,9 @@
 #' 
 #' The resemblance between trajectories is done by adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016).   
 #' 
-#' Function \code{trajectoryAngles} calculates angles between consecutive segments (or between the segments corresponding to all ordered triplets) in degrees. For each pair of segments, the angle between the two is defined on the plane that contains the two segments, and measures the change in direction (in degrees) from one segment to the other. 
-#' Angles are always positive, with zero values indicating segments that are in a straight line, and values equal to 180 degrees for segments that are in opposite directions.
+#' Function \code{trajectoryAngles} calculates angles between consecutive segments in degrees. For each pair of segments, the angle between the two is defined on the plane that contains the two segments, and measures the change in direction (in degrees) from one segment to the other. 
+#' Angles are always positive, with zero values indicating segments that are in a straight line, and values equal to 180 degrees for segments that are in opposite directions. If \code{all = TRUE}
+#' angles are calculated between the segments corresponding to all ordered triplets. Alternatively, if \code{relativeToInitial = TRUE} angles are calculated for each segment with respect to the initial survey.
 #' 
 #' Function \code{centerTrajectories} performs centering of trajectories using matrix algebra as explained in Anderson (2017).
 #' 
@@ -68,7 +69,10 @@
 #'   \item{\code{Dfinini}: Distance matrix between final points of one segment and the initial point of the other.}
 #' }
 #' 
-#' Function \code{trajectoryLengths} returns a data frame with the length of each segment on each trajectory and the total length of all trajectories. Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
+#' Function \code{trajectoryLengths} returns a data frame with the length of each segment on each trajectory and the total length of all trajectories. 
+#' If \code{relativeToInitial = TRUE} lengths are calculated between the initial survey and all the other surveys.
+#' 
+#' Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
 #' 
 #' Function \code{trajectoryAngles} returns a data frame with angle values on each trajectory. If \code{stats=TRUE}, then the mean, standard deviation and mean resultant length of those angles are also returned. 
 #' 
@@ -92,6 +96,7 @@
 #' Function \code{centerTrajectory} returns an object of class \code{\link{dist}}.
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres}, Forest Sciences Center of Catalonia
+#' @author Anthony Sturbois, RNN Baie de Saint-Brieuc
 #' 
 #' @references
 #' Besse, P., Guillouet, B., Loubes, J.-M. & François, R. (2016). Review and perspective for distance based trajectory clustering. IEEE Trans. Intell. Transp. Syst., 17, 3306–3317.
@@ -367,7 +372,8 @@ trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", symm
 }
 
 #' @rdname trajectories
-trajectoryLengths<-function(d, sites, surveys=NULL, verbose= FALSE) {
+#' @param relativeToInitial Flag to indicate that lengths or angles should be calculated with respect to initial survey.
+trajectoryLengths<-function(d, sites, surveys=NULL, relativeToInitial = FALSE, verbose= FALSE) {
   if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
   if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
   
@@ -385,7 +391,8 @@ trajectoryLengths<-function(d, sites, surveys=NULL, verbose= FALSE) {
 
   lengths = as.data.frame(matrix(NA, nrow=nsite, ncol=maxnsurveys))
   row.names(lengths)<-siteIDs
-  names(lengths)<-c(paste0("S",as.character(1:(maxnsurveys-1))),"Trajectory")
+  if(relativeToInitial) names(lengths)<-c(paste0("Lt1_t",as.character(2:(maxnsurveys))),"Trajectory")
+  else names(lengths)<-c(paste0("S",as.character(1:(maxnsurveys-1))),"Trajectory")
   if(verbose) {
     cat("\nCalculating trajectory lengths...\n")
     tb = txtProgressBar(1, nsite, style=3)
@@ -396,7 +403,8 @@ trajectoryLengths<-function(d, sites, surveys=NULL, verbose= FALSE) {
     #Surveys may not be in order
     if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
     for(s1 in 1:(nsurveysite[i1]-1)) {
-      lengths[i1,s1] = dmat[ind_surv1[s1], ind_surv1[s1+1]]
+      if(relativeToInitial) lengths[i1,s1] = dmat[ind_surv1[1], ind_surv1[s1+1]]
+      else  lengths[i1,s1] = dmat[ind_surv1[s1], ind_surv1[s1+1]]
     }
     lengths[i1, maxnsurveys] = sum(lengths[i1,], na.rm=T)
   }
@@ -406,7 +414,7 @@ trajectoryLengths<-function(d, sites, surveys=NULL, verbose= FALSE) {
 #' @rdname trajectories
 #' @param all A flag to indicate that angles are desired for all triangles (i.e. all pairs of segments) in the trajectory. If FALSE, angles are calculated for consecutive segments only.
 #' @param stats A flag to indicate that circular statistics are desired (mean, standard deviation and mean resultant length, i.e. rho)
-trajectoryAngles<-function(d, sites, surveys=NULL, all = FALSE, stats = TRUE, add=TRUE, verbose= FALSE) {
+trajectoryAngles<-function(d, sites, surveys=NULL, all = FALSE, relativeToInitial = FALSE, stats = TRUE, add=TRUE, verbose= FALSE) {
   if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
   if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
   
@@ -436,9 +444,15 @@ trajectoryAngles<-function(d, sites, surveys=NULL, all = FALSE, stats = TRUE, ad
     if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
     if(!all) {
       for(s1 in 1:(nsurveysite[i1]-2)) {
-        d12 = dmat[ind_surv1[s1], ind_surv1[s1+1]]
-        d23 = dmat[ind_surv1[s1+1], ind_surv1[s1+2]]
-        d13 = dmat[ind_surv1[s1], ind_surv1[s1+2]]
+        if(relativeToInitial) {
+          d12 = dmat[ind_surv1[1], ind_surv1[s1 + 1]]
+          d23 = dmat[ind_surv1[s1 + 1], ind_surv1[s1 +2]]
+          d13 = dmat[ind_surv1[1], ind_surv1[s1 + 2]]
+        } else {
+          d12 = dmat[ind_surv1[s1], ind_surv1[s1+1]]
+          d23 = dmat[ind_surv1[s1+1], ind_surv1[s1+2]]
+          d13 = dmat[ind_surv1[s1], ind_surv1[s1+2]]
+        }
         angles[i1, s1] = .angleConsecutiveC(d12,d23,d13, add)
         # cat(paste(i1,s1,":", d12,d23,d13,.angleConsecutiveC(d12,d23,d13, TRUE),"\n"))
       }
@@ -463,8 +477,19 @@ trajectoryAngles<-function(d, sites, surveys=NULL, all = FALSE, stats = TRUE, ad
   }
   angles = as.data.frame(angles)
   row.names(angles)<-siteIDs
-  if(!all) names(angles)<-c(paste0("S",as.character(1:(maxnsurveys-2)),"-S",as.character(2:(maxnsurveys-1))),"mean", "sd", "rho")
-  else names(angles)<-c(paste0("A",as.character(1:(ncol(angles)-3))),"mean", "sd", "rho")
+  if(!all) {
+    if(relativeToInitial) {
+      names(angles) <- c(paste0("t", rep("1",maxnsurveys -2), "-S", 
+                                as.character(2:(maxnsurveys - 1))), 
+                         "mean", "sd", "rho")    
+    } else {
+      names(angles)<-c(paste0("S",as.character(1:(maxnsurveys-2)),"-S",
+                              as.character(2:(maxnsurveys-1))),
+                       "mean", "sd", "rho")
+    }
+  } else {
+    names(angles)<-c(paste0("A",as.character(1:(ncol(angles)-3))),"mean", "sd", "rho")
+  }
   if(!stats) angles = angles[,1:(ncol(angles)-3), drop=FALSE]
   return(angles)
 }

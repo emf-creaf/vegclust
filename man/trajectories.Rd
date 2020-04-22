@@ -17,32 +17,80 @@
 \alias{is.metric}
 \title{Community trajectory analysis}
 \usage{
-segmentDistances(d, sites, surveys = NULL,
-  distance.type = "directed-segment", add = TRUE, verbose = FALSE)
+segmentDistances(
+  d,
+  sites,
+  surveys = NULL,
+  distance.type = "directed-segment",
+  add = TRUE,
+  verbose = FALSE
+)
 
-trajectoryDistances(d, sites, surveys = NULL, distance.type = "DSPD",
-  symmetrization = "mean", add = TRUE, verbose = FALSE)
+trajectoryDistances(
+  d,
+  sites,
+  surveys = NULL,
+  distance.type = "DSPD",
+  symmetrization = "mean",
+  add = TRUE,
+  verbose = FALSE
+)
 
-trajectoryLengths(d, sites, surveys = NULL, verbose = FALSE)
+trajectoryLengths(
+  d,
+  sites,
+  surveys = NULL,
+  relativeToInitial = FALSE,
+  verbose = FALSE
+)
 
-trajectoryAngles(d, sites, surveys = NULL, all = FALSE, stats = TRUE,
-  add = TRUE, verbose = FALSE)
+trajectoryAngles(
+  d,
+  sites,
+  surveys = NULL,
+  all = FALSE,
+  relativeToInitial = FALSE,
+  stats = TRUE,
+  add = TRUE,
+  verbose = FALSE
+)
 
 trajectorySelection(d, sites, selection)
 
-trajectoryPCoA(d, sites, surveys = NULL, selection = NULL,
-  traj.colors = NULL, axes = c(1, 2), survey.labels = FALSE, ...)
+trajectoryPCoA(
+  d,
+  sites,
+  surveys = NULL,
+  selection = NULL,
+  traj.colors = NULL,
+  axes = c(1, 2),
+  survey.labels = FALSE,
+  ...
+)
 
-trajectoryPlot(x, sites, surveys = NULL, selection = NULL,
-  traj.colors = NULL, axes = c(1, 2), survey.labels = FALSE, ...)
+trajectoryPlot(
+  x,
+  sites,
+  surveys = NULL,
+  selection = NULL,
+  traj.colors = NULL,
+  axes = c(1, 2),
+  survey.labels = FALSE,
+  ...
+)
 
 trajectoryProjection(d, target, trajectory, tol = 1e-06, add = TRUE)
 
-trajectoryConvergence(d, sites, surveys = NULL, symmetric = FALSE,
-  add = TRUE, verbose = FALSE)
+trajectoryConvergence(
+  d,
+  sites,
+  surveys = NULL,
+  symmetric = FALSE,
+  add = TRUE,
+  verbose = FALSE
+)
 
-trajectoryDirectionality(d, sites, surveys = NULL, add = TRUE,
-  verbose = FALSE)
+trajectoryDirectionality(d, sites, surveys = NULL, add = TRUE, verbose = FALSE)
 
 centerTrajectories(d, sites, verbose = FALSE)
 
@@ -73,6 +121,8 @@ whereas for \code{trajectoryDistances} the available indices are:
 \item{verbose}{Provides console output informing about process (useful for large dataset).}
 
 \item{symmetrization}{Function used to obtain a symmetric distance, so that DSPD(T1,T2) = DSPD(T2,T1) (e.g., \code{mean} or \code{min}). If \code{symmetrization = NULL} then the symmetrization is not conducted and the output dissimilarity matrix is not symmetric.}
+
+\item{relativeToInitial}{Flag to indicate that lengths or angles should be calculated with respect to initial survey.}
 
 \item{all}{A flag to indicate that angles are desired for all triangles (i.e. all pairs of segments) in the trajectory. If FALSE, angles are calculated for consecutive segments only.}
 
@@ -110,7 +160,10 @@ Function \code{trajectorySegments} returns a list with the following elements:
   \item{\code{Dfinini}: Distance matrix between final points of one segment and the initial point of the other.}
 }
 
-Function \code{trajectoryLengths} returns a data frame with the length of each segment on each trajectory and the total length of all trajectories. Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
+Function \code{trajectoryLengths} returns a data frame with the length of each segment on each trajectory and the total length of all trajectories. 
+If \code{relativeToInitial = TRUE} lengths are calculated between the initial survey and all the other surveys.
+
+Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
 
 Function \code{trajectoryAngles} returns a data frame with angle values on each trajectory. If \code{stats=TRUE}, then the mean, standard deviation and mean resultant length of those angles are also returned. 
 
@@ -151,7 +204,7 @@ CTA takes trajectories as objects to be analyzed and compared geometrically. Giv
 }
 }
 \details{
-Details of calculations are given in De \enc{Cáceres}{Caceres} et al (submitted). 
+Details of calculations are given in De \enc{Cáceres}{Caceres} et al (2019). 
 The input distance matrix \code{d} should ideally be metric. That is, all subsets of distance triplets should fulfill the triangle inequality (see function \code{is.metric}). 
 All CTA functions that require metricity include a parameter '\code{add}', which by default is TRUE, meaning that whenever the triangle inequality is broken the minimum constant required to fulfill it is added to the three distances.
 If such local (an hence, inconsistent across triplets) corrections are not desired, users should find another way modify \code{d} to achieve metricity, such as PCoA, metric MDS or non-metric MDS (see CTA vignette). 
@@ -159,8 +212,9 @@ If parameter '\code{add}' is set to FALSE and problems of triangle inequality ex
 
 The resemblance between trajectories is done by adapting concepts and procedures used for the analysis of trajectories in space (i.e. movement data) (Besse et al. 2016).   
 
-Function \code{trajectoryAngles} calculates angles between consecutive segments (or between the segments corresponding to all ordered triplets) in degrees. For each pair of segments, the angle between the two is defined on the plane that contains the two segments, and measures the change in direction (in degrees) from one segment to the other. 
-Angles are always positive, with zero values indicating segments that are in a straight line, and values equal to 180 degrees for segments that are in opposite directions.
+Function \code{trajectoryAngles} calculates angles between consecutive segments in degrees. For each pair of segments, the angle between the two is defined on the plane that contains the two segments, and measures the change in direction (in degrees) from one segment to the other. 
+Angles are always positive, with zero values indicating segments that are in a straight line, and values equal to 180 degrees for segments that are in opposite directions. If \code{all = TRUE}
+angles are calculated between the segments corresponding to all ordered triplets. Alternatively, if \code{relativeToInitial = TRUE} angles are calculated for each segment with respect to the initial survey.
 
 Function \code{centerTrajectories} performs centering of trajectories using matrix algebra as explained in Anderson (2017).
 }
@@ -216,4 +270,6 @@ Anderson (2017). Permutational Multivariate Analysis of Variance (PERMANOVA). Wi
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres}, Forest Sciences Center of Catalonia
+
+Anthony Sturbois, RNN Baie de Saint-Brieuc
 }

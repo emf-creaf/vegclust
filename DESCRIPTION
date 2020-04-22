@@ -1,11 +1,12 @@
 Package: vegclust
 Type: Package
 Title: Fuzzy Clustering of Vegetation Data
-Version: 1.7.8
-Date: 2019-07-05
+Version: 1.7.9
+Date: 2020-04-22
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
-	email='miquelcaceres@gmail.com'))
+	email='miquelcaceres@gmail.com'),
+	person('Anthony', 'Sturbois', role = 'ctb'))
 Description: A set of functions to: (1) perform fuzzy clustering of vegetation data [De Caceres et al. (2010) <doi:10.1111/j.1654-1103.2010.01211.x>]; (2) to assess ecological community ressemblance on the basis of structure and composition [De Caceres et al. (2013): <doi:10.1111/2041-210X.12116>]; and (3) to perform community trajectory analysis [De Caceres et al. (2019): <doi:10.1002/ecm.1350>].
 Depends: R (>= 3.4.0), Rcpp (>= 0.12.12)
 Imports: sp, vegan, Kendall, circular, MASS
@@ -15,6 +16,6 @@ URL: https://vegmod.github.io/software/vegclust
 LazyLoad: yes
 Encoding: UTF-8
 NeedsCompilation: yes
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 Suggests: knitr, rmarkdown, RColorBrewer, smacof
 VignetteBuilder: utils, knitr
