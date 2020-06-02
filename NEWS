@@ -5,6 +5,7 @@
 __Version history__
 _Version 1.7.9
 1. New option to 'trajectoryLengths' and 'trajectoryAngles' to calculate distances and angles relative to initial survey
+2. New functions 'trajectoryLengths2D' and 'trajectoryAngles2D' by Anthony Sturbois
 
 _Version 1.7.8
 1. New option to 'trajectoryPCoA' and 'trajectoryPlot' to draw survey labels

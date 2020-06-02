@@ -5,7 +5,9 @@
 #' \itemize{
 #' \item{Functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively.}
 #' \item{Function \code{trajectoryLengths} calculates lengths of directed segments and total path lengths of trajectories.}
+#' \item{Function \code{trajectoryLengths2D} calculates lengths of directed segments and total path lengths of trajectories from 2D coordinates given as input.} 
 #' \item{Function \code{trajectoryAngles} calculates the angle between consecutive pairs of directed segments or between segments of ordered triplets of points.}
+#' \item{Function \code{trajectoryAngles2D} calculates the angle between consecutive pairs of directed segments or between segments of ordered triplets of points.}
 #' \item{Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\link{cmdscale}}) and draws trajectories in the ordination scatterplot.}
 #' \item{Function \code{trajectoryPlot} Draws trajectories in a scatterplot corresponding to the input coordinates.}
 #' \item{Function \code{trajectoryProjection} projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.}
@@ -19,7 +21,7 @@
 #' 
 #' @encoding UTF-8
 #' @name trajectories
-#' @aliases segmentDistances trajectoryDistances trajectoryLengths trajectoryAngles 
+#' @aliases segmentDistances trajectoryDistances trajectoryLengths trajectoryLengths2D trajectoryAngles trajectoryAngles2D
 #'          trajectoryPCoA trajectoryProjection trajectoryConvergence trajectoryDirectionality 
 #'          centerTrajectories
 #' 
@@ -56,6 +58,11 @@
 #' Angles are always positive, with zero values indicating segments that are in a straight line, and values equal to 180 degrees for segments that are in opposite directions. If \code{all = TRUE}
 #' angles are calculated between the segments corresponding to all ordered triplets. Alternatively, if \code{relativeToInitial = TRUE} angles are calculated for each segment with respect to the initial survey.
 #' 
+#' Function \code{trajectoryAngles2D} calculates angles between consecutive segments in degrees from 2D coordinates given as input. For each pair of segments, the angle between the two is defined on the plane that contains the two segments, and measures the change in direction (in degrees) from one segment to the other. 
+#' Angles are always positive (O to 360), with zero values indicating segments that are in a straight line, and values equal to 180 degrees for segments that are in opposite directions. 
+#' If \code{all = TRUE} angles are calculated between the segments corresponding to all ordered triplets. Alternatively, if \code{relativeToInitial = TRUE} angles are calculated for each segment with respect to the initial survey.
+#' If \code{betweenSegments = TRUE} angles are calculated between segments of trajectory, otherwise, If \code{betweenTraj = FALSE}, angles are calculated between each trajectory segment and X axis.
+#' 
 #' Function \code{centerTrajectories} performs centering of trajectories using matrix algebra as explained in Anderson (2017).
 #' 
 #' @return Function \code{trajectoryDistances} returns an object of class \code{\link{dist}} containing the distances between trajectories (if \code{symmetrization = NULL} then the object returned is of class \code{matrix}). 
@@ -71,10 +78,17 @@
 #' 
 #' Function \code{trajectoryLengths} returns a data frame with the length of each segment on each trajectory and the total length of all trajectories. 
 #' If \code{relativeToInitial = TRUE} lengths are calculated between the initial survey and all the other surveys.
+#' If \code{all = TRUE} lengths are calculated for all segments.
+#' 
+#' Function \code{trajectoryLengths2D} returns a data frame with the length of each segment on each trajectory and the total length of all trajectories. 
+#' If \code{relativeToInitial = TRUE} lengths are calculated between the initial survey and all the other surveys.
+#' If \code{all = TRUE} lengths are calculated for all segments.
 #' 
 #' Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
 #' 
 #' Function \code{trajectoryAngles} returns a data frame with angle values on each trajectory. If \code{stats=TRUE}, then the mean, standard deviation and mean resultant length of those angles are also returned. 
+#' 
+#' Function \code{trajectoryAngles2D} returns a data frame with angle values on each trajectory. If \code{betweenSegments=TRUE}, then angles are calculated between trajectory segments, alternatively, If \code{betweenSegments=FALSE}, angles are calculated between each segment and the X axis
 #' 
 #' Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
 #' 
@@ -96,7 +110,7 @@
 #' Function \code{centerTrajectory} returns an object of class \code{\link{dist}}.
 #' 
 #' @author Miquel De \enc{Cáceres}{Caceres}, Forest Sciences Center of Catalonia
-#' @author Anthony Sturbois, RNN Baie de Saint-Brieuc
+#' @author Anthony Sturbois, Vivarmor nature, Réserve Naturelle nationale de la Baie de Saint-Brieuc
 #' 
 #' @references
 #' Besse, P., Guillouet, B., Loubes, J.-M. & François, R. (2016). Review and perspective for distance based trajectory clustering. IEEE Trans. Intell. Transp. Syst., 17, 3306–3317.
@@ -125,7 +139,9 @@
 #'   d
 #'   
 #'   trajectoryLengths(d, sites, surveys)
+#'   trajectoryLengths2D(xy, sites, surveys)
 #'   trajectoryAngles(d, sites, surveys)
+#'   trajectoryAngles2D(xy, sites, surveys)
 #'   segmentDistances(d, sites, surveys)$Dseg
 #'   trajectoryDistances(d, sites, surveys, distance.type = "Hausdorff")
 #'   trajectoryDistances(d, sites, surveys, distance.type = "DSPD")
@@ -373,12 +389,16 @@ trajectoryDistances<-function(d, sites, surveys=NULL, distance.type="DSPD", symm
 
 #' @rdname trajectories
 #' @param relativeToInitial Flag to indicate that lengths or angles should be calculated with respect to initial survey.
-trajectoryLengths<-function(d, sites, surveys=NULL, relativeToInitial = FALSE, verbose= FALSE) {
+#' @param all Flag to indicate that lengths or angles are desired for all segments or for all triangles (i.e. all pairs of segments) in the trajectory. If FALSE, length or angles are calculated according to relativeToInitial flag.
+trajectoryLengths<-function(d, sites, surveys=NULL, relativeToInitial = FALSE, all=FALSE, verbose= FALSE) {
   if(length(sites)!=nrow(as.matrix(d))) stop("'sites' needs to be of length equal to the number of rows/columns in d")
   if(!is.null(surveys)) if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
   
   siteIDs = unique(sites)
   nsite = length(siteIDs)
+  surveyIDs<-unique(surveys)
+  nsurvey<-length(surveyIDs)
+  
   nsurveysite<-numeric(nsite)
   for(i in 1:nsite) {
     nsurveysite[i] = sum(sites==siteIDs[i])
@@ -389,26 +409,87 @@ trajectoryLengths<-function(d, sites, surveys=NULL, relativeToInitial = FALSE, v
 
   maxnsurveys = max(nsurveysite)
 
-  lengths = as.data.frame(matrix(NA, nrow=nsite, ncol=maxnsurveys))
-  row.names(lengths)<-siteIDs
-  if(relativeToInitial) names(lengths)<-c(paste0("Lt1_t",as.character(2:(maxnsurveys))),"Trajectory")
-  else names(lengths)<-c(paste0("S",as.character(1:(maxnsurveys-1))),"Trajectory")
-  if(verbose) {
-    cat("\nCalculating trajectory lengths...\n")
-    tb = txtProgressBar(1, nsite, style=3)
-  }
-  for(i1 in 1:nsite) {
-    if(verbose) setTxtProgressBar(tb, i1)
-    ind_surv1 = which(sites==siteIDs[i1])
-    #Surveys may not be in order
-    if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
-    for(s1 in 1:(nsurveysite[i1]-1)) {
-      if(relativeToInitial) lengths[i1,s1] = dmat[ind_surv1[1], ind_surv1[s1+1]]
-      else  lengths[i1,s1] = dmat[ind_surv1[s1], ind_surv1[s1+1]]
+  if(!all) {
+    lengths = as.data.frame(matrix(NA, nrow=nsite, ncol=maxnsurveys))
+    row.names(lengths)<-siteIDs
+    if(relativeToInitial) names(lengths)<-c(paste0("Lt1_t",as.character(2:(maxnsurveys))),"Trajectory")
+    else names(lengths)<-c(paste0("S",as.character(1:(maxnsurveys-1))),"Trajectory")
+    if(verbose) {
+      cat("\nCalculating trajectory lengths...\n")
+      tb = txtProgressBar(1, nsite, style=3)
     }
-    lengths[i1, maxnsurveys] = sum(lengths[i1,], na.rm=T)
+    for(i1 in 1:nsite) {
+      if(verbose) setTxtProgressBar(tb, i1)
+      ind_surv1 = which(sites==siteIDs[i1])
+      #Surveys may not be in order
+      if(!is.null(surveys)) ind_surv1 = ind_surv1[order(surveys[sites==siteIDs[i1]])]
+      for(s1 in 1:(nsurveysite[i1]-1)) {
+        if(relativeToInitial) lengths[i1,s1] = dmat[ind_surv1[1], ind_surv1[s1+1]]
+        else  lengths[i1,s1] = dmat[ind_surv1[s1], ind_surv1[s1+1]]
+      }
+      lengths[i1, maxnsurveys] = sum(lengths[i1,], na.rm=T)
+    }
+  } else{ # Modified from code by Anthony Sturbois (should be simplified)
+    dvec <- as.vector(as.matrix(d))
+    dfdist<-matrix(NA, nrow=nsite*(nsurvey), ncol=nsite*(nsurvey))
+    seqdfd<-seq(1,length(dvec)+nsite*(nsurvey),nsite*(nsurvey))
+    if(verbose) {
+      cat("\nExtracting lengths...\n")
+      tb = txtProgressBar(1, nsite*nsurvey, style=3)
+    }
+    for(i in 1:(nsite*(nsurvey)))
+    {
+      if(verbose) setTxtProgressBar(tb, i)
+      dfdist[,i]<-c(dvec[seqdfd[i]:(seqdfd[i+1]-1)])
+      dfdist[1:i,i]<-NA
+    }
+    # Remove rows and columns corresponding to?
+    remov<-seq(0,nsite*nsurvey,nsurvey)[-1]
+    dfdist<-dfdist[,-c(remov), drop=FALSE]
+    dfdist<-dfdist[-c(1),, drop=FALSE]
+    dfdist<-dfdist[-c(remov),, drop=FALSE]
+
+    seqdfdist<-c(seq(0,(length(surveys)-2),((ncol(dfdist))/nsite)))
+    seqdfdist<-seqdfdist[-c(1,length(seqdfdist))]
+    seqdfdist<-c(sort(rep(seqdfdist,((ncol(dfdist))/nsite))))
+    for(i in 1:(ncol(dfdist)-((ncol(dfdist))/nsite))){
+      dfdist[(seqdfdist[i]+1):nrow(dfdist),i]<- NA
+    }
+    # Select for output those lengths that are not missing values
+    alllength<- as.vector(dfdist)
+    alllength<-alllength[!is.na(alllength)]
+    lengths<-as.data.frame(matrix(NA, nrow=nsite, ncol=((nsurvey*(nsurvey-1))/2)))
+    seqlength<-c(seq(0,length(alllength),length(alllength)/nsite))
+    for(i in 1:nsite){
+      lengths[i,]<-alllength[(seqlength[i]+1):(seqlength[i+1])]
+    }
+    # Column labels
+    listsurvey<-c(1:nsurvey)
+    tsurvey<-c()
+    for (i in 1: nsurvey){
+      tsurvey<-c(tsurvey,paste0("t",listsurvey[i]))
+    }
+    comb<-combn(tsurvey, 2)
+    tsurvey<-c(paste0("L",comb[1,], comb[2,]))
+    colnames(lengths)<-c(tsurvey)
+    rownames(lengths)<-c(siteIDs)
   }
+
   return(lengths)
+}
+
+#' @rdname trajectories
+#' @param xy Matrix with 2D coordinates in a Cartesian space (typically an ordination of community states).
+trajectoryLengths2D<-function(xy,sites,surveys, relativeToInitial=FALSE, all=FALSE, verbose = FALSE) {
+  siteIDs = unique(sites)
+  surveyIDs<-unique(surveys)
+  nsite<-length(siteIDs)
+  nsurvey<-length(surveyIDs)
+  if(nsite!=nrow(xy)/nsurvey) stop("'sites' needs to be of length equal in xy")
+  if(nrow(xy)!=nsurvey*nsite) stop("All sites need to be surveyed at least twice")
+  #prep all
+  D<-dist(xy)
+  return(trajectoryLengths(D,sites,surveys,relativeToInitial = relativeToInitial, all = all, verbose = verbose))
 }
 
 #' @rdname trajectories
@@ -493,6 +574,421 @@ trajectoryAngles<-function(d, sites, surveys=NULL, all = FALSE, relativeToInitia
   if(!stats) angles = angles[,1:(ncol(angles)-3), drop=FALSE]
   return(angles)
 }
+
+#' @rdname trajectories
+#' @param betweenSegments Flag to indicate that angles should be calculated between trajectory segments or with respect to X axis.
+trajectoryAngles2D<-function(xy,sites,surveys,relativeToInitial=FALSE, betweenSegments=TRUE) {
+  
+  siteIDs<-unique(sites)
+  surveyIDs<-unique(surveys)
+  nsite<-length(siteIDs)
+  nsurvey<-length(surveyIDs)
+  nsurveysite<-numeric(nsite)
+  maxnsurveys<-length(surveys)
+  lengths<-as.data.frame(trajectoryLengths2D(xy,sites,surveys,relativeToInitial = FALSE, all=TRUE))
+  
+  dx<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey))
+  x<-xy[,1]
+  seq1<-c(nsurvey)
+  for (i in 1:(nsite-1)){
+    seq1<-c(seq1,seq1[i]+nsurvey)
+  }
+  seq2<-c(1)
+  for (i in 1:(nsite-1)){
+    seq2<-c(seq2,seq2[i]+nsurvey)
+  }
+  
+  for (i in 1:nsite){
+    dx[i,]<-x[seq2[i]:seq1[i]]
+  }
+  
+  dy<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey))
+  y<-xy[,2]
+  for (i in 1:nsite){
+    dy[i,]<-y[seq2[i]:seq1[i]]
+  }
+  
+  if(length(sites)!=length(surveys)) stop("'sites' and 'surveys' need to be of the same length")
+  if(nrow(xy)!=nsite*nsurvey) stop("nrow(xy) need to be equal to 'number of sites * number of surveys'")
+  
+  
+  for(i in 1:nsite) {
+    nsurveysite[i] = sum(sites==siteIDs[i])
+  }
+  if(sum(nsurveysite==1)>0) stop("All sites need to be surveyed at least twice")
+  
+  if(relativeToInitial) {
+    #x modification
+    dxmod<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+    for(i in 1:ncol(dxmod)){
+      dxmod[,i]<-dx[,i]-dx[,i+1]
+    }
+    #y modification
+    dymod<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+    for(i in 1:ncol(dymod)){
+      dymod[,i]<-dy[,i]-dy[,i+1]
+    }
+    #dfxy
+    dmod<-as.data.frame(cbind(dxmod,dymod))
+    
+    #angle to horyzontal measurement
+    angles_horyz<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+    for(i in 1:ncol(angles_horyz)){
+      angles_horyz[,i]<-apply(dmod[c(i,i+nsurvey-1)], 1, function(irow) {
+        atan(irow[2]/irow[1])
+      })
+    }
+    angles_horyz<-angles_horyz*(180/pi)
+    
+    
+    dxy<-as.data.frame (cbind(dx,dy))
+    angles_horyz360<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+    for (i in 1:ncol(angles_horyz)) {
+      angles_horyz360[,i]<-as.numeric(c(ifelse(dxy[,i]<=dxy[,i+1] & dxy[,i+(nsurvey)]<=dxy[,i+(nsurvey+1)],90+angles_horyz[,i],
+                                               ifelse(dxy[,i]<=dxy[,i+1] & dxy[,i+(nsurvey)]>=dxy[,i+(nsurvey+1)],90+angles_horyz[,i],
+                                                      ifelse(dxy[,i]>=dxy[,i+1] & dxy[,i+(nsurvey)]>=dxy[,i+(nsurvey+1)],270+angles_horyz[,i],
+                                                             ifelse(dxy[,i]>=dxy[,i+1] & dxy[,i+(nsurvey)]<=dxy[,i+(nsurvey+1)],270+angles_horyz[,i],"ERROR"))))))
+    }
+    colnames(angles_horyz360) <- c(paste0("t", as.character(1:(nsurvey-1)), "-t", 
+                                          as.character(2:(nsurvey))))    
+    ##############################################################
+    Lt<-lengths[,1:(nsurvey-1)]
+    subvec1<-c((nsurvey-2):1)
+    subvec2<-c(2:1)
+    vec<-c(subvec1[1]+subvec2[1])
+    for (i in 1:(nsurvey-3)){
+      vec<-c(vec,((vec[length(vec)])+subvec1[i]))
+    }
+    S<-lengths[,c(1,vec)]
+    
+    # Converging or distancing trajectory
+    CDT<-as.data.frame(matrix(NA, nrow=nsite, ncol=(ncol(Lt)-1)))
+    for(i in 1:(ncol(Lt)-1)){
+      CDT[,i]<-Lt[,i]-Lt[,i+1]  
+    }
+    
+    ##############################################################
+    #table preparation
+    #distance
+    dist<-as.data.frame(cbind(S,Lt))
+    
+    dist1_2<- dist[1,((ncol(dist)/2)+1):(ncol(dist)-1)]
+    for (i in 2:dim(dist)[ 1 ]){
+      dist1_2<- cbind(dist1_2, dist[i,((ncol(dist)/2)+1):(ncol(dist)-1)])
+    } 
+    
+    dist2_3<- dist[1,2:(ncol(dist)/2)]
+    for (i in 2:dim(dist)[ 1 ]){
+      dist2_3<- cbind(dist2_3, dist[i,2:(ncol(dist)/2)])
+    } 
+    
+    dist1_3<-dist[1,((ncol(dist)/2)+2):ncol(dist)]
+    for (i in 2:dim(dist)[ 1 ]){
+      dist1_3<- cbind(dist1_3, dist[i,((ncol(dist)/2)+2):ncol(dist)])
+    } 
+    #coordinnates
+    Xt1 <- dx[1,c(rep(1,(nsurvey-2)))]
+    for (i in 2:dim(dx)[ 1 ]){
+      Xt1 <- cbind(Xt1, dx[i,c(rep(1,(nsurvey-2)))])
+    } 
+    
+    Xt2 <- dx[1,2:(nsurvey-1) ]
+    for (i in 2:dim(dx)[ 1 ]){
+      Xt2 <- cbind(Xt2, dx[i,2:(nsurvey-1)  ])
+    } 
+    
+    Xt3 <- dx[1,3:(nsurvey) ]
+    for (i in 2:dim(dx)[ 1 ]){
+      Xt3 <- cbind(Xt3, dx[i,3:(nsurvey)])
+    } 
+    
+    Yt1 <- dy[1,c(rep(1,(nsurvey-2)))]
+    for (i in 2:dim(dy)[ 1 ]){
+      Yt1 <- cbind(Yt1, dy[i,c(rep(1,(nsurvey-2)))])
+    } 
+    
+    Yt2 <- dy[1,2:(nsurvey-1) ]
+    for (i in 2:dim(dy)[ 1 ]){
+      Yt2 <- cbind(Yt2, dy[i,2:(nsurvey-1)  ])
+    } 
+    
+    Yt3 <- dy[1,3:(nsurvey) ]
+    for (i in 2:dim(dy)[ 1 ]){
+      Yt3 <- cbind(Yt3, dy[i,3:(nsurvey)  ])
+    } 
+    #CDT
+    CDTs<- CDT[1,1:(nsurvey-2) ]
+    for (i in 2:dim(CDT)[ 1 ]){
+      CDTs <- cbind(CDTs, CDT[i, ])
+    } 
+    
+    dist1_2<-as.data.frame(t(dist1_2))
+    dist2_3<-as.data.frame(t(dist2_3))
+    dist1_3<-as.data.frame(t(dist1_3))
+    Xt1<-as.data.frame(t(Xt1))
+    Xt2<-as.data.frame(t(Xt2))
+    Xt3<-as.data.frame(t(Xt3))
+    Yt1<-as.data.frame(t(Yt1))
+    Yt2<-as.data.frame(t(Yt2))
+    Yt3<-as.data.frame(t(Yt3))
+    CDTs<-as.data.frame(t(CDTs))
+    
+    
+    #df
+    sitesdf<-c()
+    for (i in 1:length(siteIDs)){
+      sitesdf<-c(sitesdf,rep(siteIDs[i],nsurvey-2))
+    }
+    Num<-c(rep(1:(nsurvey-2),length(siteIDs)))
+    
+    df<-as.data.frame(cbind(sitesdf,Num,dist1_2,dist2_3,dist1_3,Xt1,Xt2,Xt3,Yt1,Yt2,Yt3,CDTs))  
+    colnames(df)<-c("SitesIDs","Num","dist1_2","dist2_3","dist1_3","Xt1","Xt2","Xt3","Yt1","Yt2","Yt3","CDT")
+    
+    
+    ##########################################################
+    #Angle_t2 calculation 0-360
+    df$Angle_t2<-acos(c(((df$dist2_3^2)-(df$dist1_3^2)+(df$dist1_2^2))/(2*df$dist1_2*df$dist2_3)))*(180/pi) 
+    
+    #position according to first trajectory of each triplet
+    df$pos<-c(((df$Xt2-df$Xt1)*(df$Yt3-df$Yt1))-((df$Yt2-df$Yt1)*(df$Xt3-df$Xt1)))
+    
+    #reporting angle in 0-360°
+    df$CDTs<-c(ifelse(df$CDT<0,"DIS","CIS"))
+    data_converging<-df[df$CDTs %in% c("CIS"),]
+    data_distancing<-df[df$CDTs %in% c("DIS"),]
+    data_distancing090<-data_distancing[data_distancing$Angl <90,]
+    data_distancing90180<-data_distancing[data_distancing$Angl >90,]
+    
+    
+    AngleTR_converging<-c(ifelse(data_converging$pos>0,180-data_converging$Angle_t2,
+                                 ifelse(data_converging$pos==0,180,
+                                        ifelse(data_converging$pos<0,180+data_converging$Angle_t2,"ERROR"))))
+    
+    data_converging$Angl_LIS<-c(AngleTR_converging)
+    
+    AngleTR_distancing90180<-c(ifelse( data_distancing90180$pos>0,data_distancing90180$Angle_t2,
+                                       ifelse( data_distancing90180$pos==0,0,
+                                               ifelse( data_distancing90180$pos<0,360-data_distancing90180$Angle_t2,"ERROR"))))
+    
+    AngleTR_distancing090<-c(ifelse( data_distancing090$pos>0,180-data_distancing090$Angle_t2,
+                                     ifelse( data_distancing090$pos==0,180,
+                                             ifelse( data_distancing090$pos<0,180+data_distancing090$Angle_t2,"ERROR"))))
+    
+    
+    data_distancing090$Angl_LIS<-c(AngleTR_distancing090)
+    data_distancing90180$Angl_LIS<-c(AngleTR_distancing90180)
+    data_distancing<-rbind(data_distancing090,data_distancing90180)
+    df<-rbind(data_converging,data_distancing)
+    df<-df[order(df$SitesIDs,df$Num,decreasing=F), ]
+    
+    #returns preparation
+    angles360_t2<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-2))
+    colnames(angles360_t2) <- c(paste0("Lt", rep("1",nsurvey -2), "-S", 
+                                       as.character(2:(nsurvey - 1))))    
+    rownames(angles360_t2)<-c(siteIDs)
+    
+    seqdf<-seq(1,nrow(df)+nsurvey-2,nsurvey-2)
+    Angl_LIS<-c(df$Angl_LIS)
+    for(i in 1:length(siteIDs))
+    {
+      angles360_t2[i,]<-Angl_LIS[seqdf[i]:(seqdf[i+1]-1)]
+    }
+    
+    
+  } else {        
+    #x modification
+    dxmod<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+    for(i in 1:ncol(dxmod)){
+      dxmod[,i]<-dx[,i]-dx[,i+1]
+    }
+    #y modification
+    dymod<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+    for(i in 1:ncol(dymod)){
+      dymod[,i]<-dy[,i]-dy[,i+1]
+    }
+    #dfxy
+    dmod<-as.data.frame(cbind(dxmod,dymod))
+    
+    #angle to horyzontal measurement
+    angles_horyz<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+    for(i in 1:ncol(angles_horyz)){
+      angles_horyz[,i]<-apply(dmod[c(i,i+nsurvey-1)], 1, function(irow) {
+        atan(irow[2]/irow[1])
+      })
+    }
+    angles_horyz<-angles_horyz*(180/pi)
+    
+    
+    #for(i in 1:ncol(angles_horyz)){
+    #angles_horyz[,i]<-c(ifelse(angles_horyz[,i]<0, angles_horyz[,i]+180 ,angles_horyz[,i]))}
+    dxy<-as.data.frame (cbind(dx,dy))
+    angles_horyz360<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+    for (i in 1:ncol(angles_horyz)) {
+      angles_horyz360[,i]<-as.numeric(c(ifelse(dxy[,i]<=dxy[,i+1] & dxy[,i+(nsurvey)]<=dxy[,i+(nsurvey+1)],90+angles_horyz[,i],
+                                               ifelse(dxy[,i]<=dxy[,i+1] & dxy[,i+(nsurvey)]>=dxy[,i+(nsurvey+1)],90+angles_horyz[,i],
+                                                      ifelse(dxy[,i]>=dxy[,i+1] & dxy[,i+(nsurvey)]>=dxy[,i+(nsurvey+1)],270+angles_horyz[,i],
+                                                             ifelse(dxy[,i]>=dxy[,i+1] & dxy[,i+(nsurvey)]<=dxy[,i+(nsurvey+1)],270+angles_horyz[,i],"ERROR"))))))
+    }
+    colnames(angles_horyz360) <- c(paste0("t", as.character(1:(nsurvey-1)), "-t", 
+                                          as.character(2:(nsurvey))))    
+    ###########################################   
+    
+    subvec1<-c((nsurvey-2):1)
+    subvec2<-c(2:1)
+    vec<-c(subvec1[1]+subvec2[1])
+    for (i in 1:(nsurvey-3)){
+      vec<-c(vec,((vec[length(vec)])+subvec1[i]))
+    }
+    S<-lengths[,c(1,vec)]
+    
+    subvec3<-c((nsurvey-2):1)
+    subvec4<-c(3)
+    vec2<-c(subvec3[1]+subvec4[1])
+    for (i in 1:(nsurvey-4)){
+      vec2<-c(vec2,((vec2[length(vec2)])+subvec3[i]))
+    }
+    Lt<-lengths[,c(1,2,vec2)]
+    
+    # Converging or distancing trajectory
+    CDT<-as.data.frame(matrix(NA, nrow=nsite, ncol=(ncol(Lt)-1)))
+    for(i in 1:(ncol(Lt)-1)){
+      CDT[,i]<-Lt[,i]-Lt[,i+1]  
+    }
+    
+    ##############################################################
+    #table preparation
+    #distance
+    dist<-as.data.frame(cbind(S,Lt))
+    
+    dist1_2<- dist[1,1:(nsurvey-2)]
+    for (i in 2:dim(dist)[ 1 ]){
+      dist1_2<- cbind(dist1_2, dist[i,1:(nsurvey-2)])
+    } 
+    
+    dist2_3<- dist[1,2:(nsurvey-1)]
+    for (i in 2:dim(dist)[ 1 ]){
+      dist2_3<- cbind(dist2_3, dist[i,2:(nsurvey-1)])
+    } 
+    
+    dist1_3<-dist[1,((ncol(dist)/2)+2):ncol(dist)]
+    for (i in 2:dim(dist)[ 1 ]){
+      dist1_3<- cbind(dist1_3, dist[i,((ncol(dist)/2)+2):ncol(dist)])
+    } 
+    #coordinnates
+    Xt1 <- dx[1,1:(nsurvey-2)]
+    for (i in 2:dim(dx)[ 1 ]){
+      Xt1 <- cbind(Xt1, dx[i,1:(nsurvey-2)])
+    } 
+    
+    Xt2 <- dx[1,2:(nsurvey-1) ]
+    for (i in 2:dim(dx)[ 1 ]){
+      Xt2 <- cbind(Xt2, dx[i,2:(nsurvey-1)  ])
+    } 
+    
+    Xt3 <- dx[1,3:(nsurvey) ]
+    for (i in 2:dim(dx)[ 1 ]){
+      Xt3 <- cbind(Xt3, dx[i,3:(nsurvey)])
+    } 
+    
+    Yt1 <- dy[1,1:(nsurvey-2)]
+    for (i in 2:dim(dy)[ 1 ]){
+      Yt1 <- cbind(Yt1, dy[i,1:(nsurvey-2)])
+    } 
+    
+    Yt2 <- dy[1,2:(nsurvey-1) ]
+    for (i in 2:dim(dy)[ 1 ]){
+      Yt2 <- cbind(Yt2, dy[i,2:(nsurvey-1)  ])
+    } 
+    
+    Yt3 <- dy[1,3:(nsurvey) ]
+    for (i in 2:dim(dy)[ 1 ]){
+      Yt3 <- cbind(Yt3, dy[i,3:(nsurvey)  ])
+    } 
+    #CDT
+    CDTs<- CDT[1,1:(nsurvey-2) ]
+    for (i in 2:dim(CDT)[ 1 ]){
+      CDTs <- cbind(CDTs, CDT[i, ])
+    } 
+    
+    dist1_2<-as.data.frame(t(dist1_2))
+    dist2_3<-as.data.frame(t(dist2_3))
+    dist1_3<-as.data.frame(t(dist1_3))
+    Xt1<-as.data.frame(t(Xt1))
+    Xt2<-as.data.frame(t(Xt2))
+    Xt3<-as.data.frame(t(Xt3))
+    Yt1<-as.data.frame(t(Yt1))
+    Yt2<-as.data.frame(t(Yt2))
+    Yt3<-as.data.frame(t(Yt3))
+    CDTs<-as.data.frame(t(CDTs))
+    
+    
+    #df
+    sitesdf<-c()
+    for (i in 1:length(siteIDs)){
+      sitesdf<-c(sitesdf,rep(siteIDs[i],nsurvey-2))
+    }
+    Num<-c(rep(1:(nsurvey-2),length(siteIDs)))
+    
+    df<-as.data.frame(cbind(sitesdf,Num,dist1_2,dist2_3,dist1_3,Xt1,Xt2,Xt3,Yt1,Yt2,Yt3,CDTs))  
+    colnames(df)<-c("SitesIDs","Num","dist1_2","dist2_3","dist1_3","Xt1","Xt2","Xt3","Yt1","Yt2","Yt3","CDT")
+    
+    ##################################
+    ##########################################################
+    #Angle_t2 calculation 0-360
+    df$Angle_t2<-acos(c(((df$dist2_3^2)-(df$dist1_3^2)+(df$dist1_2^2))/(2*df$dist1_2*df$dist2_3)))*(180/pi) 
+    
+    #position according to first trajectory of each triplet
+    df$pos<-c(((df$Xt2-df$Xt1)*(df$Yt3-df$Yt1))-((df$Yt2-df$Yt1)*(df$Xt3-df$Xt1)))
+    
+    
+    #reporting angle in 0-360°
+    df$CDTs<-c(ifelse(df$CDT<0,"DIS","CIS"))
+    data_converging<-df[df$CDTs %in% c("CIS"),]
+    data_distancing<-df[df$CDTs %in% c("DIS"),]
+    data_distancing090<-data_distancing[data_distancing$Angl <90,]
+    data_distancing90180<-data_distancing[data_distancing$Angl >90,]
+    
+    
+    AngleTR_converging<-c(ifelse(data_converging$pos>0,180-data_converging$Angle_t2,
+                                 ifelse(data_converging$pos==0,180,
+                                        ifelse(data_converging$pos<0,180+data_converging$Angle_t2,"ERROR"))))
+    
+    data_converging$Angl_LIS<-c(AngleTR_converging)
+    
+    AngleTR_distancing90180<-c(ifelse( data_distancing90180$pos>0,data_distancing90180$Angle_t2,
+                                       ifelse( data_distancing90180$pos==0,0,
+                                               ifelse( data_distancing90180$pos<0,360-data_distancing90180$Angle_t2,"ERROR"))))
+    
+    AngleTR_distancing090<-c(ifelse( data_distancing090$pos>0,180-data_distancing090$Angle_t2,
+                                     ifelse( data_distancing090$pos==0,180,
+                                             ifelse( data_distancing090$pos<0,180+data_distancing090$Angle_t2,"ERROR"))))
+    
+    data_distancing090$Angl_LIS<-c(AngleTR_distancing090)
+    data_distancing90180$Angl_LIS<-c(AngleTR_distancing90180)
+    data_distancing<-rbind(data_distancing090,data_distancing90180)
+    df<-rbind(data_converging,data_distancing)
+    df<-df[order(df$SitesIDs,df$Num,decreasing=F), ]
+    
+    #returns preparation
+    angles360_t2<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-2))
+    colnames(angles360_t2) <- c(paste0("S", as.character(1:(nsurvey-2)), "-S", 
+                                       as.character(2:(nsurvey - 1))))    
+    rownames(angles360_t2)<-c(siteIDs)
+    
+    seqdf<-seq(1,nrow(df)+nsurvey-2,nsurvey-2)
+    Angl_LIS<-c(df$Angl_LIS)
+    for(i in 1:length(siteIDs))
+    {
+      angles360_t2[i,]<-Angl_LIS[seqdf[i]:(seqdf[i+1]-1)]
+      
+    }
+    
+  }
+  
+  #return
+  if(betweenSegments) {return(angles360_t2)}else{return(angles_horyz360)}
+  
+} 
 
 #' @rdname trajectories
 #' @param selection A character vector of sites, a numeric vector of site indices or logical vector of the same length as \code{sites}, indicating a subset of site trajectories to be selected.

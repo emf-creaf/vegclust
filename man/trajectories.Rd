@@ -6,7 +6,9 @@
 \alias{segmentDistances}
 \alias{trajectoryDistances}
 \alias{trajectoryLengths}
+\alias{trajectoryLengths2D}
 \alias{trajectoryAngles}
+\alias{trajectoryAngles2D}
 \alias{trajectoryPCoA}
 \alias{trajectoryProjection}
 \alias{trajectoryConvergence}
@@ -41,6 +43,16 @@ trajectoryLengths(
   sites,
   surveys = NULL,
   relativeToInitial = FALSE,
+  all = FALSE,
+  verbose = FALSE
+)
+
+trajectoryLengths2D(
+  xy,
+  sites,
+  surveys,
+  relativeToInitial = FALSE,
+  all = FALSE,
   verbose = FALSE
 )
 
@@ -53,6 +65,14 @@ trajectoryAngles(
   stats = TRUE,
   add = TRUE,
   verbose = FALSE
+)
+
+trajectoryAngles2D(
+  xy,
+  sites,
+  surveys,
+  relativeToInitial = FALSE,
+  betweenSegments = TRUE
 )
 
 trajectorySelection(d, sites, selection)
@@ -126,7 +146,11 @@ whereas for \code{trajectoryDistances} the available indices are:
 
 \item{all}{A flag to indicate that angles are desired for all triangles (i.e. all pairs of segments) in the trajectory. If FALSE, angles are calculated for consecutive segments only.}
 
+\item{xy}{Matrix with 2D coordinates in a Cartesian space (typically an ordination of community states).}
+
 \item{stats}{A flag to indicate that circular statistics are desired (mean, standard deviation and mean resultant length, i.e. rho)}
+
+\item{betweenSegments}{Flag to indicate that angles should be calculated between trajectory segments or with respect to X axis.}
 
 \item{selection}{A character vector of sites, a numeric vector of site indices or logical vector of the same length as \code{sites}, indicating a subset of site trajectories to be selected.}
 
@@ -162,10 +186,17 @@ Function \code{trajectorySegments} returns a list with the following elements:
 
 Function \code{trajectoryLengths} returns a data frame with the length of each segment on each trajectory and the total length of all trajectories. 
 If \code{relativeToInitial = TRUE} lengths are calculated between the initial survey and all the other surveys.
+If \code{all = TRUE} lengths are calculated for all segments.
+
+Function \code{trajectoryLengths2D} returns a data frame with the length of each segment on each trajectory and the total length of all trajectories. 
+If \code{relativeToInitial = TRUE} lengths are calculated between the initial survey and all the other surveys.
+If \code{all = TRUE} lengths are calculated for all segments.
 
 Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
 
 Function \code{trajectoryAngles} returns a data frame with angle values on each trajectory. If \code{stats=TRUE}, then the mean, standard deviation and mean resultant length of those angles are also returned. 
+
+Function \code{trajectoryAngles2D} returns a data frame with angle values on each trajectory. If \code{betweenSegments=TRUE}, then angles are calculated between trajectory segments, alternatively, If \code{betweenSegments=FALSE}, angles are calculated between each segment and the X axis
 
 Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
 
@@ -192,7 +223,9 @@ CTA takes trajectories as objects to be analyzed and compared geometrically. Giv
 \itemize{
 \item{Functions \code{segmentDistances} and \code{trajectoryDistances} calculate the distance between pairs of directed segments and community trajectories, respectively.}
 \item{Function \code{trajectoryLengths} calculates lengths of directed segments and total path lengths of trajectories.}
+\item{Function \code{trajectoryLengths2D} calculates lengths of directed segments and total path lengths of trajectories from 2D coordinates given as input.} 
 \item{Function \code{trajectoryAngles} calculates the angle between consecutive pairs of directed segments or between segments of ordered triplets of points.}
+\item{Function \code{trajectoryAngles2D} calculates the angle between consecutive pairs of directed segments or between segments of ordered triplets of points.}
 \item{Function \code{trajectoryPCoA} performs principal coordinates analysis (\code{\link{cmdscale}}) and draws trajectories in the ordination scatterplot.}
 \item{Function \code{trajectoryPlot} Draws trajectories in a scatterplot corresponding to the input coordinates.}
 \item{Function \code{trajectoryProjection} projects a set of target points onto a specified trajectory and returns the distance to the trajectory (i.e. rejection) and the relative position of the projection point within the trajectory.}
@@ -216,6 +249,11 @@ Function \code{trajectoryAngles} calculates angles between consecutive segments 
 Angles are always positive, with zero values indicating segments that are in a straight line, and values equal to 180 degrees for segments that are in opposite directions. If \code{all = TRUE}
 angles are calculated between the segments corresponding to all ordered triplets. Alternatively, if \code{relativeToInitial = TRUE} angles are calculated for each segment with respect to the initial survey.
 
+Function \code{trajectoryAngles2D} calculates angles between consecutive segments in degrees from 2D coordinates given as input. For each pair of segments, the angle between the two is defined on the plane that contains the two segments, and measures the change in direction (in degrees) from one segment to the other. 
+Angles are always positive (O to 360), with zero values indicating segments that are in a straight line, and values equal to 180 degrees for segments that are in opposite directions. 
+If \code{all = TRUE} angles are calculated between the segments corresponding to all ordered triplets. Alternatively, if \code{relativeToInitial = TRUE} angles are calculated for each segment with respect to the initial survey.
+If \code{betweenSegments = TRUE} angles are calculated between segments of trajectory, otherwise, If \code{betweenTraj = FALSE}, angles are calculated between each trajectory segment and X axis.
+
 Function \code{centerTrajectories} performs centering of trajectories using matrix algebra as explained in Anderson (2017).
 }
 \examples{
@@ -236,7 +274,9 @@ Function \code{centerTrajectories} performs centering of trajectories using matr
   d
   
   trajectoryLengths(d, sites, surveys)
+  trajectoryLengths2D(xy, sites, surveys)
   trajectoryAngles(d, sites, surveys)
+  trajectoryAngles2D(xy, sites, surveys)
   segmentDistances(d, sites, surveys)$Dseg
   trajectoryDistances(d, sites, surveys, distance.type = "Hausdorff")
   trajectoryDistances(d, sites, surveys, distance.type = "DSPD")
@@ -271,5 +311,5 @@ Anderson (2017). Permutational Multivariate Analysis of Variance (PERMANOVA). Wi
 \author{
 Miquel De \enc{Cáceres}{Caceres}, Forest Sciences Center of Catalonia
 
-Anthony Sturbois, RNN Baie de Saint-Brieuc
+Anthony Sturbois, Vivarmor nature, Réserve Naturelle nationale de la Baie de Saint-Brieuc
 }
