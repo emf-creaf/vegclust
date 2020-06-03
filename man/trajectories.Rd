@@ -257,45 +257,52 @@ If \code{betweenSegments = TRUE} angles are calculated between segments of traje
 Function \code{centerTrajectories} performs centering of trajectories using matrix algebra as explained in Anderson (2017).
 }
 \examples{
-  #Description of sites and surveys
-  sites = c(1,1,1,2,2,2)
-  surveys=c(1,2,3,1,2,3)
+#Description of sites and surveys
+sites = c(1,1,1,2,2,2)
+surveys=c(1,2,3,1,2,3)
   
-  #Raw data table
-  xy<-matrix(0, nrow=6, ncol=2)
-  xy[2,2]<-1
-  xy[3,2]<-2
-  xy[4:6,1] <- 0.5
-  xy[4:6,2] <- xy[1:3,2]
-  xy[6,1]<-1
+#Raw data table
+xy<-matrix(0, nrow=6, ncol=2)
+xy[2,2]<-1
+xy[3,2]<-2
+xy[4:6,1] <- 0.5
+xy[4:6,2] <- xy[1:3,2]
+xy[6,1]<-1
   
-  #Distance matrix
-  d = dist(xy)
-  d
+#Draw trajectories
+trajectoryPlot(xy, sites, traj.colors = c("black","red"), lwd = 2)
+
+#Distance matrix
+d = dist(xy)
+d
   
-  trajectoryLengths(d, sites, surveys)
-  trajectoryLengths2D(xy, sites, surveys)
-  trajectoryAngles(d, sites, surveys)
-  trajectoryAngles2D(xy, sites, surveys)
-  segmentDistances(d, sites, surveys)$Dseg
-  trajectoryDistances(d, sites, surveys, distance.type = "Hausdorff")
-  trajectoryDistances(d, sites, surveys, distance.type = "DSPD")
-  
-  #Draw trajectories
-  trajectoryPCoA(d, sites, traj.colors = c("black","red"), lwd = 2)
+trajectoryLengths(d, sites, surveys)
+trajectoryLengths2D(xy, sites, surveys)
+trajectoryAngles(d, sites, surveys)
+trajectoryAngles2D(xy, sites, surveys, betweenSegments = T)
+trajectoryAngles2D(xy, sites, surveys, betweenSegments = F)
+segmentDistances(d, sites, surveys)$Dseg
+trajectoryDistances(d, sites, surveys, distance.type = "Hausdorff")
+trajectoryDistances(d, sites, surveys, distance.type = "DSPD")
   
   
-  #Should give the same results if surveys are not in order 
-  #(here we switch surveys for site 2)
-  temp = xy[5,]
-  xy[5,] = xy[6,]
-  xy[6,] = temp
-  surveys[5] = 3
-  surveys[6] = 2
-  trajectoryLengths(dist(xy), sites, surveys)
-  segmentDistances(dist(xy), sites, surveys)$Dseg
-  trajectoryDistances(dist(xy), sites, surveys, distance.type = "Hausdorff")
-  trajectoryDistances(dist(xy), sites, surveys, distance.type = "DSPD")
+#Should give the same results if surveys are not in order 
+#(here we switch surveys for site 2)
+temp = xy[5,]
+xy[5,] = xy[6,]
+xy[6,] = temp
+surveys[5] = 3
+surveys[6] = 2
+  
+trajectoryPlot(xy, sites, traj.colors = c("black","red"), lwd = 2)   
+trajectoryLengths(dist(xy), sites, surveys)
+trajectoryLengths2D(xy, sites, surveys)
+segmentDistances(dist(xy), sites, surveys)$Dseg
+trajectoryAngles(dist(xy), sites, surveys)
+trajectoryAngles2D(xy, sites, surveys, betweenSegments = T)
+trajectoryAngles2D(xy, sites, surveys, betweenSegments = F)
+trajectoryDistances(dist(xy), sites, surveys, distance.type = "Hausdorff")
+trajectoryDistances(dist(xy), sites, surveys, distance.type = "DSPD")
  
 }
 \references{

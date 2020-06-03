@@ -122,45 +122,52 @@
 #' @seealso \code{\link{cmdscale}}
 #' 
 #' @examples 
-#'   #Description of sites and surveys
-#'   sites = c(1,1,1,2,2,2)
-#'   surveys=c(1,2,3,1,2,3)
+#' #Description of sites and surveys
+#' sites = c(1,1,1,2,2,2)
+#' surveys=c(1,2,3,1,2,3)
 #'   
-#'   #Raw data table
-#'   xy<-matrix(0, nrow=6, ncol=2)
-#'   xy[2,2]<-1
-#'   xy[3,2]<-2
-#'   xy[4:6,1] <- 0.5
-#'   xy[4:6,2] <- xy[1:3,2]
-#'   xy[6,1]<-1
+#' #Raw data table
+#' xy<-matrix(0, nrow=6, ncol=2)
+#' xy[2,2]<-1
+#' xy[3,2]<-2
+#' xy[4:6,1] <- 0.5
+#' xy[4:6,2] <- xy[1:3,2]
+#' xy[6,1]<-1
 #'   
-#'   #Distance matrix
-#'   d = dist(xy)
-#'   d
+#' #Draw trajectories
+#' trajectoryPlot(xy, sites, traj.colors = c("black","red"), lwd = 2)
+#' 
+#' #Distance matrix
+#' d = dist(xy)
+#' d
 #'   
-#'   trajectoryLengths(d, sites, surveys)
-#'   trajectoryLengths2D(xy, sites, surveys)
-#'   trajectoryAngles(d, sites, surveys)
-#'   trajectoryAngles2D(xy, sites, surveys)
-#'   segmentDistances(d, sites, surveys)$Dseg
-#'   trajectoryDistances(d, sites, surveys, distance.type = "Hausdorff")
-#'   trajectoryDistances(d, sites, surveys, distance.type = "DSPD")
-#'   
-#'   #Draw trajectories
-#'   trajectoryPCoA(d, sites, traj.colors = c("black","red"), lwd = 2)
+#' trajectoryLengths(d, sites, surveys)
+#' trajectoryLengths2D(xy, sites, surveys)
+#' trajectoryAngles(d, sites, surveys)
+#' trajectoryAngles2D(xy, sites, surveys, betweenSegments = T)
+#' trajectoryAngles2D(xy, sites, surveys, betweenSegments = F)
+#' segmentDistances(d, sites, surveys)$Dseg
+#' trajectoryDistances(d, sites, surveys, distance.type = "Hausdorff")
+#' trajectoryDistances(d, sites, surveys, distance.type = "DSPD")
 #'   
 #'   
-#'   #Should give the same results if surveys are not in order 
-#'   #(here we switch surveys for site 2)
-#'   temp = xy[5,]
-#'   xy[5,] = xy[6,]
-#'   xy[6,] = temp
-#'   surveys[5] = 3
-#'   surveys[6] = 2
-#'   trajectoryLengths(dist(xy), sites, surveys)
-#'   segmentDistances(dist(xy), sites, surveys)$Dseg
-#'   trajectoryDistances(dist(xy), sites, surveys, distance.type = "Hausdorff")
-#'   trajectoryDistances(dist(xy), sites, surveys, distance.type = "DSPD")
+#' #Should give the same results if surveys are not in order 
+#' #(here we switch surveys for site 2)
+#' temp = xy[5,]
+#' xy[5,] = xy[6,]
+#' xy[6,] = temp
+#' surveys[5] = 3
+#' surveys[6] = 2
+#'   
+#' trajectoryPlot(xy, sites, traj.colors = c("black","red"), lwd = 2)   
+#' trajectoryLengths(dist(xy), sites, surveys)
+#' trajectoryLengths2D(xy, sites, surveys)
+#' segmentDistances(dist(xy), sites, surveys)$Dseg
+#' trajectoryAngles(dist(xy), sites, surveys)
+#' trajectoryAngles2D(xy, sites, surveys, betweenSegments = T)
+#' trajectoryAngles2D(xy, sites, surveys, betweenSegments = F)
+#' trajectoryDistances(dist(xy), sites, surveys, distance.type = "Hausdorff")
+#' trajectoryDistances(dist(xy), sites, surveys, distance.type = "DSPD")
 #'  
 segmentDistances<-function(d, sites, surveys=NULL, distance.type ="directed-segment", add = TRUE, verbose=FALSE) {
   distance.type <- match.arg(distance.type, c("directed-segment", "Hausdorff", "PPA"))
@@ -644,22 +651,29 @@ trajectoryAngles2D<-function(xy,sites,surveys,relativeToInitial=FALSE, betweenSe
     dxy<-as.data.frame (cbind(dx,dy))
     angles_horyz360<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
     for (i in 1:ncol(angles_horyz)) {
-      angles_horyz360[,i]<-as.numeric(c(ifelse(dxy[,i]<=dxy[,i+1] & dxy[,i+(nsurvey)]<=dxy[,i+(nsurvey+1)],90+angles_horyz[,i],
-                                               ifelse(dxy[,i]<=dxy[,i+1] & dxy[,i+(nsurvey)]>=dxy[,i+(nsurvey+1)],90+angles_horyz[,i],
-                                                      ifelse(dxy[,i]>=dxy[,i+1] & dxy[,i+(nsurvey)]>=dxy[,i+(nsurvey+1)],270+angles_horyz[,i],
-                                                             ifelse(dxy[,i]>=dxy[,i+1] & dxy[,i+(nsurvey)]<=dxy[,i+(nsurvey+1)],270+angles_horyz[,i],"ERROR"))))))
+      angles_horyz360[,i]<-as.numeric(c(ifelse(dxy[,i]==dxy[,i+1] & dxy[,i+(nsurvey)]<dxy[,i+(nsurvey+1)],0,
+                                               ifelse(dxy[,i]==dxy[,i+1] & dxy[,i+(nsurvey)]>dxy[,i+(nsurvey+1)],180,
+                                                      ifelse(dxy[,i]<dxy[,i+1] & dxy[,i+(nsurvey)]==dxy[,i+(nsurvey+1)],90,
+                                                             ifelse(dxy[,i]>dxy[,i+1] & dxy[,i+(nsurvey)]==dxy[,i+(nsurvey+1)],270,
+                                                                    ifelse(dxy[,i] < dxy[,i+1] & dxy[,i+(nsurvey)]< dxy[,i+(nsurvey+1)],90-angles_horyz[,i],
+                                                                           ifelse(dxy[,i]< dxy[,i+1] & dxy[,i+(nsurvey)] > dxy[,i+(nsurvey+1)],90-angles_horyz[,i],
+                                                                                  ifelse(dxy[,i]>dxy[,i+1] & dxy[,i+(nsurvey)] > dxy[,i+(nsurvey+1)],270-angles_horyz[,i],
+                                                                                         ifelse(dxy[,i]>dxy[,i+1] & dxy[,i+(nsurvey)] < dxy[,i+(nsurvey+1)],270-angles_horyz[,i],"ERROR"))))))))))
     }
     colnames(angles_horyz360) <- c(paste0("t", as.character(1:(nsurvey-1)), "-t", 
                                           as.character(2:(nsurvey))))    
     ##############################################################
     Lt<-lengths[,1:(nsurvey-1)]
-    subvec1<-c((nsurvey-2):1)
-    subvec2<-c(2:1)
-    vec<-c(subvec1[1]+subvec2[1])
-    for (i in 1:(nsurvey-3)){
-      vec<-c(vec,((vec[length(vec)])+subvec1[i]))
-    }
-    S<-lengths[,c(1,vec)]
+    
+    if(nsurvey==3) {S<-lengths[,c(1,3)]
+    }else{
+      subvec1<-c((nsurvey-2):1)
+      subvec2<-c(2:1)
+      vec<-c(subvec1[1],subvec2[1])
+      for (i in 1:(nsurvey-3)){
+        vec<-c(vec,((vec[length(vec)])+subvec1[i]))
+      }
+      S<-lengths[,c(1,vec)]}
     
     # Converging or distancing trajectory
     CDT<-as.data.frame(matrix(NA, nrow=nsite, ncol=(ncol(Lt)-1)))
@@ -795,7 +809,9 @@ trajectoryAngles2D<-function(xy,sites,surveys,relativeToInitial=FALSE, betweenSe
     }
     
     
-  } else {        
+  }
+  
+  else {        
     #x modification
     dxmod<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
     for(i in 1:ncol(dxmod)){
@@ -824,30 +840,31 @@ trajectoryAngles2D<-function(xy,sites,surveys,relativeToInitial=FALSE, betweenSe
     dxy<-as.data.frame (cbind(dx,dy))
     angles_horyz360<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
     for (i in 1:ncol(angles_horyz)) {
-      angles_horyz360[,i]<-as.numeric(c(ifelse(dxy[,i]<=dxy[,i+1] & dxy[,i+(nsurvey)]<=dxy[,i+(nsurvey+1)],90+angles_horyz[,i],
-                                               ifelse(dxy[,i]<=dxy[,i+1] & dxy[,i+(nsurvey)]>=dxy[,i+(nsurvey+1)],90+angles_horyz[,i],
-                                                      ifelse(dxy[,i]>=dxy[,i+1] & dxy[,i+(nsurvey)]>=dxy[,i+(nsurvey+1)],270+angles_horyz[,i],
-                                                             ifelse(dxy[,i]>=dxy[,i+1] & dxy[,i+(nsurvey)]<=dxy[,i+(nsurvey+1)],270+angles_horyz[,i],"ERROR"))))))
+      angles_horyz360[,i]<-as.numeric(c(ifelse(dxy[,i]==dxy[,i+1] & dxy[,i+(nsurvey)]<dxy[,i+(nsurvey+1)],0,
+                                               ifelse(dxy[,i]==dxy[,i+1] & dxy[,i+(nsurvey)]>dxy[,i+(nsurvey+1)],180,
+                                                      ifelse(dxy[,i]<dxy[,i+1] & dxy[,i+(nsurvey)]==dxy[,i+(nsurvey+1)],90,
+                                                             ifelse(dxy[,i]>dxy[,i+1] & dxy[,i+(nsurvey)]==dxy[,i+(nsurvey+1)],270,
+                                                                    ifelse(dxy[,i] < dxy[,i+1] & dxy[,i+(nsurvey)]< dxy[,i+(nsurvey+1)],90-angles_horyz[,i],
+                                                                           ifelse(dxy[,i]< dxy[,i+1] & dxy[,i+(nsurvey)] > dxy[,i+(nsurvey+1)],90-angles_horyz[,i],
+                                                                                  ifelse(dxy[,i]>dxy[,i+1] & dxy[,i+(nsurvey)] > dxy[,i+(nsurvey+1)],270-angles_horyz[,i],
+                                                                                         ifelse(dxy[,i]>dxy[,i+1] & dxy[,i+(nsurvey)] < dxy[,i+(nsurvey+1)],270-angles_horyz[,i],"ERROR"))))))))))
     }
     colnames(angles_horyz360) <- c(paste0("t", as.character(1:(nsurvey-1)), "-t", 
                                           as.character(2:(nsurvey))))    
     ###########################################   
     
-    subvec1<-c((nsurvey-2):1)
-    subvec2<-c(2:1)
-    vec<-c(subvec1[1]+subvec2[1])
-    for (i in 1:(nsurvey-3)){
-      vec<-c(vec,((vec[length(vec)])+subvec1[i]))
-    }
-    S<-lengths[,c(1,vec)]
+    Lt<-lengths[,1:(nsurvey-1)]
     
-    subvec3<-c((nsurvey-2):1)
-    subvec4<-c(3)
-    vec2<-c(subvec3[1]+subvec4[1])
-    for (i in 1:(nsurvey-4)){
-      vec2<-c(vec2,((vec2[length(vec2)])+subvec3[i]))
-    }
-    Lt<-lengths[,c(1,2,vec2)]
+    if(nsurvey==3) {S<-lengths[,c(1,3)]
+    }else{
+      subvec1<-c((nsurvey-2):1)
+      subvec2<-c(2:1)
+      vec<-c(subvec1[1],subvec2[1])
+      for (i in 1:(nsurvey-3)){
+        vec<-c(vec,((vec[length(vec)])+subvec1[i]))
+      }
+      S<-lengths[,c(1,vec)]}
+    
     
     # Converging or distancing trajectory
     CDT<-as.data.frame(matrix(NA, nrow=nsite, ncol=(ncol(Lt)-1)))
