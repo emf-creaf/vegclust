@@ -436,7 +436,25 @@ trajectoryLengths<-function(d, sites, surveys=NULL, relativeToInitial = FALSE, a
       }
       lengths[i1, maxnsurveys] = sum(lengths[i1,], na.rm=T)
     }
-  } else{ #vector to indicate lines for selection in the matrix
+  } else{ 
+
+ if(verbose) {
+}
+      cat("\nExtracting lengths...\n")
+#vector to indicate columns for selection in the matrix
+      tb = txtProgressBar(1, nsite*nsurvey, style=3)
+seqcolumn<-c(1,1,2)
+    }
+for(i in 1:(nsite-1)){
+    for(i in 1:(nsite*(nsurvey)))
+  seqcolumn<-c(seqcolumn, seqcolumn[length(seqcolumn)-2]+nsurvey,seqcolumn[length(seqcolumn)-2]+nsurvey,seqcolumn[length(seqcolumn)]+nsurvey)
+    {
+}
+      if(verbose) setTxtProgressBar(tb, i)
+      dfdist[,i]<-c(dvec[seqdfd[i]:(seqdfd[i+1]-1)])
+      dfdist[1:i,i]<-NA
+    }
+#vector to indicate lines for selection in the matrix    
 seqline<-c(nsurvey-1, nsurvey, nsurvey)
 for(i in 1:(nsite-1)){
   seqline<-c(seqline, seqline[length(seqline)-2]+nsurvey,seqline[length(seqline)-1]+nsurvey,seqline[length(seqline)-1]+nsurvey)
