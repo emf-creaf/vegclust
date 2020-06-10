@@ -6,7 +6,7 @@ output:
   rmarkdown::html_vignette:
     toc: TRUE
 vignette: >
-  %\VignetteIndexEntry{How to describe vegetation in terms of structure and composition}
+  %\VignetteIndexEntry{Describing vegetation in terms of structure and composition}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignettePackage{vegclust}
   \usepackage[utf8]{inputenc}

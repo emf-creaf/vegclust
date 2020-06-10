@@ -1,6 +1,48 @@
-destination: "D:/Rservices/vegmod_web/static/vegclustdocs"
+destination: "/home/miquel/Rservices/vegmod_web/static/vegclustdocs"
 
 home:
   links:
   - text: Package website
-    href: https://vegmod.github.io/rpackage/vegclust
+    href: https://vegmod.ctfc.cat/software/vegclust
+    
+reference:
+- title: Vegetation cluster analysis
+  desc:  Functions for unsupervised and semi-supervised classification of vegetation
+  contents:
+  - wetland
+  - as.vegclust
+  - as.memb
+  - conformveg
+  - starts_with("vegclass")
+  - starts_with("vegclust")
+  - vegclustdist
+  - starts_with("clust")
+  - concordance
+  - crossmemb
+  - starts_with("incr.")
+  - starts_with("hier.")
+  - starts_with("random.")
+  - defuzzify
+  - interclustdist
+  - hcr
+  - relate.levels
+  - plot.mvegclust
+
+- title: Structural-compositional dissimilarity
+  desc: Functions to assess commmunity dissimilarity in terms of composition and structure
+  contents:
+  - vegdiststruct
+  - CAP
+  - CAS
+  - stratifyvegdata
+  - treedata
+  - plot.CAP
+  - plot.CAS
+  - medreg
+  
+- title: Community trajectory analysis
+  desc:  Functions for analysing community trajectories in compositional spaces
+  contents:
+  - avoca
+  - starts_with("trajectory")
+  - starts_with("segment")
