@@ -144,8 +144,8 @@
 #' trajectoryLengths(d, sites, surveys)
 #' trajectoryLengths2D(xy, sites, surveys)
 #' trajectoryAngles(d, sites, surveys)
-#' trajectoryAngles2D(xy, sites, surveys, betweenSegments = T)
-#' trajectoryAngles2D(xy, sites, surveys, betweenSegments = F)
+#' trajectoryAngles2D(xy, sites, surveys, betweenSegments = TRUE)
+#' trajectoryAngles2D(xy, sites, surveys, betweenSegments = FALSE)
 #' segmentDistances(d, sites, surveys)$Dseg
 #' trajectoryDistances(d, sites, surveys, distance.type = "Hausdorff")
 #' trajectoryDistances(d, sites, surveys, distance.type = "DSPD")
@@ -164,8 +164,8 @@
 #' trajectoryLengths2D(xy, sites, surveys)
 #' segmentDistances(dist(xy), sites, surveys)$Dseg
 #' trajectoryAngles(dist(xy), sites, surveys)
-#' trajectoryAngles2D(xy, sites, surveys, betweenSegments = T)
-#' trajectoryAngles2D(xy, sites, surveys, betweenSegments = F)
+#' trajectoryAngles2D(xy, sites, surveys, betweenSegments = TRUE)
+#' trajectoryAngles2D(xy, sites, surveys, betweenSegments = FALSE)
 #' trajectoryDistances(dist(xy), sites, surveys, distance.type = "Hausdorff")
 #' trajectoryDistances(dist(xy), sites, surveys, distance.type = "DSPD")
 #'  
