@@ -61,7 +61,7 @@
 #' Function \code{trajectoryAngles2D} calculates angles between consecutive segments in degrees from 2D coordinates given as input. For each pair of segments, the angle between the two is defined on the plane that contains the two segments, and measures the change in direction (in degrees) from one segment to the other. 
 #' Angles are always positive (O to 360), with zero values indicating segments that are in a straight line, and values equal to 180 degrees for segments that are in opposite directions. 
 #' If \code{all = TRUE} angles are calculated between the segments corresponding to all ordered triplets. Alternatively, if \code{relativeToInitial = TRUE} angles are calculated for each segment with respect to the initial survey.
-#' If \code{betweenSegments = TRUE} angles are calculated between segments of trajectory, otherwise, If \code{betweenTraj = FALSE}, angles are calculated between each trajectory segment and X axis.
+#' If \code{betweenSegments = TRUE} angles are calculated between segments of trajectory, otherwise, If \code{betweenTraj = FALSE}, angles are calculated considering Y axis as the North (0°).
 #' 
 #' Function \code{centerTrajectories} performs centering of trajectories using matrix algebra as explained in Anderson (2017).
 #' 
@@ -88,7 +88,7 @@
 #' 
 #' Function \code{trajectoryAngles} returns a data frame with angle values on each trajectory. If \code{stats=TRUE}, then the mean, standard deviation and mean resultant length of those angles are also returned. 
 #' 
-#' Function \code{trajectoryAngles2D} returns a data frame with angle values on each trajectory. If \code{betweenSegments=TRUE}, then angles are calculated between trajectory segments, alternatively, If \code{betweenSegments=FALSE}, angles are calculated between each segment and the X axis
+#' Function \code{trajectoryAngles2D} returns a data frame with angle values on each trajectory. If \code{betweenSegments=TRUE}, then angles are calculated between trajectory segments, alternatively, If \code{betweenSegments=FALSE}, angles are calculated considering Y axis as the North (0°).
 #' 
 #' Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
 #' 
@@ -436,51 +436,54 @@ trajectoryLengths<-function(d, sites, surveys=NULL, relativeToInitial = FALSE, a
       }
       lengths[i1, maxnsurveys] = sum(lengths[i1,], na.rm=T)
     }
-  } else{ # Modified from code by Anthony Sturbois (should be simplified)
-    dvec <- as.vector(as.matrix(d))
-    dfdist<-matrix(NA, nrow=nsite*(nsurvey), ncol=nsite*(nsurvey))
-    seqdfd<-seq(1,length(dvec)+nsite*(nsurvey),nsite*(nsurvey))
-    if(verbose) {
-      cat("\nExtracting lengths...\n")
-      tb = txtProgressBar(1, nsite*nsurvey, style=3)
-    }
-    for(i in 1:(nsite*(nsurvey)))
-    {
-      if(verbose) setTxtProgressBar(tb, i)
-      dfdist[,i]<-c(dvec[seqdfd[i]:(seqdfd[i+1]-1)])
-      dfdist[1:i,i]<-NA
-    }
-    # Remove rows and columns corresponding to?
-    remov<-seq(0,nsite*nsurvey,nsurvey)[-1]
-    dfdist<-dfdist[,-c(remov), drop=FALSE]
-    dfdist<-dfdist[-c(1),, drop=FALSE]
-    dfdist<-dfdist[-c(remov),, drop=FALSE]
-
-    seqdfdist<-c(seq(0,(length(surveys)-2),((ncol(dfdist))/nsite)))
-    seqdfdist<-seqdfdist[-c(1,length(seqdfdist))]
-    seqdfdist<-c(sort(rep(seqdfdist,((ncol(dfdist))/nsite))))
-    for(i in 1:(ncol(dfdist)-((ncol(dfdist))/nsite))){
-      dfdist[(seqdfdist[i]+1):nrow(dfdist),i]<- NA
-    }
-    # Select for output those lengths that are not missing values
-    alllength<- as.vector(dfdist)
-    alllength<-alllength[!is.na(alllength)]
+  } else{ 
+    
+    if(nsite==1) {
+    vectord<-as.vector(d)
     lengths<-as.data.frame(matrix(NA, nrow=nsite, ncol=((nsurvey*(nsurvey-1))/2)))
-    seqlength<-c(seq(0,length(alllength),length(alllength)/nsite))
-    for(i in 1:nsite){
-      lengths[i,]<-alllength[(seqlength[i]+1):(seqlength[i+1])]
-    }
-    # Column labels
-    listsurvey<-c(1:nsurvey)
+    lengths[1,]<-vectord
+    listsurvey<-c(1:nsurvey)#creating column names
     tsurvey<-c()
     for (i in 1: nsurvey){
-      tsurvey<-c(tsurvey,paste0("t",listsurvey[i]))
+      tsurvey<-c(tsurvey,paste0("Lt",listsurvey[i]))
     }
     comb<-combn(tsurvey, 2)
-    tsurvey<-c(paste0("L",comb[1,], comb[2,]))
+    tsurvey<-c(paste0(comb[1,], comb[2,]))
     colnames(lengths)<-c(tsurvey)
     rownames(lengths)<-c(siteIDs)
-  }
+        
+  }else{
+ #vector to indicate line for selection in the matrix
+    seqline<-c(nsurvey-1, nsurvey, nsurvey)
+    for(i in 1:(nsite-1)){
+      seqline<-c(seqline, seqline[length(seqline)-2]+nsurvey,seqline[length(seqline)-1]+nsurvey,seqline[length(seqline)-1]+nsurvey)
+    }
+ #vector to indicate column for selection in the matrix
+    seqcolumn<-c(1,1,2)
+    for(i in 1:(nsite-1)){
+      seqcolumn<-c(seqcolumn, seqcolumn[length(seqcolumn)-2]+nsurvey,seqcolumn[length(seqcolumn)-2]+nsurvey,seqcolumn[length(seqcolumn)]+nsurvey)
+    }
+#create a vector off all lengths using seqline and seqcolumn to oper selection in the matrix
+alllengths<-c()
+for(i in 1:(length(seqline))){
+  alllengths<-c(alllengths, dmat[seqline[i], seqcolumn[i]])
+}
+
+lengths<-as.data.frame(matrix(NA, nrow=nsite, ncol=((nsurvey*(nsurvey-1))/2)))
+seqlength<-c(seq(0,length(alllengths),length(alllengths)/nsite))
+for(i in 1:nsite){
+  lengths[i,]<-alllengths[(seqlength[i]+1):(seqlength[i+1])]
+}
+listsurvey<-c(1:nsurvey)#creating column names
+tsurvey<-c()
+for (i in 1: nsurvey){
+  tsurvey<-c(tsurvey,paste0("Lt",listsurvey[i]))
+}
+comb<-combn(tsurvey, 2)
+tsurvey<-c(paste0(comb[1,], comb[2,]))
+colnames(lengths)<-c(tsurvey)
+rownames(lengths)<-c(siteIDs)
+  }}
 
   return(lengths)
 }
@@ -488,6 +491,16 @@ trajectoryLengths<-function(d, sites, surveys=NULL, relativeToInitial = FALSE, a
 #' @rdname trajectories
 #' @param xy Matrix with 2D coordinates in a Cartesian space (typically an ordination of community states).
 trajectoryLengths2D<-function(xy,sites,surveys, relativeToInitial=FALSE, all=FALSE, verbose = FALSE) {
+  
+  #order inputs by sites and surveys
+xy_temp<-as.data.frame(xy)
+xy_temp$sites<-sites
+xy_temp$surveys<-surveys
+xy_temp<-xy_temp[order(xy_temp$sites,xy_temp$surveys),]
+xy<-xy_temp[,1:2]
+sites<-c(xy_temp$sites)
+surveys<-c(xy_temp$surveys)
+  
   siteIDs = unique(sites)
   surveyIDs<-unique(surveys)
   nsite<-length(siteIDs)
@@ -585,6 +598,15 @@ trajectoryAngles<-function(d, sites, surveys=NULL, all = FALSE, relativeToInitia
 #' @rdname trajectories
 #' @param betweenSegments Flag to indicate that angles should be calculated between trajectory segments or with respect to X axis.
 trajectoryAngles2D<-function(xy,sites,surveys,relativeToInitial=FALSE, betweenSegments=TRUE) {
+  
+  #order inputs by sites and surveys
+xy_temp<-as.data.frame(xy)
+xy_temp$sites<-sites
+xy_temp$surveys<-surveys
+xy_temp<-xy_temp[order(xy_temp$sites,xy_temp$surveys),]
+xy<-xy_temp[,1:2]
+sites<-c(xy_temp$sites)
+surveys<-c(xy_temp$surveys)
   
   siteIDs<-unique(sites)
   surveyIDs<-unique(surveys)
@@ -780,9 +802,9 @@ trajectoryAngles2D<-function(xy,sites,surveys,relativeToInitial=FALSE, betweenSe
     
     data_converging$Angl_LIS<-c(AngleTR_converging)
     
-    AngleTR_distancing90180<-c(ifelse( data_distancing90180$pos>0,data_distancing90180$Angle_t2,
+    AngleTR_distancing90180<-c(ifelse( data_distancing90180$pos>0,180-data_distancing90180$Angle_t2,
                                        ifelse( data_distancing90180$pos==0,0,
-                                               ifelse( data_distancing90180$pos<0,360-data_distancing90180$Angle_t2,"ERROR"))))
+                                               ifelse( data_distancing90180$pos<0,180+data_distancing90180$Angle_t2,"ERROR"))))
     
     AngleTR_distancing090<-c(ifelse( data_distancing090$pos>0,180-data_distancing090$Angle_t2,
                                      ifelse( data_distancing090$pos==0,180,
@@ -972,9 +994,9 @@ trajectoryAngles2D<-function(xy,sites,surveys,relativeToInitial=FALSE, betweenSe
     
     data_converging$Angl_LIS<-c(AngleTR_converging)
     
-    AngleTR_distancing90180<-c(ifelse( data_distancing90180$pos>0,data_distancing90180$Angle_t2,
+    AngleTR_distancing90180<-c(ifelse( data_distancing90180$pos>0,180-data_distancing90180$Angle_t2,
                                        ifelse( data_distancing90180$pos==0,0,
-                                               ifelse( data_distancing90180$pos<0,360-data_distancing90180$Angle_t2,"ERROR"))))
+                                               ifelse( data_distancing90180$pos<0,180+data_distancing90180$Angle_t2,"ERROR"))))
     
     AngleTR_distancing090<-c(ifelse( data_distancing090$pos>0,180-data_distancing090$Angle_t2,
                                      ifelse( data_distancing090$pos==0,180,
