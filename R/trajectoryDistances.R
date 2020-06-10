@@ -61,7 +61,7 @@
 #' Function \code{trajectoryAngles2D} calculates angles between consecutive segments in degrees from 2D coordinates given as input. For each pair of segments, the angle between the two is defined on the plane that contains the two segments, and measures the change in direction (in degrees) from one segment to the other. 
 #' Angles are always positive (O to 360), with zero values indicating segments that are in a straight line, and values equal to 180 degrees for segments that are in opposite directions. 
 #' If \code{all = TRUE} angles are calculated between the segments corresponding to all ordered triplets. Alternatively, if \code{relativeToInitial = TRUE} angles are calculated for each segment with respect to the initial survey.
-#' If \code{betweenSegments = TRUE} angles are calculated between segments of trajectory, otherwise, If \code{betweenTraj = FALSE}, angles are calculated considering Y axis as the North (0°).
+#' If \code{betweenSegments = TRUE} angles are calculated between segments of trajectory, otherwise, If \code{betweenSegments = FALSE}, angles are calculated considering Y axis as the North (0°).
 #' 
 #' Function \code{centerTrajectories} performs centering of trajectories using matrix algebra as explained in Anderson (2017).
 #' 

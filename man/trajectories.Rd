@@ -196,7 +196,7 @@ Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscal
 
 Function \code{trajectoryAngles} returns a data frame with angle values on each trajectory. If \code{stats=TRUE}, then the mean, standard deviation and mean resultant length of those angles are also returned. 
 
-Function \code{trajectoryAngles2D} returns a data frame with angle values on each trajectory. If \code{betweenSegments=TRUE}, then angles are calculated between trajectory segments, alternatively, If \code{betweenSegments=FALSE}, angles are calculated between each segment and the X axis
+Function \code{trajectoryAngles2D} returns a data frame with angle values on each trajectory. If \code{betweenSegments=TRUE}, then angles are calculated between trajectory segments, alternatively, If \code{betweenSegments=FALSE}, angles are calculated considering Y axis as the North (0°).
 
 Function \code{trajectoryPCoA} returns the result of calling \code{\link{cmdscale}}.
 
@@ -252,7 +252,7 @@ angles are calculated between the segments corresponding to all ordered triplets
 Function \code{trajectoryAngles2D} calculates angles between consecutive segments in degrees from 2D coordinates given as input. For each pair of segments, the angle between the two is defined on the plane that contains the two segments, and measures the change in direction (in degrees) from one segment to the other. 
 Angles are always positive (O to 360), with zero values indicating segments that are in a straight line, and values equal to 180 degrees for segments that are in opposite directions. 
 If \code{all = TRUE} angles are calculated between the segments corresponding to all ordered triplets. Alternatively, if \code{relativeToInitial = TRUE} angles are calculated for each segment with respect to the initial survey.
-If \code{betweenSegments = TRUE} angles are calculated between segments of trajectory, otherwise, If \code{betweenTraj = FALSE}, angles are calculated between each trajectory segment and X axis.
+If \code{betweenSegments = TRUE} angles are calculated between segments of trajectory, otherwise, If \code{betweenSegments = FALSE}, angles are calculated considering Y axis as the North (0°).
 
 Function \code{centerTrajectories} performs centering of trajectories using matrix algebra as explained in Anderson (2017).
 }
