@@ -437,6 +437,22 @@ trajectoryLengths<-function(d, sites, surveys=NULL, relativeToInitial = FALSE, a
       lengths[i1, maxnsurveys] = sum(lengths[i1,], na.rm=T)
     }
   } else{ 
+    
+    if(nsite==1) {
+    vectord<-as.vector(d)
+    lengths<-as.data.frame(matrix(NA, nrow=nsite, ncol=((nsurvey*(nsurvey-1))/2)))
+    lengths[1,]<-vectord
+    listsurvey<-c(1:nsurvey)#creating column names
+    tsurvey<-c()
+    for (i in 1: nsurvey){
+      tsurvey<-c(tsurvey,paste0("Lt",listsurvey[i]))
+    }
+    comb<-combn(tsurvey, 2)
+    tsurvey<-c(paste0(comb[1,], comb[2,]))
+    colnames(lengths)<-c(tsurvey)
+    rownames(lengths)<-c(siteIDs)
+        
+  }else{
  #vector to indicate line for selection in the matrix
     seqline<-c(nsurvey-1, nsurvey, nsurvey)
     for(i in 1:(nsite-1)){
@@ -467,7 +483,7 @@ comb<-combn(tsurvey, 2)
 tsurvey<-c(paste0(comb[1,], comb[2,]))
 colnames(lengths)<-c(tsurvey)
 rownames(lengths)<-c(siteIDs)
-  }
+  }}
 
   return(lengths)
 }
