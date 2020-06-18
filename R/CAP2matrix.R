@@ -9,6 +9,7 @@ CAP2matrix<-function(CAP, type="cumulative", classWeights=NULL) {
   nstrata = length(classWeights)
   nspecies = nrow(CAP[[1]])
   spnames = row.names(CAP[[1]])
+  if(is.null(spnames)) spnames = 1:nspecies
   if(type=="cumulative") {
     m = matrix(0, nrow=n,ncol=nstrata*nspecies)
     for(i in 1:n) {

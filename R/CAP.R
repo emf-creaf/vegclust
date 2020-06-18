@@ -7,6 +7,7 @@ CAP<-function(x, transform=NULL, verbose=FALSE) {
         y[,i] = y[,i]+y[,i+1]
       }
     }
+    dimnames(y) <- dimnames(x)
     return(y)
   }
   if(!inherits(x,"stratifiedvegdata")) stop("Input should be of class 'stratifiedvegdata'")
