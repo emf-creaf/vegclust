@@ -7,7 +7,7 @@ _Version 1.7.9
 1. New option to 'trajectoryLengths' and 'trajectoryAngles' to calculate distances and angles relative to initial survey
 2. New functions 'trajectoryLengths2D' and 'trajectoryAngles2D' by Anthony Sturbois
 3. Bug correction in vegdiststruct
-4. Update of CTA vignette
+4. Update of CTA vignette (suggestions P. Legendre)
 
 _Version 1.7.8
 1. New option to 'trajectoryPCoA' and 'trajectoryPlot' to draw survey labels
