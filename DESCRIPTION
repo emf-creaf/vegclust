@@ -16,6 +16,6 @@ URL: https://vegmod.github.io/software/vegclust
 LazyLoad: yes
 Encoding: UTF-8
 NeedsCompilation: yes
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Suggests: knitr, rmarkdown, RColorBrewer, smacof
 VignetteBuilder: utils, knitr

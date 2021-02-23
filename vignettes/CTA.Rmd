@@ -17,7 +17,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## 1. Introduction
-*Community trajectory analysis* (CTA) is a framework to analyze community dynamics described as trajectories in a chosen space of community resemblance. CTA takes trajectories as objects to be analyzed and compared geometrically. Given a distance matrix between community states and vectors defining sites (i.e. sampling units) and surveys (temporal replications), package **vegclust** offers a set of functions to perform CTA. In this vignette you will learn how to conduct CTA using different package functions. First of all, we load `vegclust` and other libraries needed in this document:
+*Community trajectory analysis* (CTA) is a framework to analyze community dynamics described as trajectories in a chosen space of community resemblance. CTA takes trajectories as objects to be analyzed and compared geometrically. The framework was presented in De Cáceres M, Coll L, Legendre P, et al (2019) Trajectory analysis in community ecology. Ecol Monogr 89:e01350. https://doi.org/10.1002/ecm.1350. 
+
+Given a distance matrix between community states and vectors defining sites (i.e. sampling units) and surveys (temporal replications), package **vegclust** offers a set of functions to perform CTA. In this vignette you will learn how to conduct CTA using different package functions. First of all, we load `vegclust` and other libraries needed in this document:
 
 ```{r load libraries, echo = T}
 library(vegclust)
@@ -38,7 +40,7 @@ a. A set of community states (i.e. coordinates in a space $\Omega$), described u
 b. A vector specifying the site (i.e. sampling unit) corresponding to each community state; 
 c. A vector specifying the survey (i.e. time point) corresponding to the sampling of each community state. 
 
-In CTA sampling units do not need to be surveyed synchronously nor the same number of times. However, in this example we assume all three sites have been surveyed synchronously four times. 
+In CTA, sampling units do not need to be surveyed synchronously nor the same number of times. However, in this example we assume all three sites have been surveyed synchronously four times. 
 
 Let us first define the vectors that describe the site and the survey of each community state:
 ```{r}
@@ -46,7 +48,7 @@ Let us first define the vectors that describe the site and the survey of each co
 sites = c(1,1,1,1,2,2,2,2,3,3,3,3)
 surveys=c(1,2,3,4,1,2,3,4,1,2,3,4)
 ```
-We then build a matrix with the coordinates corresponding to the community states of the three sites during each survey. We assume that the community space $\Omega$ has two dimensions:
+We then define a matrix whose coordinates correspond to the set of community states observed. The number of rows in this matrix has to be equal to the length of vectors `sites` and `surveys`. We assume that the community space $\Omega$ has two dimensions:
 ```{r}
 #Raw data table
 xy<-matrix(0, nrow=12, ncol=2)
@@ -73,7 +75,7 @@ D = dist(xy)
 D
 ```
 
-CTA is based on the analysis of information in $d$. Therefore, it does not require explicit coordinates. This is an advantage because it allows the analysis to be conducted on arbitrary metric (or semi-metric) spaces. The choice of $d$ is left to the user and will depend on the problem at hand.
+CTA is based on the analysis of information in the distance matrix $\Delta = [d]$. Therefore, it does not require explicit coordinates. This is an advantage because it allows the analysis to be conducted on arbitrary metric (or semi-metric) spaces. The choice of $d$ is left to the user and will depend on the problem at hand.
 
 ### 2.2 Displaying trajectories
 
@@ -111,7 +113,7 @@ trajectoryLengths(D, sites, surveys)
 ```
 
 
-In CTA, angles are measured using triplets of time-ordered community states (a pair of consecutive segments is an example of such triplets). As $d$ may represent a space of multiple dimensions, angles cannot be calculated with respect to a single plane. Instead, each angle is measured on the plane defined by each triplet. Zero angles indicate that the three points (e.g. the two consecutive segments) are in a straight line. The larger the angle value, the more is trajectory changing in direction. Mean and standard deviation statistics of angles are calculated according to circular statistics (see R package `circular`). Function `trajectoryAngles` allows calculating the angles between consecutive segments:
+In CTA, angles are measured using triplets of time-ordered community states (a pair of consecutive segments is an example of such triplets). As matrix $\Delta$ may represent a space of multiple dimensions, angles cannot be calculated with respect to a single plane. Instead, each angle is measured on the plane defined by each triplet. Zero angles indicate that the three points (e.g. the two consecutive segments) are in a straight line. The larger the angle value, the more is trajectory changing in direction. Mean and standard deviation statistics of angles are calculated according to circular statistics (see R package `circular`). Function `trajectoryAngles` allows calculating the angles between consecutive segments:
 
 ```{r} 
 trajectoryAngles(D, sites, surveys)
@@ -135,28 +137,35 @@ trajectoryDirectionality(D, sites, surveys)
 As known from previous plots, trajectory of site '2' is less straight than trajectory of site '1' and that of site '3' has the lowest directionality value. Note that function only computes a descriptive statistic, i.e. it does not perform any statistical test on directionality.
 
 ### 2.4 Relative positions within trajectories
-Community states occupy a position within their trajectory that depends on the total pathway length of the trajectory. By adding the length of segments prior to a given state and dividing the sum by the total length of the trajectory we obtain the relative position of the community state. Function `trajectoryProjection` allows obtaining the relative position of each point of a trajectory. To use it for this purpose one should use as parameters the distance matrix between state and the indices that conform the trajectory. For example for the two example trajectories we would have:
+Community states occupy a position within their trajectory that depends on the total pathway length of the trajectory (see Fig. 2 of De Cáceres et al. 2019). By adding the length of segments prior to a given state and dividing the sum by the total length of the trajectory we obtain the relative position of the community state. Function `trajectoryProjection` allows obtaining the relative position of each point of a trajectory. To use it for this purpose one should use as parameters the distance matrix between states and the indices that conform the trajectory, which have to be entered twice. For example for the two example trajectories we would have:
 
 ```{r} 
 trajectoryProjection(D, 1:4, 1:4)
-trajectoryProjection(D, 5:8, 5:8)
 ```  
-Because the trajectory of site '2' as the second and third segments that are longer than the first, the relative position of state '6' is lower than 1/3 and that of state '7' is lower than 2/3.
 
-Function `trajectoryProjection` can also be used to **project** arbitrary community states onto a given reference trajectory. For example we can study the projection of third state of the trajectory of site '1' (i.e. state 3) onto the trajectory of site '2' (i.e. states 5 to 8):
+If we inspect the relative positions of the points in the trajectory of site '2', we find than the second and third segments have relative positions larger than 1/3 and 2/3, respectively, because the second and third segments are shorter:
 ```{r} 
-trajectoryProjection(D, 3, 5:8)
+trajectoryProjection(D, 5:8, 5:8)
+```
+
+Function `trajectoryProjection` can also be used to **project** arbitrary community states onto a given reference trajectory. For example we can study the projection of third state of the trajectory of site '2' (i.e. state 7) onto the trajectory of site '1' (i.e. states 1 to 4), which happens to be in the half of the trajectory:
+```{r} 
+trajectoryProjection(D, 7, 1:4)
+```  
+If we project the points of the trajectory of site '3' onto the trajectory of site '1' we see how the curved pathway of site '3' projects its fourth point to the same relative position as its second point.
+```{r} 
+trajectoryProjection(D, 9:12, 1:4)
 ```  
 
 ### 2.5 Trajectory convergence
 
-When trajectories have been sampled the same number of times, function `trajectoryConvergence` allows performing tests of convergence based on the trend analysis of the sequences of distances between points of the two trajectories (i.e. first-first, second-second, ...):
+When trajectories have been sampled the same number of times, one can study their symmetric convergence or divergence (see Fig. 3a of De Cáceres et al. 2019). Function `trajectoryConvergence` allows performing tests of convergence based on the trend analysis of the sequences of distances between points of the two trajectories (i.e. first-first, second-second, ...):
 
 ```{r} 
 trajectoryConvergence(D, sites, surveys, symmetric = TRUE)
 ```  
 
-The function performs the Mann-Whitney trend test. Values of the statistic ('tau') larger than 0 correspond to trajectories that are diverging, whereas values lower than 0 correspond to trajectories that are converging. By setting `symmetric = FALSE` the convergence test becomes asymmetric. In this case the sequence of distances *between every point of one trajectory and the other*:
+The function performs the Mann-Whitney trend test. Values of the statistic ('tau') larger than 0 correspond to trajectories that are diverging, whereas values lower than 0 correspond to trajectories that are converging. By setting `symmetric = FALSE` the convergence test becomes asymmetric (see Figs. 3b and 3c of De Cáceres et al. 2019). In this case the sequence of distances *between every point of one trajectory and the other*:
 
 ```{r} 
 trajectoryConvergence(D, sites, surveys, symmetric = FALSE)
@@ -166,13 +175,13 @@ The asymmetric test is useful to determine if one trajectory is becoming closer 
 
 ### 2.6 Distances between segments and trajectories
 
-To start comparing trajectories between sites (i.e. between sampling units), one important step is the calculation of distances between directed segments, which can be obtained by calling function `segmentDistances`:
+To start comparing trajectories between sites (i.e. between sampling units), one important step is the calculation of distances between directed segments (see Fig. 4 of De Cáceres et al. 2019), which can be obtained by calling function `segmentDistances`:
 ```{r} 
 Ds = segmentDistances(D, sites, surveys)$Dseg
 Ds
 ```  
 
-Distances between segments are affected by differences in both *position*, *size* and *direction*. Hence, among the six segments of this example, the distance is maximum between the last segment of trajectory '1' and the first segment of trajectory '3'. 
+Distances between segments are affected by differences in both *position*, *size* and *direction*. Hence, among the six segments of this example, the distance is maximum between the last segment of trajectory '1' (named `1[3-4]`) and the first segment of trajectory '3' (named `3[1-2]`). 
 
 One can display distances between segments in two dimensions using mMDS.
 ```{r, echo=T, fig=TRUE, fig.height=5, fig.width=5, fig.align = "center"}
@@ -188,13 +197,13 @@ legend("topleft", pt.bg=c("black","red","blue"), pch=21, bty="n", legend=c("Traj
 ```
 
 
-Distances between segments are internally calculated when comparing whole trajectories using function `trajectoryDistances`. Here we show the dissimilarity between the two trajectories as assessed using either the *Hausdorff* distance (equal to the maximum distance between directed segments) or the *directed segment path distance* (an average of distances between segments): 
+Distances between segments are internally calculated when comparing whole trajectories using function `trajectoryDistances`. Here we show the dissimilarity between the two trajectories as assessed using either the *Hausdorff* distance (equal to the maximum distance between directed segments; see eq. 8 in De Cáceres et al. 2019) or the *directed segment path distance* (an average of distances between segments; see eq. 13 in De Cáceres et al. 2019): 
 ```{r} 
 trajectoryDistances(D, sites, surveys, distance.type = "Hausdorff")
 trajectoryDistances(D, sites, surveys, distance.type = "DSPD")
 ```  
 
-DSPD is a symmetrized distance. To calculate non-symmetric distances one uses:
+DSPD is a symmetrized distance. To calculate non-symmetric distances one uses (see eq. 11 in De Cáceres et al. 2019):
 ```{r} 
 trajectoryDistances(D, sites, surveys, distance.type = "DSPD", symmetrization = NULL)
 ```  
@@ -203,14 +212,14 @@ trajectoryDistances(D, sites, surveys, distance.type = "DSPD", symmetrization = 
 
 ## 3. Structural dynamics in permanent plots
 
-In this example we analyze the dynamics of 8 permanent forest plots located on slopes of a valley in the New Zealand Alps. The study area is mountainous and centered on the Craigieburn Range (Southern Alps), South Island, New Zealand.  Forests plots are almost monospecific, being the mountain beech (*Fuscospora cliffortioides*) the main dominant tree species. Previously forests consisted of largely mature stands, but some of them were affected by different disturbances during the sampling period (1972-2009) which includes 9 surveys. We begin our example by loading the data set, which includes 72 plot observations:
+In this example we analyze the dynamics of 8 permanent forest plots located on slopes of a valley in the New Zealand Alps. The study area is mountainous and centered on the Craigieburn Range (Southern Alps), South Island, New Zealand (see map in Fig. 8 of De Cáceres et al. 2019).  Forests plots are almost monospecific, being the mountain beech (*Fuscospora cliffortioides*) the main dominant tree species. Previously forests consisted of largely mature stands, but some of them were affected by different disturbances during the sampling period (1972-2009) which includes 9 surveys. We begin our example by loading the data set, which includes 72 plot observations:
 ```{r load avoca, echo=T}
 data("avoca")
 ```
 
 Community data is in form of an object `stratifiedvegdata`. To account for differences in tree diameter, while emphasizing regeneration, the data contains individual counts to represent tree abundance and trees are classified in 19 quadratic diameter bins (in cm): {(2.25, 4], (4, 6.25], (6.25, 9], ... (110.25, 121]}. The data set also includes vectors `avoca_surveys` and `avoca_sites` that indicate the survey and forest plot corresponding to each forest state.
 
-Before starting community trajectory analysis, we have to use function `vegdiststruct`to calculate distances between forest plot states in terms of structure and composition:
+Before starting community trajectory analysis, we have to use function `vegdiststruct`to calculate distances between forest plot states in terms of structure and composition (see De Cáceres M, Legendre P, He F (2013) Dissimilarity measurements and the size structure of ecological communities. Methods Ecol Evol 4:1167–1177. https://doi.org/10.1111/2041-210X.12116):
 ```{r distance, echo=TRUE}
 avoca_D_man = vegdiststruct(avoca_strat, method="manhattan", transform = function(x){log(x+1)})
 ```
