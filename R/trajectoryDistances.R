@@ -109,7 +109,7 @@
 #' 
 #' Function \code{centerTrajectory} returns an object of class \code{\link{dist}}.
 #' 
-#' @author Miquel De \enc{Cáceres}{Caceres}, Forest Sciences Center of Catalonia
+#' @author Miquel De \enc{Cáceres}{Caceres}, CREAF
 #' @author Anthony Sturbois, Vivarmor nature, Réserve Naturelle nationale de la Baie de Saint-Brieuc
 #' 
 #' @references
@@ -135,7 +135,8 @@
 #' xy[6,1]<-1
 #'   
 #' #Draw trajectories
-#' trajectoryPlot(xy, sites, traj.colors = c("black","red"), lwd = 2)
+#' trajectoryPlot(xy, sites, surveys, 
+#'                traj.colors = c("black","red"), lwd = 2)
 #' 
 #' #Distance matrix
 #' d = dist(xy)
@@ -159,7 +160,8 @@
 #' surveys[5] = 3
 #' surveys[6] = 2
 #'   
-#' trajectoryPlot(xy, sites, traj.colors = c("black","red"), lwd = 2)   
+#' trajectoryPlot(xy, sites, surveys, 
+#'                traj.colors = c("black","red"), lwd = 2)   
 #' trajectoryLengths(dist(xy), sites, surveys)
 #' trajectoryLengths2D(xy, sites, surveys)
 #' segmentDistances(dist(xy), sites, surveys)$Dseg
@@ -597,16 +599,15 @@ trajectoryAngles<-function(d, sites, surveys=NULL, all = FALSE, relativeToInitia
 
 #' @rdname trajectories
 #' @param betweenSegments Flag to indicate that angles should be calculated between trajectory segments or with respect to X axis.
-trajectoryAngles2D<-function(xy,sites,surveys,relativeToInitial=FALSE, betweenSegments=TRUE) {
+trajectoryAngles2D<-function(xy, sites, surveys, relativeToInitial=FALSE, betweenSegments=TRUE) {
   
-  #order inputs by sites and surveys
-xy_temp<-as.data.frame(xy)
-xy_temp$sites<-sites
-xy_temp$surveys<-surveys
-xy_temp<-xy_temp[order(xy_temp$sites,xy_temp$surveys),]
-xy<-xy_temp[,1:2]
-sites<-c(xy_temp$sites)
-surveys<-c(xy_temp$surveys)
+  xy_temp<-as.data.frame(xy)
+  xy_temp$sites<-sites
+  xy_temp$surveys<-surveys
+  xy_temp<-xy_temp[order(xy_temp$sites,xy_temp$surveys),]
+  xy<-xy_temp[,1:2]
+  sites<-c(xy_temp$sites)
+  surveys<-c(xy_temp$surveys)
   
   siteIDs<-unique(sites)
   surveyIDs<-unique(surveys)
@@ -614,7 +615,6 @@ surveys<-c(xy_temp$surveys)
   nsurvey<-length(surveyIDs)
   nsurveysite<-numeric(nsite)
   maxnsurveys<-length(surveys)
-  lengths<-as.data.frame(trajectoryLengths2D(xy,sites,surveys,relativeToInitial = FALSE, all=TRUE))
   
   dx<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey))
   x<-xy[,1]
@@ -641,393 +641,150 @@ surveys<-c(xy_temp$surveys)
   if(nrow(xy)!=nsite*nsurvey) stop("nrow(xy) need to be equal to 'number of sites * number of surveys'")
   
   
-  for(i in 1:nsite) {
-    nsurveysite[i] = sum(sites==siteIDs[i])
-  }
-  if(sum(nsurveysite==1)>0) stop("All sites need to be surveyed at least twice")
   
-  if(relativeToInitial) {
-    #x modification
-    dxmod<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
-    for(i in 1:ncol(dxmod)){
-      dxmod[,i]<-dx[,i]-dx[,i+1]
-    }
-    #y modification
-    dymod<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
-    for(i in 1:ncol(dymod)){
-      dymod[,i]<-dy[,i]-dy[,i+1]
-    }
-    #dfxy
-    dmod<-as.data.frame(cbind(dxmod,dymod))
+  #x modification
+  dxmod<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+  for(i in 1:ncol(dxmod)){
+    dxmod[,i]<-dx[,i]-dx[,i+1]
+  }
+  #y modification
+  dymod<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+  for(i in 1:ncol(dymod)){
+    dymod[,i]<-dy[,i]-dy[,i+1]
+  }
+  #dfxy
+  dmod<-as.data.frame(cbind(dxmod,dymod))
+  
+  
+  ##############################################################  
+  #angle alpha measurement
+  Angle_alpha_temp<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+  for(i in 1:ncol(Angle_alpha_temp)){
+    Angle_alpha_temp[,i]<-apply(dmod[c(i,i+nsurvey-1)], 1, function(irow) {
+      atan(irow[2]/irow[1])
+    })
+  }
+  Angle_alpha_temp<-Angle_alpha_temp*(180/pi)
+  
+  
+  dxy<-as.data.frame (cbind(dx,dy))
+  Angle_alpha<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+  for (i in 1:ncol(Angle_alpha_temp)) {
+    Angle_alpha[,i]<-as.numeric(c(ifelse(dxy[,i]==dxy[,i+1] & dxy[,i+(nsurvey)]<dxy[,i+(nsurvey+1)],0,
+                                         ifelse(dxy[,i]==dxy[,i+1] & dxy[,i+(nsurvey)]>dxy[,i+(nsurvey+1)],180,
+                                                ifelse(dxy[,i]<dxy[,i+1] & dxy[,i+(nsurvey)]==dxy[,i+(nsurvey+1)],90,
+                                                       ifelse(dxy[,i]>dxy[,i+1] & dxy[,i+(nsurvey)]==dxy[,i+(nsurvey+1)],270,
+                                                              ifelse(dxy[,i] < dxy[,i+1] & dxy[,i+(nsurvey)]< dxy[,i+(nsurvey+1)],90-Angle_alpha_temp[,i],
+                                                                     ifelse(dxy[,i]< dxy[,i+1] & dxy[,i+(nsurvey)] > dxy[,i+(nsurvey+1)],90-Angle_alpha_temp[,i],
+                                                                            ifelse(dxy[,i]>dxy[,i+1] & dxy[,i+(nsurvey)] > dxy[,i+(nsurvey+1)],270-Angle_alpha_temp[,i],
+                                                                                   ifelse(dxy[,i]>dxy[,i+1] & dxy[,i+(nsurvey)] < dxy[,i+(nsurvey+1)],270-Angle_alpha_temp[,i],"ERROR"))))))))))
+  }
+  colnames(Angle_alpha) <- c(paste0("Axis2", "-t", 
+                                    as.character(1:(nsurvey-1))))  
+  ##############################################################
+  
+  #angle Theta measurement
+  #position according to first trajectory of each triplet
+  pos<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-2))
+  for (i in 1:(nsurvey-2)){
+    pos[,i]<-c((dxy[,i+1]-dxy[,i])*(dxy[,nsurvey+i+2]-dxy[,nsurvey+i])-(dxy[,nsurvey+i+1]-dxy[,nsurvey+i])*(dxy[,i+2]-dxy[,i]))
+  }
+  
+  #consecutive segement lenght
+  Scons<-as.data.frame(trajectoryLengths2D(xy,sites,surveys, relativeToInitial=FALSE))
+  Scons<-Scons[,-c(ncol(Scons)-1,ncol(Scons))]
+  
+  #calculation of length t to t+2: 1to3,2to4....
+  distn2<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-2))
+  for (i in 1:(nsurvey-2)){
+    distn2[,i]<-sqrt(((dxy[,i+2]-dxy[,i])^2)+((dxy[,nsurvey+i+2]-dxy[,nsurvey+i])^2))
+  }
+  
+  #recovering or distancing pattern for each consecutive triplet
+  RDTcons<-distn2-Scons
+  
+  # Angle theta temp (0-180°)
+  Angle_theta_temp<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-2))
+  xvector1<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+  yvector1<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+  xvector2<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+  yvector2<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+  for(i in 1:(nsurvey-2)){
+    xvector1[,i] = dxy[,i] - dxy[,i+1]
+    yvector1[,i] = dxy[,i+nsurvey] - dxy[,i+nsurvey+1]
+    xvector2 [,i] = dxy[,i+2] - dxy[,i+1]
+    yvector2 [,i] = dxy[,i+nsurvey+2] - dxy[,i+nsurvey+1]
     
-    #angle to horyzontal measurement
-    angles_horyz<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
-    for(i in 1:ncol(angles_horyz)){
-      angles_horyz[,i]<-apply(dmod[c(i,i+nsurvey-1)], 1, function(irow) {
-        atan(irow[2]/irow[1])
-      })
-    }
-    angles_horyz<-angles_horyz*(180/pi)
-    
-    
-    dxy<-as.data.frame (cbind(dx,dy))
-    angles_horyz360<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
-    for (i in 1:ncol(angles_horyz)) {
-      angles_horyz360[,i]<-as.numeric(c(ifelse(dxy[,i]==dxy[,i+1] & dxy[,i+(nsurvey)]<dxy[,i+(nsurvey+1)],0,
-                                               ifelse(dxy[,i]==dxy[,i+1] & dxy[,i+(nsurvey)]>dxy[,i+(nsurvey+1)],180,
-                                                      ifelse(dxy[,i]<dxy[,i+1] & dxy[,i+(nsurvey)]==dxy[,i+(nsurvey+1)],90,
-                                                             ifelse(dxy[,i]>dxy[,i+1] & dxy[,i+(nsurvey)]==dxy[,i+(nsurvey+1)],270,
-                                                                    ifelse(dxy[,i] < dxy[,i+1] & dxy[,i+(nsurvey)]< dxy[,i+(nsurvey+1)],90-angles_horyz[,i],
-                                                                           ifelse(dxy[,i]< dxy[,i+1] & dxy[,i+(nsurvey)] > dxy[,i+(nsurvey+1)],90-angles_horyz[,i],
-                                                                                  ifelse(dxy[,i]>dxy[,i+1] & dxy[,i+(nsurvey)] > dxy[,i+(nsurvey+1)],270-angles_horyz[,i],
-                                                                                         ifelse(dxy[,i]>dxy[,i+1] & dxy[,i+(nsurvey)] < dxy[,i+(nsurvey+1)],270-angles_horyz[,i],"ERROR"))))))))))
-    }
-    colnames(angles_horyz360) <- c(paste0("t", as.character(1:(nsurvey-1)), "-t", 
-                                          as.character(2:(nsurvey))))    
-    ##############################################################
-    Lt<-lengths[,1:(nsurvey-1)]
-    
-    if(nsurvey==3) {S<-lengths[,c(1,3)]
-    }else{
-      subvec1<-c((nsurvey-2):1)
-      subvec2<-c(2:1)
-      vec<-c(subvec1[1],subvec2[1])
-      for (i in 1:(nsurvey-3)){
-        vec<-c(vec,((vec[length(vec)])+subvec1[i]))
-      }
-      S<-lengths[,c(1,vec)]}
-    
-    # Converging or distancing trajectory
-    CDT<-as.data.frame(matrix(NA, nrow=nsite, ncol=(ncol(Lt)-1)))
-    for(i in 1:(ncol(Lt)-1)){
-      CDT[,i]<-Lt[,i]-Lt[,i+1]  
-    }
-    
-    ##############################################################
-    #table preparation
-    #distance
-    dist<-as.data.frame(cbind(S,Lt))
-    
-    dist1_2<- dist[1,((ncol(dist)/2)+1):(ncol(dist)-1)]
-    for (i in 2:dim(dist)[ 1 ]){
-      dist1_2<- cbind(dist1_2, dist[i,((ncol(dist)/2)+1):(ncol(dist)-1)])
-    } 
-    
-    dist2_3<- dist[1,2:(ncol(dist)/2)]
-    for (i in 2:dim(dist)[ 1 ]){
-      dist2_3<- cbind(dist2_3, dist[i,2:(ncol(dist)/2)])
-    } 
-    
-    dist1_3<-dist[1,((ncol(dist)/2)+2):ncol(dist)]
-    for (i in 2:dim(dist)[ 1 ]){
-      dist1_3<- cbind(dist1_3, dist[i,((ncol(dist)/2)+2):ncol(dist)])
-    } 
-    #coordinnates
-    Xt1 <- dx[1,c(rep(1,(nsurvey-2)))]
-    for (i in 2:dim(dx)[ 1 ]){
-      Xt1 <- cbind(Xt1, dx[i,c(rep(1,(nsurvey-2)))])
-    } 
-    
-    Xt2 <- dx[1,2:(nsurvey-1) ]
-    for (i in 2:dim(dx)[ 1 ]){
-      Xt2 <- cbind(Xt2, dx[i,2:(nsurvey-1)  ])
-    } 
-    
-    Xt3 <- dx[1,3:(nsurvey) ]
-    for (i in 2:dim(dx)[ 1 ]){
-      Xt3 <- cbind(Xt3, dx[i,3:(nsurvey)])
-    } 
-    
-    Yt1 <- dy[1,c(rep(1,(nsurvey-2)))]
-    for (i in 2:dim(dy)[ 1 ]){
-      Yt1 <- cbind(Yt1, dy[i,c(rep(1,(nsurvey-2)))])
-    } 
-    
-    Yt2 <- dy[1,2:(nsurvey-1) ]
-    for (i in 2:dim(dy)[ 1 ]){
-      Yt2 <- cbind(Yt2, dy[i,2:(nsurvey-1)  ])
-    } 
-    
-    Yt3 <- dy[1,3:(nsurvey) ]
-    for (i in 2:dim(dy)[ 1 ]){
-      Yt3 <- cbind(Yt3, dy[i,3:(nsurvey)  ])
-    } 
-    #CDT
-    CDTs<- CDT[1,1:(nsurvey-2) ]
-    for (i in 2:dim(CDT)[ 1 ]){
-      CDTs <- cbind(CDTs, CDT[i, ])
-    } 
-    
-    dist1_2<-as.data.frame(t(dist1_2))
-    dist2_3<-as.data.frame(t(dist2_3))
-    dist1_3<-as.data.frame(t(dist1_3))
-    Xt1<-as.data.frame(t(Xt1))
-    Xt2<-as.data.frame(t(Xt2))
-    Xt3<-as.data.frame(t(Xt3))
-    Yt1<-as.data.frame(t(Yt1))
-    Yt2<-as.data.frame(t(Yt2))
-    Yt3<-as.data.frame(t(Yt3))
-    CDTs<-as.data.frame(t(CDTs))
-    
-    
-    #df
-    sitesdf<-c()
-    for (i in 1:length(siteIDs)){
-      sitesdf<-c(sitesdf,rep(siteIDs[i],nsurvey-2))
-    }
-    Num<-c(rep(1:(nsurvey-2),length(siteIDs)))
-    
-    df<-as.data.frame(cbind(sitesdf,Num,dist1_2,dist2_3,dist1_3,Xt1,Xt2,Xt3,Yt1,Yt2,Yt3,CDTs))  
-    colnames(df)<-c("SitesIDs","Num","dist1_2","dist2_3","dist1_3","Xt1","Xt2","Xt3","Yt1","Yt2","Yt3","CDT")
-    
-    
-    ##########################################################
-    #Angle_t2 calculation 0-360
-    df$Angle_t2<-acos(c(((df$dist2_3^2)-(df$dist1_3^2)+(df$dist1_2^2))/(2*df$dist1_2*df$dist2_3)))*(180/pi) 
-    
-    #position according to first trajectory of each triplet
-    df$pos<-c(((df$Xt2-df$Xt1)*(df$Yt3-df$Yt1))-((df$Yt2-df$Yt1)*(df$Xt3-df$Xt1)))
-    
-    #reporting angle in 0-360°
-    df$CDTs<-c(ifelse(df$CDT<0,"DIS","CIS"))
-    data_converging<-df[df$CDTs %in% c("CIS"),]
-    data_distancing<-df[df$CDTs %in% c("DIS"),]
-    data_distancing090<-data_distancing[data_distancing$Angl <90,]
-    data_distancing90180<-data_distancing[data_distancing$Angl >90,]
-    
-    
-    AngleTR_converging<-c(ifelse(data_converging$pos>0,180-data_converging$Angle_t2,
-                                 ifelse(data_converging$pos==0,180,
-                                        ifelse(data_converging$pos<0,180+data_converging$Angle_t2,"ERROR"))))
-    
-    data_converging$Angl_LIS<-c(AngleTR_converging)
-    
-    AngleTR_distancing90180<-c(ifelse( data_distancing90180$pos>0,180-data_distancing90180$Angle_t2,
-                                       ifelse( data_distancing90180$pos==0,0,
-                                               ifelse( data_distancing90180$pos<0,180+data_distancing90180$Angle_t2,"ERROR"))))
-    
-    AngleTR_distancing090<-c(ifelse( data_distancing090$pos>0,180-data_distancing090$Angle_t2,
-                                     ifelse( data_distancing090$pos==0,180,
-                                             ifelse( data_distancing090$pos<0,180+data_distancing090$Angle_t2,"ERROR"))))
-    
-    
-    data_distancing090$Angl_LIS<-c(AngleTR_distancing090)
-    data_distancing90180$Angl_LIS<-c(AngleTR_distancing90180)
-    data_distancing<-rbind(data_distancing090,data_distancing90180)
-    df<-rbind(data_converging,data_distancing)
-    df<-df[order(df$SitesIDs,df$Num,decreasing=F), ]
-    
-    #returns preparation
-    angles360_t2<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-2))
-    colnames(angles360_t2) <- c(paste0("Lt", rep("1",nsurvey -2), "-S", 
-                                       as.character(2:(nsurvey - 1))))    
-    rownames(angles360_t2)<-c(siteIDs)
-    
-    seqdf<-seq(1,nrow(df)+nsurvey-2,nsurvey-2)
-    Angl_LIS<-c(df$Angl_LIS)
-    for(i in 1:length(siteIDs))
-    {
-      angles360_t2[i,]<-Angl_LIS[seqdf[i]:(seqdf[i+1]-1)]
-    }
+    num = (xvector1[,i] * xvector2[,i] + yvector1[,i] * yvector2[,i])
+    den = sqrt(xvector1[,i]^2 + yvector1[,i]^2) * sqrt(xvector2[,i]^2 +yvector2[,i]^2)
+    Angle_theta_temp[,i] = (360 * acos(num/den))/(2 * pi)
+  }
+  
+  # Angle theta (0-360°)
+  Angle_theta<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-2))
+  for (i in 1:ncol(Angle_theta_temp)){
+    Angle_theta[,i]<-c(ifelse(Angle_theta_temp[,i]==180,0,
+                              ifelse(Angle_theta_temp[,i]==0,180,
+                                     ifelse(pos[,i]<0 & RDTcons[,i]<0,180-Angle_theta_temp[,i],
+                                            ifelse(pos[,i]>0 & RDTcons[,i]<0 ,360-(180-Angle_theta_temp[,i]),
+                                                   ifelse(pos[,i]<0 & RDTcons[,i]>0 & Angle_theta_temp[,i]<90,180-Angle_theta_temp[,i],
+                                                          ifelse(pos[,i]<0 & RDTcons[,i]>0 & Angle_theta_temp[,i]>90,180-Angle_theta_temp[,i], 
+                                                                 ifelse(pos[,i]>0 & RDTcons[,i]>0 & Angle_theta_temp[,i]<90 ,270-(90-Angle_theta_temp[,i]),
+                                                                        ifelse(pos[,i]>0 & RDTcons[,i]>0 & Angle_theta_temp[,i]>90 ,270+(Angle_theta_temp[,i]-90),"ERROR")))))))))
     
     
   }
   
-  else {        
-    #x modification
-    dxmod<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
-    for(i in 1:ncol(dxmod)){
-      dxmod[,i]<-dx[,i]-dx[,i+1]
-    }
-    #y modification
-    dymod<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
-    for(i in 1:ncol(dymod)){
-      dymod[,i]<-dy[,i]-dy[,i+1]
-    }
-    #dfxy
-    dmod<-as.data.frame(cbind(dxmod,dymod))
-    
-    #angle to horyzontal measurement
-    angles_horyz<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
-    for(i in 1:ncol(angles_horyz)){
-      angles_horyz[,i]<-apply(dmod[c(i,i+nsurvey-1)], 1, function(irow) {
-        atan(irow[2]/irow[1])
-      })
-    }
-    angles_horyz<-angles_horyz*(180/pi)
-    
-    
-    #for(i in 1:ncol(angles_horyz)){
-    #angles_horyz[,i]<-c(ifelse(angles_horyz[,i]<0, angles_horyz[,i]+180 ,angles_horyz[,i]))}
-    dxy<-as.data.frame (cbind(dx,dy))
-    angles_horyz360<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
-    for (i in 1:ncol(angles_horyz)) {
-      angles_horyz360[,i]<-as.numeric(c(ifelse(dxy[,i]==dxy[,i+1] & dxy[,i+(nsurvey)]<dxy[,i+(nsurvey+1)],0,
-                                               ifelse(dxy[,i]==dxy[,i+1] & dxy[,i+(nsurvey)]>dxy[,i+(nsurvey+1)],180,
-                                                      ifelse(dxy[,i]<dxy[,i+1] & dxy[,i+(nsurvey)]==dxy[,i+(nsurvey+1)],90,
-                                                             ifelse(dxy[,i]>dxy[,i+1] & dxy[,i+(nsurvey)]==dxy[,i+(nsurvey+1)],270,
-                                                                    ifelse(dxy[,i] < dxy[,i+1] & dxy[,i+(nsurvey)]< dxy[,i+(nsurvey+1)],90-angles_horyz[,i],
-                                                                           ifelse(dxy[,i]< dxy[,i+1] & dxy[,i+(nsurvey)] > dxy[,i+(nsurvey+1)],90-angles_horyz[,i],
-                                                                                  ifelse(dxy[,i]>dxy[,i+1] & dxy[,i+(nsurvey)] > dxy[,i+(nsurvey+1)],270-angles_horyz[,i],
-                                                                                         ifelse(dxy[,i]>dxy[,i+1] & dxy[,i+(nsurvey)] < dxy[,i+(nsurvey+1)],270-angles_horyz[,i],"ERROR"))))))))))
-    }
-    colnames(angles_horyz360) <- c(paste0("t", as.character(1:(nsurvey-1)), "-t", 
-                                          as.character(2:(nsurvey))))    
-    ###########################################   
-    
-    Lt<-lengths[,1:(nsurvey-1)]
-    
-    if(nsurvey==3) {S<-lengths[,c(1,3)]
-    }else{
-      subvec1<-c((nsurvey-2):1)
-      subvec2<-c(2:1)
-      vec<-c(subvec1[1],subvec2[1])
-      for (i in 1:(nsurvey-3)){
-        vec<-c(vec,((vec[length(vec)])+subvec1[i]))
-      }
-      S<-lengths[,c(1,vec)]}
-    
-    
-    # Converging or distancing trajectory
-    CDT<-as.data.frame(matrix(NA, nrow=nsite, ncol=(ncol(Lt)-1)))
-    for(i in 1:(ncol(Lt)-1)){
-      CDT[,i]<-Lt[,i]-Lt[,i+1]  
-    }
-    
-    ##############################################################
-    #table preparation
-    #distance
-    dist<-as.data.frame(cbind(S,Lt))
-    
-    dist1_2<- dist[1,1:(nsurvey-2)]
-    for (i in 2:dim(dist)[ 1 ]){
-      dist1_2<- cbind(dist1_2, dist[i,1:(nsurvey-2)])
-    } 
-    
-    dist2_3<- dist[1,2:(nsurvey-1)]
-    for (i in 2:dim(dist)[ 1 ]){
-      dist2_3<- cbind(dist2_3, dist[i,2:(nsurvey-1)])
-    } 
-    
-    dist1_3<-dist[1,((ncol(dist)/2)+2):ncol(dist)]
-    for (i in 2:dim(dist)[ 1 ]){
-      dist1_3<- cbind(dist1_3, dist[i,((ncol(dist)/2)+2):ncol(dist)])
-    } 
-    #coordinnates
-    Xt1 <- dx[1,1:(nsurvey-2)]
-    for (i in 2:dim(dx)[ 1 ]){
-      Xt1 <- cbind(Xt1, dx[i,1:(nsurvey-2)])
-    } 
-    
-    Xt2 <- dx[1,2:(nsurvey-1) ]
-    for (i in 2:dim(dx)[ 1 ]){
-      Xt2 <- cbind(Xt2, dx[i,2:(nsurvey-1)  ])
-    } 
-    
-    Xt3 <- dx[1,3:(nsurvey) ]
-    for (i in 2:dim(dx)[ 1 ]){
-      Xt3 <- cbind(Xt3, dx[i,3:(nsurvey)])
-    } 
-    
-    Yt1 <- dy[1,1:(nsurvey-2)]
-    for (i in 2:dim(dy)[ 1 ]){
-      Yt1 <- cbind(Yt1, dy[i,1:(nsurvey-2)])
-    } 
-    
-    Yt2 <- dy[1,2:(nsurvey-1) ]
-    for (i in 2:dim(dy)[ 1 ]){
-      Yt2 <- cbind(Yt2, dy[i,2:(nsurvey-1)  ])
-    } 
-    
-    Yt3 <- dy[1,3:(nsurvey) ]
-    for (i in 2:dim(dy)[ 1 ]){
-      Yt3 <- cbind(Yt3, dy[i,3:(nsurvey)  ])
-    } 
-    #CDT
-    CDTs<- CDT[1,1:(nsurvey-2) ]
-    for (i in 2:dim(CDT)[ 1 ]){
-      CDTs <- cbind(CDTs, CDT[i, ])
-    } 
-    
-    dist1_2<-as.data.frame(t(dist1_2))
-    dist2_3<-as.data.frame(t(dist2_3))
-    dist1_3<-as.data.frame(t(dist1_3))
-    Xt1<-as.data.frame(t(Xt1))
-    Xt2<-as.data.frame(t(Xt2))
-    Xt3<-as.data.frame(t(Xt3))
-    Yt1<-as.data.frame(t(Yt1))
-    Yt2<-as.data.frame(t(Yt2))
-    Yt3<-as.data.frame(t(Yt3))
-    CDTs<-as.data.frame(t(CDTs))
-    
-    
-    #df
-    sitesdf<-c()
-    for (i in 1:length(siteIDs)){
-      sitesdf<-c(sitesdf,rep(siteIDs[i],nsurvey-2))
-    }
-    Num<-c(rep(1:(nsurvey-2),length(siteIDs)))
-    
-    df<-as.data.frame(cbind(sitesdf,Num,dist1_2,dist2_3,dist1_3,Xt1,Xt2,Xt3,Yt1,Yt2,Yt3,CDTs))  
-    colnames(df)<-c("SitesIDs","Num","dist1_2","dist2_3","dist1_3","Xt1","Xt2","Xt3","Yt1","Yt2","Yt3","CDT")
-    
-    ##################################
-    ##########################################################
-    #Angle_t2 calculation 0-360
-    df$Angle_t2<-acos(c(((df$dist2_3^2)-(df$dist1_3^2)+(df$dist1_2^2))/(2*df$dist1_2*df$dist2_3)))*(180/pi) 
-    
-    #position according to first trajectory of each triplet
-    df$pos<-c(((df$Xt2-df$Xt1)*(df$Yt3-df$Yt1))-((df$Yt2-df$Yt1)*(df$Xt3-df$Xt1)))
-    
-    
-    #reporting angle in 0-360°
-    df$CDTs<-c(ifelse(df$CDT<0,"DIS","CIS"))
-    data_converging<-df[df$CDTs %in% c("CIS"),]
-    data_distancing<-df[df$CDTs %in% c("DIS"),]
-    data_distancing090<-data_distancing[data_distancing$Angl <90,]
-    data_distancing90180<-data_distancing[data_distancing$Angl >90,]
-    
-    
-    AngleTR_converging<-c(ifelse(data_converging$pos>0,180-data_converging$Angle_t2,
-                                 ifelse(data_converging$pos==0,180,
-                                        ifelse(data_converging$pos<0,180+data_converging$Angle_t2,"ERROR"))))
-    
-    data_converging$Angl_LIS<-c(AngleTR_converging)
-    
-    AngleTR_distancing90180<-c(ifelse( data_distancing90180$pos>0,180-data_distancing90180$Angle_t2,
-                                       ifelse( data_distancing90180$pos==0,0,
-                                               ifelse( data_distancing90180$pos<0,180+data_distancing90180$Angle_t2,"ERROR"))))
-    
-    AngleTR_distancing090<-c(ifelse( data_distancing090$pos>0,180-data_distancing090$Angle_t2,
-                                     ifelse( data_distancing090$pos==0,180,
-                                             ifelse( data_distancing090$pos<0,180+data_distancing090$Angle_t2,"ERROR"))))
-    
-    data_distancing090$Angl_LIS<-c(AngleTR_distancing090)
-    data_distancing90180$Angl_LIS<-c(AngleTR_distancing90180)
-    data_distancing<-rbind(data_distancing090,data_distancing90180)
-    df<-rbind(data_converging,data_distancing)
-    df<-df[order(df$SitesIDs,df$Num,decreasing=F), ]
-    
-    #returns preparation
-    angles360_t2<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-2))
-    colnames(angles360_t2) <- c(paste0("S", as.character(1:(nsurvey-2)), "-S", 
-                                       as.character(2:(nsurvey - 1))))    
-    rownames(angles360_t2)<-c(siteIDs)
-    
-    seqdf<-seq(1,nrow(df)+nsurvey-2,nsurvey-2)
-    Angl_LIS<-c(df$Angl_LIS)
-    for(i in 1:length(siteIDs))
-    {
-      angles360_t2[i,]<-Angl_LIS[seqdf[i]:(seqdf[i+1]-1)]
-      
-    }
-    
+  colnames(Angle_theta) <- c(paste0("t", as.character(1:(nsurvey-2)), "-t", 
+                                    as.character(2:(nsurvey-1))))    
+  
+  ##############################################################   
+  #position according to first trajectory of each triplet
+  pos<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-2))
+  for (i in 1:(nsurvey-2)){
+    pos[,i]<-c((dxy[,2]-dxy[,1])*(dxy[,nsurvey+i+2]-dxy[,nsurvey+1])-(dxy[,nsurvey+2]-dxy[,nsurvey+1])*(dxy[,i+2]-dxy[,1]))
   }
   
-  #return
-  if(betweenSegments) {return(angles360_t2)}else{return(angles_horyz360)}
+  #Angle_omega_temp(0-180°)
+  Angle_omega_temp<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-2))
+  xvector1<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+  yvector1<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+  xvector2<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+  yvector2<-as.data.frame(matrix(NA, nrow=nsite, ncol=nsurvey-1))
+  for(i in 1:(nsurvey-2)){
+    xvector1[,i] = dxy[,1] - dxy[,2]
+    yvector1[,i] = dxy[,1+nsurvey] - dxy[,2+nsurvey]
+    xvector2 [,i] = dxy[,i+2] - dxy[,2]
+    yvector2 [,i] = dxy[,i+nsurvey+2] - dxy[,2+nsurvey]
+    
+    num = (xvector1[,i] * xvector2[,i] + yvector1[,i] * yvector2[,i])
+    den = sqrt(xvector1[,i]^2 + yvector1[,i]^2) * sqrt(xvector2[,i]^2 +yvector2[,i]^2)
+    Angle_omega_temp[,i] = (360 * acos(num/den))/(2 * pi)
+  }
   
-} 
+  #Angle_omega(0-360°)
+  Angle_omega<-as.data.frame(matrix(NA, nrow=nrow(Angle_omega_temp), ncol=ncol(Angle_omega_temp)-1))
+  for (i in 1:ncol(Angle_omega_temp)){
+    Angle_omega[,i]<-c(ifelse(Angle_theta_temp[,i]==180,0,
+                              ifelse(Angle_theta_temp[,i]==0,180,
+                                     ifelse(pos[,i]<0,180-Angle_omega_temp[,i],
+                                            ifelse(pos[,i]>0,360-(180-Angle_omega_temp[,i]),"ERROR")))))
+  }
+  
+  colnames(Angle_omega) <- c(paste0("S1", "-t", 
+                                    as.character(2:(nsurvey-1))))
+  ################################################################
+  #Output
+  if(betweenSegments) {
+    if(!relativeToInitial){
+      return(Angle_theta)
+    } else{
+      return(Angle_omega)
+    }
+  } else {
+    return(Angle_alpha)
+  }
+}
 
 #' @rdname trajectories
 #' @param selection A character vector of sites, a numeric vector of site indices or logical vector of the same length as \code{sites}, indicating a subset of site trajectories to be selected.

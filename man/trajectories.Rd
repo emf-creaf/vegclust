@@ -270,7 +270,8 @@ xy[4:6,2] <- xy[1:3,2]
 xy[6,1]<-1
   
 #Draw trajectories
-trajectoryPlot(xy, sites, traj.colors = c("black","red"), lwd = 2)
+trajectoryPlot(xy, sites, surveys, 
+               traj.colors = c("black","red"), lwd = 2)
 
 #Distance matrix
 d = dist(xy)
@@ -294,7 +295,8 @@ xy[6,] = temp
 surveys[5] = 3
 surveys[6] = 2
   
-trajectoryPlot(xy, sites, traj.colors = c("black","red"), lwd = 2)   
+trajectoryPlot(xy, sites, surveys, 
+               traj.colors = c("black","red"), lwd = 2)   
 trajectoryLengths(dist(xy), sites, surveys)
 trajectoryLengths2D(xy, sites, surveys)
 segmentDistances(dist(xy), sites, surveys)$Dseg
@@ -316,7 +318,7 @@ Anderson (2017). Permutational Multivariate Analysis of Variance (PERMANOVA). Wi
 \code{\link{cmdscale}}
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Sciences Center of Catalonia
+Miquel De \enc{Cáceres}{Caceres}, CREAF
 
 Anthony Sturbois, Vivarmor nature, Réserve Naturelle nationale de la Baie de Saint-Brieuc
 }
