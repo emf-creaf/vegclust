@@ -1,9 +1,9 @@
-destination: "/home/miquel/Rservices/vegmod_web/static/vegclustdocs"
+destination: "docs/"
 
 home:
   links:
   - text: Package website
-    href: https://vegmod.ctfc.cat/software/vegclust
+    href: https://emf-creaf.github.io/vegclust
     
 reference:
 - title: Vegetation cluster analysis
@@ -39,10 +39,3 @@ reference:
   - plot.CAP
   - plot.CAS
   - medreg
-  
-- title: Community trajectory analysis
-  desc:  Functions for analysing community trajectories in compositional spaces
-  contents:
-  - avoca
-  - starts_with("trajectory")
-  - starts_with("segment")
