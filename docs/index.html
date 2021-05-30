@@ -82,12 +82,8 @@
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>Package <code>vegclust</code> is a package designed to assist analyses of vegetation structure and composition. It is intended to be useful for community ecologists and forest engineers, but the clustering functions can be used in other fields. The package provides functions to:</p>
 <ul>
-<li>Perform fuzzy clustering of vegetation data <span class="math display"><em>D</em><em>e</em><em>C</em><em>a</em><em>c</em><em>e</em><em>r</em><em>e</em><em>s</em><em>e</em><em>t</em><em>a</em><em>l</em>.(2010) &lt; <em>d</em><em>o</em><em>i</em> : 10.1111/<em>j</em>.1654 − 1103.2010.01211.<em>x</em>&gt;</span>
-</li>
-<li>Assess ecological community ressemblance on the basis of structure and composition <span class="math display"><em>D</em><em>e</em><em>C</em><em>a</em><em>c</em><em>e</em><em>r</em><em>e</em><em>s</em><em>e</em><em>t</em><em>a</em><em>l</em>.(2013) &lt; <em>d</em><em>o</em><em>i</em> : 10.1111/2041 − 210<em>X</em>.12116&gt;</span>
-</li>
-<li>Perform community trajectory analysis <span class="math display"><em>D</em><em>e</em><em>C</em><em>a</em><em>c</em><em>e</em><em>r</em><em>e</em><em>s</em><em>e</em><em>t</em><em>a</em><em>l</em>.(2019) &lt; <em>d</em><em>o</em><em>i</em> : 10.1002/<em>e</em><em>c</em><em>m</em>.1350&gt;</span>
-</li>
+<li>Perform fuzzy clustering of vegetation data: De Cáceres et al. (2010) (<a href="https://doi.org/10.1111/j.1654-1103.2010.01211.x" class="uri">https://doi.org/10.1111/j.1654-1103.2010.01211.x</a>).</li>
+<li>Assess ecological community ressemblance on the basis of structure and composition: De Cáceres et al. (2013) (<a href="https://doi.org/10.1111/2041-210X.12116" class="uri">https://doi.org/10.1111/2041-210X.12116</a>).</li>
 </ul>
 </div>
 <div id="package-installation" class="section level2">
@@ -95,7 +91,12 @@
 <a href="#package-installation" class="anchor"></a>Package installation</h2>
 <p>Package vegclust can be found at <a href="https://cran.r-project.org/">CRAN</a> package repository. In addition, the latest stable <code>vegclust</code> R package can be installed from GitHub as follows:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"vegmod/vegclust"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"emf-creaf/vegclust"</span><span class="op">)</span></code></pre></div>
+<p>Additionally, users can have help to run package functions directly as package vignettes, by forcing their inclusion in installation:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"emf-creaf/vegclust"</span>, 
+                         build_opts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"--no-resave-data"</span>, <span class="st">"--no-manual"</span><span class="op">)</span>,
+                         build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="references" class="section level2">
 <h2 class="hasAnchor">
@@ -103,7 +104,6 @@
 <ul>
 <li><p>De Cáceres, M., Font, X., &amp; Oliva, F. 2010. The management of vegetation classifications with fuzzy clustering. Journal of Vegetation Science 21: 1138–1151.</p></li>
 <li><p>De Cáceres, M., Legendre, P., &amp; He, F. 2013. Dissimilarity measurements and the size structure of ecological communities (D. Faith, Ed.). Methods in Ecology and Evolution 4: 1167–1177.</p></li>
-<li><p>De Cáceres, M., Coll, L., Legendre, P., Allen, R.B., Wiser, S.K., Fortin, M.J., Condit, R. &amp; Hubbell, S.. (2019). Trajectory analysis in community ecology. Ecological Monographs.</p></li>
 </ul>
 </div>
 </div>
