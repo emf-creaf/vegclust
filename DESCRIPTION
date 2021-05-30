@@ -5,8 +5,7 @@ Version: 2.0.0
 Date: 2021-05-30
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
-	email='miquelcaceres@gmail.com'),
-	person('Anthony', 'Sturbois', role = 'aut'))
+	email='miquelcaceres@gmail.com'))
 Description: A set of functions to: (1) perform fuzzy clustering of vegetation data [De Caceres et al. (2010) <doi:10.1111/j.1654-1103.2010.01211.x>]; (2) to assess ecological community ressemblance on the basis of structure and composition [De Caceres et al. (2013): <doi:10.1111/2041-210X.12116>].
 Depends: R (>= 3.4.0)
 Imports: sp, vegan, Kendall, circular, MASS
