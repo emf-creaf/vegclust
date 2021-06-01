@@ -10,7 +10,7 @@ Description: A set of functions to: (1) perform fuzzy clustering of vegetation d
 Depends: R (>= 3.4.0)
 Imports: sp, vegan, Kendall, MASS
 License: GPL (>= 2)
-URL: https://vegmod.github.io/software/vegclust
+URL: https://emf-creaf.github.io/vegclust
 LazyLoad: yes
 Encoding: UTF-8
 NeedsCompilation: yes
