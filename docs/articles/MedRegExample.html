@@ -170,13 +170,13 @@
 <p>This specific data looks as follows:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##   plot species   height diameter          ba
-## 1    1       2 5.458632       33 0.085529860
-## 2    1       2 3.692514        9 0.006361725
-## 3    1       1 5.944706       28 0.061575216
-## 4    1       2 4.646590       13 0.013273229
-## 5    1       1 4.680244       12 0.011309734
-## 6    1       2 8.317925       80 0.502654825</code></pre>
+<pre><code>##   plot species   height diameter         ba
+## 1    1       1 4.807298       15 0.01767146
+## 2    1       1 4.528400       20 0.03141593
+## 3    1       1 6.531470       47 0.17349445
+## 4    1       2 4.059109       20 0.03141593
+## 5    1       1 4.836402       27 0.05725553
+## 6    1       1 3.684502       19 0.02835287</code></pre>
 <p>We start our analysis by defining two sets of size classes, one for height and the other for diameter:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">heights</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">5</span>, by<span class="op">=</span><span class="fl">.25</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="co"># Quadratic classes</span>
@@ -205,14 +205,14 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/CAS.html">CASmargin</a></span><span class="op">(</span><span class="va">tree.CAS</span>, margin<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## $`1`
 ##   [0,0.0625] (0.0625,0.25] (0.25,0.562] (0.562,1] (1,1.56] (1.56,2.25]
-## 1   5.986148      5.986148     5.986148  5.986148 5.986148    5.986148
-## 2   4.893816      4.893816     4.893816  4.893816 4.893816    4.893816
-##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56] (7.56,9] (9,10.6]
-## 1    5.984106 5.973974 5.894178    5.510039    4.322046 3.569163 1.690884
-## 2    4.888711 4.855803 4.719143    4.543921    3.648567 1.992005 0.000000
+## 1   4.290395      4.290395     4.290395  4.290395 4.290395    4.290395
+## 2   3.303149      3.303149     3.303149  3.303149 3.303149    3.303149
+##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56]  (7.56,9] (9,10.6]
+## 1    4.290395 4.267225 4.132765    3.379490    2.447536 1.1079612        0
+## 2    3.302442 3.280215 3.221311    2.770728    1.862964 0.3117245        0
 ##   (10.6,12.2] (12.2,14.1] (14.1,16] (16,18.1] (18.1,20.2] (20.2,22.6] (22.6,25]
-## 1    1.188229           0         0         0           0           0         0
-## 2    0.000000           0         0         0           0           0         0
+## 1           0           0         0         0           0           0         0
+## 2           0           0         0         0           0           0         0
 ## 
 ## attr(,"class")
 ## [1] "CAP"  "list"</code></pre>
@@ -224,14 +224,14 @@
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/CAP.html">CAP</a></span><span class="op">(</span><span class="va">tree.S2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## $`1`
 ##   [0,0.0625] (0.0625,0.25] (0.25,0.562] (0.562,1] (1,1.56] (1.56,2.25]
-## 1   5.986148      5.986148     5.986148  5.986148 5.986148    5.986148
-## 2   4.893816      4.893816     4.893816  4.893816 4.893816    4.893816
-##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56] (7.56,9] (9,10.6]
-## 1    5.984106 5.973974 5.894178    5.510039    4.322046 3.569163 1.690884
-## 2    4.888711 4.855803 4.719143    4.543921    3.648567 1.992005 0.000000
+## 1   4.290395      4.290395     4.290395  4.290395 4.290395    4.290395
+## 2   3.303149      3.303149     3.303149  3.303149 3.303149    3.303149
+##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56]  (7.56,9] (9,10.6]
+## 1    4.290395 4.267225 4.132765    3.379490    2.447536 1.1079612        0
+## 2    3.302442 3.280215 3.221311    2.770728    1.862964 0.3117245        0
 ##   (10.6,12.2] (12.2,14.1] (14.1,16] (16,18.1] (18.1,20.2] (20.2,22.6] (22.6,25]
-## 1    1.188229           0         0         0           0           0         0
-## 2    0.000000           0         0         0           0           0         0
+## 1           0           0         0         0           0           0         0
+## 2           0           0         0         0           0           0         0
 ## 
 ## attr(,"class")
 ## [1] "CAP"  "list"</code></pre>
@@ -286,14 +286,14 @@
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">medoids</span><span class="op">&lt;-</span><span class="va">vc</span><span class="op">$</span><span class="va">mobileCenters</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">medoids</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 60 24 92 91 81 20</code></pre>
+<pre><code>## [1] 24 85 20  4 92 60</code></pre>
 <p>The number of stands belonging to each cluster can be found using:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cluster</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/defuzzify.html">defuzzify</a></span><span class="op">(</span><span class="va">vc</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span>
 <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">cluster</span><span class="op">)</span></code></pre></div>
 <pre><code>## cluster
 ## M1 M2 M3 M4 M5 M6  N 
-##  9 26 10  7 16 20  8</code></pre>
+## 20 14 21 10  9 10 12</code></pre>
 <p>Note that, because of the model chosen (and with the parameter <code>dnoise</code>), there are a number of stands that are left unclassified (i.e. those assigned to class “N”). A useful way to display the results of the cluster analysis is by showing the stand memberships to clusters in the ordination:</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">clNum</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">cluster</span><span class="op">)</span><span class="op">)</span>
@@ -310,12 +310,12 @@
 <p>For example, we can inspect the structure and composition of the fourth group:</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">CAPm</span><span class="op">[[</span><span class="va">n</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span><span class="op">]</span><span class="op">]</span>, dig<span class="op">=</span><span class="fl">1</span><span class="op">)</span></code></pre></div>
-<pre><code>##                                1    2    3  4  5 6 7
-## Pine trees                  30.0 25.0 25.0 25 25 0 0
-## Quercus trees               42.5 42.5 37.5 25 25 0 0
-## Tall shrubs and small trees 60.0 60.0 25.0  0  0 0 0
-## Scrubs and small shrubs      5.0  5.0  0.0  0  0 0 0
-## Grass                       62.5  0.0  0.0  0  0 0 0</code></pre>
+<pre><code>##                                1    2    3    4 5 6 7
+## Pine trees                  12.5  0.0  0.0  0.0 0 0 0
+## Quercus trees               25.0 25.0 25.0 12.5 0 0 0
+## Tall shrubs and small trees 62.5 62.5 37.5  0.0 0 0 0
+## Scrubs and small shrubs     37.5 25.0  0.0  0.0 0 0 0
+## Grass                       50.0  0.0  0.0  0.0 0 0 0</code></pre>
 <p>The following displays graphically the CAPs of all six groups of vegetation stands (code not shown):</p>
 <p><img src="MedRegExample_files/figure-html/unnamed-chunk-31-1.png" width="576"></p>
 </div>
