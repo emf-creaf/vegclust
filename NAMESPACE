@@ -6,7 +6,6 @@ importFrom("vegan", "decostand")
 importFrom("MASS", "ginv")
 importFrom("stats", "as.dist", "cutree", "dist", "quantile", "model.matrix", "var", "cmdscale", "sd")
 importFrom("utils", "setTxtProgressBar", "txtProgressBar", "combn")
-importFrom("Kendall", "MannKendall")
 
 # Export all names
 exportPattern(".")
