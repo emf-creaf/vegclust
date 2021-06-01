@@ -3,7 +3,7 @@
 -------------------------------
 
 # Version 2.0.0
-- IMPORTANT: Functions for Community Trajectory Analysis were moved to package 'ecotraj', available at GitHub (https://github.com/emf-creaf/ecotraj) and soon also in CRAN.
+- IMPORTANT: Functions for Community Trajectory Analysis were moved to package 'ecotraj', available at GitHub (https://github.com/emf-creaf/ecotraj/) and soon also in CRAN.
 
 # Version 1.8.0
 - Update of function 'trajectoryAngles2D' by Anthony Sturbois

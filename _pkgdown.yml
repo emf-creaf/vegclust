@@ -3,7 +3,7 @@ destination: "docs/"
 home:
   links:
   - text: Package website
-    href: https://emf-creaf.github.io/vegclust
+    href: https://emf-creaf.github.io/vegclust/
     
 reference:
 - title: Vegetation cluster analysis
