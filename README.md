@@ -37,8 +37,8 @@ devtools::install_github("emf-creaf/vegclust",
 
 Until ver. 2.0, package `vegclust` included functions to conduct
 Community Trajectory Analysis (CTA). Since ver. 2.0 these functions have
-been moved to an independent package called ‘ecotraj’ at
-<https://github.com/emf-creaf/ecotraj/>.
+been moved to an independent package `ecotraj` available at
+<https://github.com/emf-creaf/ecotraj/> (soon in CRAN).
 
 ## References
 
