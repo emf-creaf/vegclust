@@ -1,6 +1,10 @@
 vegclust
 ================
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/emf-creaf/vegclust/workflows/R-CMD-check/badge.svg)](https://github.com/emf-creaf/vegclust/actions)
+<!-- badges: end -->
+
 ## Introduction
 
 Package `vegclust` is a package designed to assist analyses of

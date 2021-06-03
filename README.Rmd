@@ -8,6 +8,10 @@ output: github_document
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.path = "README-")
 ```
 
+  <!-- badges: start -->
+  [![R-CMD-check](https://github.com/emf-creaf/vegclust/workflows/R-CMD-check/badge.svg)](https://github.com/emf-creaf/vegclust/actions)
+  <!-- badges: end -->
+
 ## Introduction
 
 Package `vegclust` is a package designed to assist analyses of vegetation structure and composition. It is intended to be useful for community ecologists and forest engineers, but the clustering functions can be used in other fields. The package provides functions to:
