@@ -40,11 +40,7 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v1
 
       - uses: r-lib/actions/setup-tinytex@v1
-      - name: add TeX deps
-        run: |
-          tinytex::tlmgr_install(pkgs = "authblk.sty")
-        shell: Rscript {0}
-    
+
       - name: Query dependencies
         run: |
           install.packages('remotes')
@@ -71,6 +67,8 @@ jobs:
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
+          remotes::install_cran("tinytex")
+          tinytex::tlmgr_install(pkgs = "authblk")
         shell: Rscript {0}
 
       - name: Check
