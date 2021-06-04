@@ -2,6 +2,8 @@ vegclust
 ================
 
 <!-- badges: start -->
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vegclust)](https://cran.r-project.org/package=vegclust)
+[![](https://cranlogs.r-pkg.org/badges/vegclust)](https://cran.rstudio.com/web/packages/vegclust/index.html)
 [![R-CMD-check](https://github.com/emf-creaf/vegclust/workflows/R-CMD-check/badge.svg)](https://github.com/emf-creaf/vegclust/actions)
 <!-- badges: end -->
 
