@@ -23,7 +23,7 @@ Package `vegclust` is a package designed to assist analyses of vegetation struct
 
 ## Package installation
 
-Package vegclust can be found at [CRAN](https://cran.r-project.org/) package repository. In addition, the latest stable `vegclust` R package can be installed from GitHub as follows:
+Package vegclust can be found at [CRAN](https://cran.r-project.org/package=vegclust) package repository. In addition, the latest stable `vegclust` R package can be installed from GitHub as follows:
 
 ```{r installation, eval = FALSE}
 devtools::install_github("emf-creaf/vegclust")

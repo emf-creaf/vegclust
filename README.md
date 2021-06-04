@@ -22,9 +22,10 @@ can be used in other fields. The package provides functions to:
 
 ## Package installation
 
-Package vegclust can be found at [CRAN](https://cran.r-project.org/)
-package repository. In addition, the latest stable `vegclust` R package
-can be installed from GitHub as follows:
+Package vegclust can be found at
+[CRAN](https://cran.r-project.org/package=vegclust) package repository.
+In addition, the latest stable `vegclust` R package can be installed
+from GitHub as follows:
 
 ``` r
 devtools::install_github("emf-creaf/vegclust")
