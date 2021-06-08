@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
 
 ## Introduction
 ### What is this tutorial about?
-Classification of vegetation plot records involves different activities, including the design of an appropriate vegetation survey, the use of a classification method to group vegetation observations and the characterization, validation and naming of the resulting vegetation groups. In this tutorial we focus on only one of this steps, namely to group vegetation observations, and we show how to conduct it with the help of the R package `vegclust`. Before starting our examples we need to load the `vegclust` package, which also loads the required `permute`, and package `vegan`:
+Classification of vegetation plot records involves different activities, including the design of an appropriate vegetation survey, the use of a classification method to group vegetation observations and the characterization, validation and naming of the resulting vegetation groups. In this tutorial we focus on only one of this steps, namely to group vegetation observations, and we show how to conduct it with the help of the R package `vegclust`. Before starting our examples we need to load the `vegclust` package and package `vegan`:
 ```{r}
 library(vegclust)
 library(vegan)
@@ -93,20 +93,20 @@ The *centroid* of a cluster $i$ that contains $n_i$ objects is a vector $\mathbf
 \mathbf{c}_{i} = \frac{\sum_{j=1}^{n_i}{\mathbf{x}_{j}}}{n_i}
 \end{equation}
 The centroid has the property that minimizes the sum of squared Euclidean distances between itself and each point belonging to the cluster. Equation~\ref{eq:centroid} can be generalized to the case of a fuzzy cluster by weighting the coordinates each object by its degree of membership to the cluster, $u_{ij}$:
-\begin{equation}\label{eq:centroidfuzzy}
-\mathbf{c}_{i} = \frac{\sum_{j=1}^n{u_{ij}^m\mathbf{x}_{j}}}{\sum_{j=1}^n{u_{ij}^m}}
+\begin{equation}
+\mathbf{c}_{i} = \frac{\sum_{j=1}^n{u_{ij}^m\mathbf{x}_{j}}}{\sum_{j=1}^n{u_{ij}^m}} 
 \end{equation}
-In equation~\ref{eq:centroidfuzzy}, $m > 0$ is the *fuzziness exponent*, which is used to modulate the influence of fuzzy memberships in the calculation of the centroids. If $m$ is very large only the objects whose membership is close to 1 will have an influence on the centroid. On the contrary, if $m$ is small (i.e. close to 0) then all $n$ objects will influence the centroid equally and it will approach the overall data center.  
+In the former equation, $m > 0$ is the *fuzziness exponent*, which is used to modulate the influence of fuzzy memberships in the calculation of the centroids. If $m$ is very large only the objects whose membership is close to 1 will have an influence on the centroid. On the contrary, if $m$ is small (i.e. close to 0) then all $n$ objects will influence the centroid equally and it will approach the overall data center.  
 
 A *medoid* of a cluster $i$ that contains $n_i$ objects is defined as the object, chosen among the $n_i$ objects, for which the sum of dissimilarities to all the $n_i$ objects is minimal i.e. it is a most centrally located point in the cluster. Formally, the medoid is the object $k$ for which:
-\begin{equation}\label{eq:medoid}
+\begin{equation}
 \sum_{j=1}^{n_i}{d(\mathbf{x}_k,\mathbf{x}_j)}
 \end{equation}
 is minimal. When using fuzzy logic, the medoid of cluster $i$ is defined as the object $k$ (among all $n$ objects) that minimizes:
-\begin{equation}\label{eq:medoidfuzzy}
+\begin{equation}
 \sum_{j=1}^n{u_{ij}^md(\mathbf{x}_k,\mathbf{x}_j)}
 \end{equation}
-Note that, because the medoid is a point chosen among the $n$ input objects, we do not need to calculate its coordinates (although see explanation below for centroids), moreover, the distance between a medoid and the other objects (step S.2 in the alternate optimization algorithm) will be readily available from the beginning, so it does not need to be computed. All this makes dealing with medoids computationally much faster than dealing with centroids.
+Note that, because the medoid is a point chosen among the $n$ input objects, we do not need to calculate its coordinates (although see explanation below for centroids), moreover, the distance between a medoid and the other objects (step #2 in the alternate optimization algorithm) will be readily available from the beginning, so it does not need to be computed. All this makes dealing with medoids computationally much faster than dealing with centroids.
 
 #### Partitive clustering
 A clustering method is called *partitive* if object memberships (crisp or fuzzy) are constrained to sum to one for each object:
@@ -117,24 +117,24 @@ This constrain is usually referred to as the *partition restriction*. It ensures
 
 K-means (KM, also known as hard c-means) [@MacQueen1967] and Fuzzy c-means (FCM) [@Bezdek1981] are two, centroid-based, partitive clustering algorithms widely used in many unsupervised pattern recognition applications. The main difference between the two methods is that in KM every object belongs to a single cluster (i.e clusters are `hard') whereas in FCM the memberships are fuzzy and a given object may have some degree of membership to more than one cluster.
 
-Cluster memberships (step 3) are determined in KM simply by *assigning each object to the cluster whose centroid is closest*. In the case of FCM, fuzzy memberships are calculated using the following formula:
-\begin{equation}\label{eq:fcmmemb}
+Cluster memberships (step #3) are determined in KM simply by *assigning each object to the cluster whose centroid is closest*. In the case of FCM, fuzzy memberships are calculated using the following formula:
+\begin{equation}
 u_{ij} = \frac{1}{\sum_{l=1}^c{(e_{ij}/e_{lj})^{2/(m-1)}}}
 \end{equation}
 As said above, $m>1$ is the fuzziness coefficient. The smaller the value of $m$, the closer to a hard partition will be the result. If $m$ is set too high and the data is noisy the resulting partition may be completely fuzzy (i.e. where $u_{ij}=1/c$ for all objects and clusters) and therefore uninformative. 
 
-As indicated above, KM and FCM are centroid-based, meaning they use equations~\ref{eq:centroid} and~\ref{eq:centroidfuzzy}, respectively, for step S.1. The corresponding medoid-based methods are Hard C-medoids and Fuzzy C-medoids, which instead use equations~\ref{eq:medoid} and~\ref{eq:medoidfuzzy}, respectively [@Krishnapuram1999].
+As indicated above, KM and FCM are centroid-based, meaning they use centroid-based crisp or fuzzy equations, respectively, for step #1. The corresponding medoid-based methods are Hard C-medoids and Fuzzy C-medoids, which instead use equations medoid-based crisp and fuzzy equations, respectively [@Krishnapuram1999].
 
 #### Noise clustering
-The noise clustering (NC) method [@Dave1991] is an attempt to make the FCM method more robust to the effect of outliers. The rationale underlying NC is the following: if an object is an outlier, this means that it lies far from all cluster prototypes and, therefore, it should have low membership values to all clusters. In order to achieve these low memberships, the NC considers an additional class, called *Noise*. This class is not represented by a 'prototype', like the $c$ 'true' clusters. The effect of including the Noise class is that it 'captures' objects that are at a distances larger than $\delta$ from all the $c$ 'true' prototypes. The NC membership function (step S.3) for the 'real' clusters is:
-\begin{equation}\label{eq:noisememb}
+The noise clustering (NC) method [@Dave1991] is an attempt to make the FCM method more robust to the effect of outliers. The rationale underlying NC is the following: if an object is an outlier, this means that it lies far from all cluster prototypes and, therefore, it should have low membership values to all clusters. In order to achieve these low memberships, the NC considers an additional class, called *Noise*. This class is not represented by a 'prototype', like the $c$ 'true' clusters. The effect of including the Noise class is that it 'captures' objects that are at a distances larger than $\delta$ from all the $c$ 'true' prototypes. The NC membership function (step #3) for the 'real' clusters is:
+\begin{equation}
 u_{ij} = \frac{1}{(e_{ij}/\delta)^{2/(m-1)}+\sum_{l=1}^c{(e_{ij}/e_{lj})^{2/(m-1)}}}
 \end{equation}
 whereas the fuzzy membership to the Noise class, $u_{Nj}$, is one minus the sum of memberships to the real clusters. 
-\begin{equation}\label{eq:noiseclassmemb}
+\begin{equation}
 u_{Nj} = 1 - \sum_{i=1}^c{u_{ij}}
 \end{equation}
-Outlier objects have small membership values to the $c$ real clusters because the first term in the denominator of equation~\ref{eq:noisememb} is large. The smaller the $\delta$, the higher the memberships to the Noise class will be. In contrast, large values of $\delta$ make NC equivalent to FCM. In NC, the fuzziness exponent $m$ has the same interpretation as in FCM. Including the Noise class has the effect of relaxing the partition restriction. In NC, the partition restriction is fulfilled when all $c$ real clusters and the Noise class are considered.
+Outlier objects have small membership values to the $c$ real clusters because the first term in the denominator of the noise membership equation is large. The smaller the $\delta$, the higher the memberships to the Noise class will be. In contrast, large values of $\delta$ make NC equivalent to FCM. In NC, the fuzziness exponent $m$ has the same interpretation as in FCM. Including the Noise class has the effect of relaxing the partition restriction. In NC, the partition restriction is fulfilled when all $c$ real clusters and the Noise class are considered.
 
 Note that, like FCM and KM, we can define a 'hard' counterpart of the (fuzzy) noise clustering method. Indeed, the hard noise clustering (HNC) method differs from the fuzzy one in that memberships are not fuzzy. Like KM, its membership function can be described verbally. One assigns the object to the noise class if the distances to all cluster centroids is larger than $\delta$. Otherwise, one assigns the object to the cluster whose centroid is closest, as in KM.
 
@@ -142,7 +142,7 @@ The noise clustering method was originally defined with centroids as prototypes.
 
 #### Possibilistic clustering
 Possibilistic C-means [@Krishnapuram1993; @Krishnapuram1996] is another modification of FCM seeking increased cluster robustness. The partition restriction is eliminated in PCM, which produces $c$ independent fuzzy clusters, each corresponding to a dense region of points. Whereas the FCM and NC membership functions compare the distance from the object to the cluster of interest, $e_{ij}$, with the distances to the remaining prototypes (and to the noise class in the case of NC), in PCM the membership value for a given object to a cluster does not depend on the distances to the remaining cluster prototypes. Instead, the distance to the cluster of interest is compared to a reference distance ($\eta_i$):
-\begin{equation}\label{eq:possibilisticmemb}
+\begin{equation}
 u_{ij} = \frac{1}{1+(e^2_{ij}/\eta_i)^{1/(m-1)}}
 \end{equation}
 The reference distance is a parameter that must be provided for each cluster. All objects whose distance to the cluster center is smaller than $\eta_i$ will obtain a membership value higher than 0.5.  
@@ -155,22 +155,24 @@ All the clustering methods presented above can be executed on a resemblance spac
 
 #### Medoid-based clustering and dissimilarity matrices
 Because medoids are selected among the objects to be classified it is obvious that the distance to the cluster prototypes, $e_{ij}$, can be drawn from a symmetric matrix of pairwise distances between objects calculated before the alternate optimization algorithm is initiated. In other words, one can conduct medoid-based clustering on a site-by-site distance matrix instead of using a site-by-species rectangular matrix. Moreover, one can straightforwardly skip the use of Euclidean distance and use a dissimilarity measure more appropriate for ecological data.
+
 #### Centroid-based clustering and dissimilarity matrices
 When dealing with centroids, it may seem unavoidable to calculate centroid coordinates (step S.1) before calculating the (squared) Euclidean distances to cluster centers $e_{ij}$ (step S.2): 
-\begin{equation}\label{eq:dist2clustersrect}
+\begin{equation}
 e_{ij}^2 = \| \mathbf{c}_i-\mathbf{x}_j \|^2
 \end{equation}
 However, there is a mathematical trick that avoids the need to calculate the coordinates $\mathbf{c}_i$ explictly. Let $\mathbf{D}$ be the matrix of Euclidean distances between pairs of objects. We can obtain $e_{ij}^2$ as follows:
-\begin{equation}\label{eq:dist2clustersdist}
+\begin{equation}
 e_{ij}^2 = \frac{1}{n_i}\sum_{l=1}^{n_i}{d_{lj}^2}- \frac{1}{2n_i^2}\sum_{k=1}^{n_i}\sum_{l=1}^{n_i}{d_{lk}^2}
 \end{equation}
-The left part of this equation is a sum of squared distances from the target object to all the other objects in the cluster. The right part of the equation is an average of squared distances between objects in the cluster. Equation~\ref{eq:dist2clustersdist} can be generalized to the case of a fuzzy cluster:
-\begin{equation}\label{eq:dist2clustersdistfuzzy}
+The left part of this equation is a sum of squared distances from the target object to all the other objects in the cluster. The right part of the equation is an average of squared distances between objects in the cluster. Distance-based $e_{ij}^2$ equation can be generalized to the case of a fuzzy cluster:
+
+\begin{equation}
 e_{ij}^2 = \frac{1}{\sum_{k=1}^n{u_{ik}^m}}\sum_{l=1}^{n_i}{d_{lj}^2}- \frac{1}{2\left(\sum_{k=1}^n{u_{ik}^m}\right)^2}\sum_{k=1}^{n}\sum_{l=1}^{n}{u_{ik}^mu_{il}^md_{lk}^2}
 \end{equation}
-Equations~\ref{eq:dist2clustersdist} and~\ref{eq:dist2clustersdistfuzzy} allow the Euclidean distance to a centroid to be determined without calculating its coordinates. Therefore, they allow steps S.1 and S.2 to be combined into a single step. In other words, distance-based duals exist for centroid-based clustering methods when the resemblance space comprises Euclidean distances [@Hathaway1989; @Hathaway1996]. 
+Crisp and fuzzy distance-based equations allow the Euclidean distance to a centroid to be determined without calculating its coordinates. Therefore, they allow steps #1 and #2 to be combined into a single step. In other words, distance-based duals exist for centroid-based clustering methods when the resemblance space comprises Euclidean distances [@Hathaway1989; @Hathaway1996]. 
 
-If we transform the original data in order to emulate a distance (like the chord), then the duality holds, although centroids are defined in the transformed space. What happens if the values in $\mathbf{D}$ were not calculated using the Euclidean distance? Equations~\ref{eq:dist2clustersdist} and~\ref{eq:dist2clustersdistfuzzy} are also valid for other dissimilarity measures, although there are important details to be remembered. These equations assume that the resemblance space is Euclidean (i.e. does not produce negative eigenvalues in principal coordinates analysis) and that centroids are appropriate prototypes for clusters. If the dissimilarities do not have the Euclidean property some oddities may arise [@Hathaway1994]. For example, it is possible to obtain negative $e_{ij}^2$ values, specially for groups of small size. In practice, however, when these negative distances occur they can be reset to zero [@DeCaceres2006].
+If we transform the original data in order to emulate a distance (like the chord), then the duality holds, although centroids are defined in the transformed space. What happens if the values in $\mathbf{D}$ were not calculated using the Euclidean distance? Crisp and fuzzy distance-based equations are also valid for other dissimilarity measures, although there are important details to be remembered. These equations assume that the resemblance space is Euclidean (i.e. does not produce negative eigenvalues in principal coordinates analysis) and that centroids are appropriate prototypes for clusters. If the dissimilarities do not have the Euclidean property some oddities may arise [@Hathaway1994]. For example, it is possible to obtain negative $e_{ij}^2$ values, specially for groups of small size. In practice, however, when these negative distances occur they can be reset to zero [@DeCaceres2006].
 
 ## Managing vegetation classifications
 ### Creating classifications: `vegclust` and `vegclustdist()`
@@ -280,7 +282,7 @@ groups
 table(groups)
 ```
 
-Note that we can defuzzify the membership matrix using a threshold, as before, and identify both intermediates (`NA') and outliers (members of the noise class: `N'):
+Note that we can defuzzify the membership matrix using a threshold, as before, and identify both intermediates ('NA') and outliers (members of the noise class: `N'):
 ```{r}
 groups = defuzzify(wetland.nc, method="cut", alpha=0.8)$cluster
 groups
@@ -289,7 +291,7 @@ table(groups, useNA = "always")
 
 In vegetation classification, distinguishing between an intermediate or an outlier will not always be clearcut. Nevertheless, the distinction may be useful in practice because outlier objects may relate to vegetation patterns that exist in the study area but happen to be underrepresented in the sample. That is, outlier plant communities may be rare for the given vegetation data set only, in the sense that if new data were added they would belong to a vegetation type. Alternatively, they may represent rare species assemblages for the study area. Distinguishing between one case or the other cannot be done without collecting more data [@Wiser2012].
 
-An advantage of the NC model over FCM or KM is that `outliers' do not influence the cluster centers. As a result, the cluster centers are more separated from each other than in the previous models. Compare the following distance matrices between cluster centroids:
+An advantage of the NC model over FCM or KM is that 'outliers' do not influence the cluster centers. As a result, the cluster centers are more separated from each other than in the previous models. Compare the following distance matrices between cluster centroids:
 ```{r}
 dist(wetland.km$mobileCenters)
 dist(wetland.fcm$mobileCenters)
@@ -305,7 +307,7 @@ wetland.kmdd = vegclust(x = wetlandchord, mobileCenters=3,
                       method="KMdd", nstart=20)
 t(wetland.kmdd$memb)
 ```
-When ran using a site-by-species matrix as input, `vegclust` returns the coordinates of medoids as the cluster centers:
+When ran using a site-by-species matrix as input, `vegclust()` returns the coordinates of medoids as the cluster centers:
 ```{r}
 round(wetland.kmdd$mobileCenters, dig=3)
 ```
@@ -332,15 +334,15 @@ km = kmeans(wetland.31, 2)
 groups = km$cluster
 groups
 ```
-The idea is to know whether the ten objects of the second data set may be assigned to the vegetation types defined using the first data set. Because our initial classification was not obtained using `vegclust`, we need to transform the input classification of 31 objects into an object of class `vegclust'. This is done using function `as.vegclust()`:
+The idea is to know whether the ten objects of the second data set may be assigned to the vegetation types defined using the first data set. Because our initial classification was not obtained using function `vegclust()`, we need to transform the input classification of 31 objects into an object of class `vegclust`. This is done using function `as.vegclust()`:
 ```{r}
 wetland.31.km = as.vegclust(wetland.31, groups)
 ```
-Note that we did not specify the clustering model for our `vegclust' object. By default, the clustering method is K-means (KM):
+Note that we did not specify the clustering model for our `vegclust` object. By default, the clustering method is K-means (KM):
 ```{r}
 wetland.31.km$method
 ```
-In this case, this matches the way we obtained our initial classification. In general, however, we may have a classification obtained following an informal (or unknown) procedure, and we will choose the clustering model according to our preferences for assignments. Once we have our object `vegclust' we can use function `vegclass()` to *assign* the second set of observations according to the membership rule of the k-means cluster model:
+In this case, this matches the way we obtained our initial classification. In general, however, we may have a classification obtained following an informal (or unknown) procedure, and we will choose the clustering model according to our preferences for assignments. Once we have our object `vegclust` we can use function `vegclass()` to *assign* the second set of observations according to the membership rule of the k-means cluster model:
 ```{r}
 wetland.10.km = vegclass(wetland.31.km, wetland.10)
 defuzzify(wetland.10.km)$cluster
@@ -391,7 +393,7 @@ fixed = clustcentroid(wetland.31.cf, groups)
 Again, these centroids are exactly like the original ones except that they are expressed in a matrix that includes extra zeros for the new species.
 
 #### Calling `vegclust` with fixed prototypes
-At this point we are ready to call `vegclust` with the new data set (again, its conformed version):
+At this point we are ready to call function `vegclust()` with the new data set (again, its conformed version):
 ```{r}
 wetland.nc = vegclust(wetland.10.cf, mobileCenters=1, 
                       fixedCenters = fixed, 
@@ -399,7 +401,7 @@ wetland.nc = vegclust(wetland.10.cf, mobileCenters=1,
                       dnoise=wetland.31.nc$dnoise, nstart=10)
 defuzzify(wetland.nc)$cluster
 ```
-Here, the function `vegclust` has renamed the original clusters as `F2' and `F3' (indicating that they are now fixed), while the new cluster is named `M1'. 
+Here, the function `vegclust()` has renamed the original clusters as 'F2' and 'F3' (indicating that they are now fixed), while the new cluster is named 'M1'. 
 
 Instead of relying on the Noise clustering model, we could have chosen to use the K-means model to extend the classification:
 ```{r}
@@ -413,7 +415,7 @@ This avoids having objects in the Noise class. However, note that the noise clus
 
 #### Extending or refining classifications?
 
-Instead of calling `vegclust` with the new data set only, we could have chosen to use the set of all vegetation observations:
+Instead of calling `vegclust()` with the new data set only, we could have chosen to use the set of all vegetation observations:
 ```{r}
 wetland.nc = vegclust(rbind(wetland.31.cf,wetland.10.cf), mobileCenters=1, 
                       fixedCenters = fixed, 
@@ -461,23 +463,23 @@ groups = c(rep(1, 17), rep(2, 14), rep(3,10))
 ### Cluster prototypes: `clustcentroid()` and `clustmedoid()`
 Functions `clustcentroid()` and `clustmedoid()` allow the cluster prototypes to be calculated according to an input classification structure, which can be specified using either a cluster vector or a membership matrix. 
 
-For example, with `clustcentroid()` we can calculate the coordinates of the centroids of the initial groups using eq.~\ref{eq:centroid}:
+For example, with `clustcentroid()` we can calculate the coordinates of the centroids of the initial groups using:
 ```{r}
 centroids = clustcentroid(wetlandchord, groups)
 round(centroids, dig=3)
 ``` 
 
-As medoids are prototypes that are chosen among the objects to be classified, function `clustmedoid()` does not return coordinates but the indices of objects. The following code uses eq.~\ref{eq:medoid} to determine the medoids of each cluster:
+As medoids are prototypes that are chosen among the objects to be classified, function `clustmedoid()` does not return coordinates but the indices of objects. The following code uses the medoid hard cluster equation to determine the medoids of each cluster:
 ```{r}
 medoids = clustmedoid(wetlandchord, groups)
 medoids
 ``` 
-The value returned by function `medoid()` is a vector of indices with the corresponding object names (which are numbers in this particular case). If the classification structure is a fuzzy membership matrix, the cluster centroids or medoids are determined using eqs.~\ref{eq:centroidfuzzy} and~\ref{eq:medoidfuzzy}, respectively.
+The value returned by function `medoid()` is a vector of indices with the corresponding object names (which are numbers in this particular case). If the classification structure is a fuzzy membership matrix, the cluster centroids or medoids are determined using the fuzzy centroid or fuzzy medoid equation, respectively.
 
 
 ### Cluster internal variability: `clustvar()`
 Vegetation types may differ in their internal variability. The function `clustvar()` allows the amount of compositional variation (i.e. beta diversity) observed among the sites of sites belonging to each cluster to be determined. For clusters whose prototype is a centroid, this is calculated as the mean of squared distances from each object of the group to the group centroid. For example, the variability for a given group $i$ would be:
-\begin{equation}\label{eq:clustvarcent}
+\begin{equation}
 Var(i) = \sum_{j=1}^{n_k}{e_{ij}^2}/n_i
 \end{equation}
 Note that division is by $n_i$ and not by $(n_i-1)$, which would give an unbiased sample estimate. Thus, the variances calculated in `clustvar()` are population variances. For example, the variances of the three groups in our examples are:
@@ -485,12 +487,12 @@ Note that division is by $n_i$ and not by $(n_i-1)$, which would give an unbiase
 clustvar(wetlandchord, groups)
 ``` 
 The reason why population values are produced, instead of sample estimates, is because it allows the variance to be calculated using fuzzy membership values:
-\begin{equation}\label{eq:clustvarcentfuzzy}
+\begin{equation}
 Var(i) = \frac{\sum_{j=1}^{n}u_{ij}^me_{ij}^2}{\sum_{j=1}^n{u_{ij}^m}}
 \end{equation}
 
 Cluster variances can also be obtained using distance or dissimilarity matrices. In this case, the variance for a given group is calculated as:
-\begin{equation}\label{eq:clustvardist}
+\begin{equation}
 Var(i) = \frac{1}{n_i^2} \sum_{k=1}^{n_i}\sum_{l=1}^{n_i}{d_{kl}^2}
 \end{equation}
 Again, division by $n_i(n_i-1)$ instead of $n_i^2$ would give an unbiased variance estimate. Because in our example the community data had been transformed using the chord transformation, the same variance values can be obtained using a distance matrix with chord distances:
@@ -513,10 +515,10 @@ In contrast, if prototypes of vegetation types are chosen to be cluster centroid
 dist(centroids)
 ``` 
 Alternatively, the function `interclustdist()` allows the distance between pairs of centroids to be calculated without  the coordinates of centroids being supplied. Instead, the matrix of distances between objects is used. For example, if the distance between the centroids of groups $i$ and $j$ is desired, we can calculate the squared distance by:
-\begin{equation}\label{eq:interclustdist}
+\begin{equation}
 d^2(i,j)=\frac{\sum_{k=1}^{n}\sum_{l=1}^{n}{u_{ik}^mu_{jl}^m{d_{kl}}^2}}{\sum_{k=1}^n{u_{ik}^m}\sum_{l=1}^n{u_{jl}^m}} - Var(i) - Var(j)
 \end{equation}
-Using equation~\ref{eq:interclustdist} in our example would be:
+Using the former equation in our example would result in:
 ```{r}
 interclustdist(dchord,groups)
 ``` 
