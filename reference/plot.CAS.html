@@ -116,13 +116,13 @@
 <span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>plot<span class="op">=</span><span class="va">pl</span>,species<span class="op">=</span><span class="va">sp</span>, height<span class="op">=</span><span class="va">h</span>,diameter<span class="op">=</span><span class="va">d</span><span class="op">)</span> </span></span>
 <span class="r-in"><span><span class="va">m</span><span class="op">$</span><span class="va">ba</span> <span class="op">=</span> <span class="va">pi</span><span class="op">*</span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">diameter</span><span class="op">/</span><span class="fl">200</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   plot species   height diameter          ba</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1       1 4.939543       24 0.045238934</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    1       2 7.807076       61 0.292246657</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    1       1 4.520918       14 0.015393804</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    1       1 4.595546       25 0.049087385</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5    1       1 3.847610        9 0.006361725</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    1       1 2.860663       13 0.013273229</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   plot species   height diameter         ba</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1       1 4.605818       20 0.03141593</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    1       1 5.259762       36 0.10178760</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    1       2 3.254662       18 0.02544690</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    1       1 4.806936       24 0.04523893</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    1       2 6.313039       38 0.11341149</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    1       2 4.423421       20 0.03141593</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Size classes</span></span></span>
 <span class="r-in"><span><span class="va">heights</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">4</span>, by<span class="op">=</span><span class="fl">.25</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="co"># Quadratic classes</span></span></span>
@@ -133,18 +133,16 @@
 <span class="r-in"><span>                   plotColumn <span class="op">=</span> <span class="st">"plot"</span>, speciesColumn <span class="op">=</span> <span class="st">"species"</span>, </span></span>
 <span class="r-in"><span>                   size1Column <span class="op">=</span> <span class="st">"height"</span>, size2Column <span class="op">=</span> <span class="st">"diameter"</span>, </span></span>
 <span class="r-in"><span>                   abundanceColumn <span class="op">=</span> <span class="st">"ba"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in FUN(X[[i]], ...):</span> Some values are not included within size2 classes. Revise size2 class definition</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Build cummulative abundance surface</span></span></span>
 <span class="r-in"><span><span class="va">Y</span> <span class="op">=</span> <span class="fu"><a href="CAS.html">CAS</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in CAS(X):</span> object 'X' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Plot the surface of species '1' in plot '1' using heights and diameters</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">Y</span>, species<span class="op">=</span><span class="fl">1</span>, sizes1<span class="op">=</span><span class="va">heights</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span>, xlab<span class="op">=</span><span class="st">"height (m)"</span>, </span></span>
 <span class="r-in"><span>     ylab<span class="op">=</span><span class="st">"diameter (cm)"</span>, sizes2<span class="op">=</span><span class="va">diams</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span>, zlab<span class="op">=</span><span class="st">"Basal area (m2)"</span>,</span></span>
 <span class="r-in"><span>     zlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">6</span><span class="op">)</span>, main<span class="op">=</span><span class="st">"Species 1"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in plot(Y, species = 1, sizes1 = heights[-1], xlab = "height (m)",     ylab = "diameter (cm)", sizes2 = diams[-1], zlab = "Basal area (m2)",     zlim = c(0, 6), main = "Species 1"):</span> object 'Y' not found</span>
+<span class="r-plt img"><img src="plot.CAS-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </div>
