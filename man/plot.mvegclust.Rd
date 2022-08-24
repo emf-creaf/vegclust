@@ -29,7 +29,7 @@ Create plots used to study vegclust clustering results for an increasing number 
 Different information is returned depending on the type of plot chosen.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia
+Miquel De \enc{Cáceres}{Caceres}, CREAF
 }
 \examples{
 ## Loads data  

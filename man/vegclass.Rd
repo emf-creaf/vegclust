@@ -42,10 +42,10 @@ Krishnapuram, R. and J. M. Keller. (1993) A possibilistic approach to clustering
 De \enc{Cáceres}{Caceres}, M., Font, X, Oliva, F. (2010) The management of numerical vegetation classifications with fuzzy clustering methods [Related software]. Journal of Vegetation Science 21 (6): 1138-1151.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia.
+Miquel De \enc{Cáceres}{Caceres}, CREAF.
 }
 \seealso{
-\code{\link{vegclust}}, \code{\link{as.vegclust}}, \code{\link{kmeans}}, \code{\link[e1071]{cmeans}}, \code{\link{conformveg}}
+\code{\link{vegclust}}, \code{\link{as.vegclust}}, \code{\link{kmeans}}, \code{\link{conformveg}}
 }
 \examples{
 ## Loads data (38 columns and 33 species)

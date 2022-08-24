@@ -20,7 +20,7 @@ as.memb(cluster)
 An matrix with as many rows as the length of \code{cluster} and as many columns as different cluster levels. \code{NA} values will have zero membership to all clusters
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia.
+Miquel De \enc{Cáceres}{Caceres}, CREAF.
 }
 
 \seealso{

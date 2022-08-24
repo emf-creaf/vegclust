@@ -34,7 +34,7 @@ For each pair of \code{vegclust} (or \code{vegclass}) objects in \code{upper} an
  \item{empty}{The number of upper level clusters (mobile or fixed) that do not have any member among the lower level clusters. }
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia
+Miquel De \enc{Cáceres}{Caceres}, CREAF
 }
 
 \seealso{

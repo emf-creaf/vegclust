@@ -28,7 +28,7 @@ Create plots used to inspect one or more cumulative abundance profiles.
 De \enc{Cáceres}{Caceres}, M., Legendre, P. & He, F. (2013) Dissimilarity measurements and the size structure of ecological communities. Methods in Ecology and Evolution 4: 1167-1177.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia
+Miquel De \enc{Cáceres}{Caceres}, CREAF
 }
 \seealso{
 \code{\link{CAS}}, \code{\link{persp}}

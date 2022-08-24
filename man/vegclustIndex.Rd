@@ -25,11 +25,11 @@ Returns an vector of four values: partition coefficient (PC), normalized partiti
 Bezdek, J. C. (1981) Pattern recognition with fuzzy objective functions. Plenum Press, New York.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia
+Miquel De \enc{Cáceres}{Caceres}, CREAF.
 }
 
 \seealso{
-\code{\link[e1071]{cmeans}},\code{\link{vegclust}}
+\code{\link{vegclust}}
 }
 \examples{
 

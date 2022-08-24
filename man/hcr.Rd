@@ -29,7 +29,7 @@ Returns a vector containing the indices of the selected sites (plot records) to 
 Lengyel, A., Chytry, M., Tichy, L. (2011) Heterogeneity-constrained random resampling of phytosociological databases. Journal of Vegetation Science 22: 175-183.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia
+Miquel De \enc{Cáceres}{Caceres}, CREAF
 }
 \examples{
 ## Loads data (38 columns and 33 species)

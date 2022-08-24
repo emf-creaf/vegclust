@@ -118,12 +118,12 @@ Krishnapuram, R. and J. M. Keller. (1993) A possibilistic approach to clustering
 De \enc{Cáceres}{Caceres}, M., Font, X, Oliva, F. (2010) The management of numerical vegetation classifications with fuzzy clustering methods. Journal of Vegetation Science 21 (6): 1138-1151.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia
+Miquel De \enc{Cáceres}{Caceres}, CREAF
 }
 
 
 \seealso{
-\code{\link{hier.vegclust}},\code{\link{incr.vegclust}},\code{\link{kmeans}}, \code{\link[e1071]{cmeans}},\code{\link{vegclass}},\code{\link{defuzzify}},\code{\link{clustvar}}
+\code{\link{hier.vegclust}},\code{\link{incr.vegclust}},\code{\link{kmeans}},\code{\link{vegclass}},\code{\link{defuzzify}},\code{\link{clustvar}}
 }
 \examples{
 ## Loads data  

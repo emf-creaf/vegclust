@@ -1,4 +1,4 @@
-import(vegan,sp)
+import(vegan)
 importFrom("grDevices", "colorRampPalette", "rainbow")
 importFrom("graphics", "abline", "axis", "legend", "lines", "matlines",
              "persp", "arrows", "text")

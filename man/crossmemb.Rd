@@ -19,7 +19,7 @@ crossmemb(x, y, relativize = TRUE)
 }
 
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia.
+Miquel De \enc{Cáceres}{Caceres}, CREAF.
 }
 
 \seealso{

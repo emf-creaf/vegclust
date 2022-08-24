@@ -24,7 +24,7 @@ interclustdist(x, cluster)
 An object of class \code{\link{dist}} containing the distances between cluster centers.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia
+Miquel De \enc{Cáceres}{Caceres}, CREAF
 }
 \examples{
 ##TO BE DONE##

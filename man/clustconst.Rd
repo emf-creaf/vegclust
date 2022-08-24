@@ -37,7 +37,7 @@ Community data, a site by species data frame.
  Function \code{clustconst} returns an object of type 'clustconst', in fact a data frame with the constancy value of each species (rows) on each cluster (column).
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia
+Miquel De \enc{Cáceres}{Caceres}, CREAF
 }
 
 \seealso{

@@ -51,7 +51,7 @@ This function is used to generate \code{\link{vegclust}} objects which can then 
 An object of class \code{\link{vegclust}}.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia.
+Miquel De \enc{Cáceres}{Caceres}, CREAF.
 }
 
 \seealso{

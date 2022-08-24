@@ -16,7 +16,7 @@ vegclust2kmeans(x)
   \item{x}{An object of class \code{\link{vegclust}} to be casted, where \code{method="KM"} and \code{mode="raw"}.}
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia
+Miquel De \enc{Cáceres}{Caceres}, CREAF
 }
 \seealso{
 \code{\link{vegclust}}, \code{\link{kmeans}}

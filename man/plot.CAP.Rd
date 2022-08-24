@@ -34,7 +34,7 @@ De \enc{Cáceres}{Caceres}, M., Legendre, P. & He, F. (2013) Dissimilarity measu
 
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia
+Miquel De \enc{Cáceres}{Caceres}, CREAF
 }
 \seealso{
 \code{\link{CAP}}

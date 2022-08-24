@@ -40,7 +40,7 @@ If \code{x} is an object of class \code{\link{vegclust}} or \code{\link{vegclass
  A double value (for one cluster) or a vector of values, one per each cluster.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia
+Miquel De \enc{Cáceres}{Caceres}, CREAF
 }
 
 \seealso{

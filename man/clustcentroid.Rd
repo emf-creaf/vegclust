@@ -30,7 +30,7 @@ clustmedoid(x, y, m = 1)
   In order to assign new plot record data into a predefined set of classes, one should use functions \code{\link{as.vegclust}} and \code{\link{vegclass}} instead.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia
+Miquel De \enc{Cáceres}{Caceres}, CREAF
 }
 
 \seealso{

@@ -1,7 +1,6 @@
 \encoding{UTF-8}
 \name{concordance}
 \alias{concordance}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Concordance between two classifications
 }
@@ -11,7 +10,6 @@ Computes an index to compare two classifications.
 \usage{
 concordance(x, y, method="adjustedRand",...)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x,y}{ Classification vector or membership matrix. Alternatively, objects of type \code{\link{vegclust}} or \code{\link{vegclass}}.}
   \item{method}{A string vector to indicate the desired indices (see details).}
@@ -41,11 +39,11 @@ Wallace, D.L. (1983). A method for comparing two hierarchical clusterings: Comme
   A numeric vector with the desired index values.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia
+Miquel De \enc{Cáceres}{Caceres}, CREAF
 }
 
 \seealso{
-\code{\link{vegclust}}, \code{\link{vegclass}}, \code{\link{defuzzify}}, \code{\link[mclust]{adjustedRandIndex}}
+\code{\link{vegclust}}, \code{\link{vegclass}}, \code{\link{defuzzify}}
 }
 %\examples{
 %}

@@ -40,7 +40,7 @@ De \enc{Cáceres}{Caceres}, M., Legendre, P. & He, F. (2013) Dissimilarity measu
 De \enc{Cáceres}{Caceres}, M., Coll, L., \enc{Martín-Alcón}{Martin-Alcon}, S., \enc{González-Olabarria}{Gonzalez-Olabarria}, J.R. (submitted) A general method for the classification of forest stands using structure and composition.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia.
+Miquel De \enc{Cáceres}{Caceres}, CREAF.
 }
 \seealso{
   \code{\link{stratifyvegdata}}, \code{\link{plot.CAP}}, \code{\link{vegdiststruct}}

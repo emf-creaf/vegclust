@@ -51,7 +51,7 @@ Function \code{hier.vegclust} takes starting cluster configurations from cuts of
 Returns an object of type 'mvegclust' (multiple vegclust), which contains a list vector with objects of type \code{\link{vegclust}}.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia
+Miquel De \enc{Cáceres}{Caceres}, CREAF
 }
 
 

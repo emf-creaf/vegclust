@@ -61,7 +61,7 @@ Function \code{hier.vegclust} takes starting cluster configurations from cuts of
 Returns an object of class \code{\link{vegclust}}; or \code{NULL} if the initial cluster does not contain enough members.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia
+Miquel De \enc{Cáceres}{Caceres}, CREAF
 }
 
 \references{

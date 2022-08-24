@@ -28,11 +28,11 @@ A list with the following items:
 \enc{Davé}{Dave}, R. N. and R. Krishnapuram (1997) Robust clustering methods: a unified view. IEEE Transactions on Fuzzy Systems 5, 270-293.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres}, Forest Science Center of Catalonia.
+Miquel De \enc{Cáceres}{Caceres}, CREAF.
 }
 
 \seealso{
-\code{\link[e1071]{cmeans}}, \code{\link{vegclust}}
+\code{\link{vegclust}}
 }
 \examples{
 ## Loads data  
