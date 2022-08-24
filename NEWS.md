@@ -2,6 +2,10 @@
  NEWS for R Package "vegclust"
 -------------------------------
 
+# Version 2.0.2
+- Bug corrected in medoid-based methods which allowed chosing the same object as medoid for different clusters. Issue was reported by Alexander Bauer (Department of Statistics LMU Munich).
+- Exclude duplicate objects that are in the same exact position as potential seeds
+
 # Version 2.0.1
 - Translation of vignettes to Rmarkdown
 

@@ -110,8 +110,13 @@ function(d,mobileMemb, fixedDistToCenters=NULL, method="NC", m=2,dnoise=NULL, et
    	    }
      } else{ 
        for(k in 1:kMov) {
+         candidates = 1:n
+         excluded = numeric(0)
+         # Exclude as candidates objects with membership 1 to other clusters as potential medoids for this cluster
+         excluded = which(apply(u[,-k, drop=FALSE], 1 ,max)==1.0)
+         if(length(excluded)>0) candidates = candidates[-excluded]
          #Determine medoid
-         med[k] = which.min((u[,k]^m)%*%d)
+         med[k] = candidates[which.min((u[, k]^m) %*% d[,candidates])]
          dist2med[,k] = d[,med[k]]
        }
      }
@@ -237,8 +242,16 @@ function(d,mobileMemb, fixedDistToCenters=NULL, method="NC", m=2,dnoise=NULL, et
 	return(res)
 }
 
-	if(is.null(seeds)) seeds = 1:nrow(as.matrix(x))
-   #If mobileCenters is a number and nstart>1 perform different random starts
+  x_mat = as.matrix(x)
+  n = nrow(x_mat)
+	if(is.null(seeds)) seeds = 	1:n
+	# Exclude as potential seeds those objects that are at the same position as a previous objects
+  toExclude = rep(FALSE, n)
+  for(i in 2:n) {
+    if(min(x_mat[i,1:(i-1)])==0) toExclude[i] = TRUE
+  }
+  seeds = seeds[!toExclude]
+	#If mobileCenters is a number and nstart>1 perform different random starts
 	if(is.vector(mobileMemb) && length(mobileMemb)==1 && is.numeric(mobileMemb)) {
 	   bestRun = vegclustonedist(x, mobileMemb=sample(seeds, mobileMemb), fixedDistToCenters, method, m,dnoise, eta, alpha, iter.max)
 		if(nstart>1) {
