@@ -188,11 +188,11 @@
     </div>
     <div id="author">
     <h2>Author</h2>
-    <p>Miquel De Cáceres, Forest Science Center of Catalonia</p>
+    <p>Miquel De Cáceres, CREAF</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="hier.vegclust.html">hier.vegclust</a></code>,<code><a href="incr.vegclust.html">incr.vegclust</a></code>,<code><a href="https://rdrr.io/r/stats/kmeans.html" class="external-link">kmeans</a></code>, <code><a href="https://rdrr.io/pkg/e1071/man/cmeans.html" class="external-link">cmeans</a></code>,<code><a href="vegclass.html">vegclass</a></code>,<code><a href="defuzzify.html">defuzzify</a></code>,<code><a href="clustvar.html">clustvar</a></code></p></div>
+    <div class="dont-index"><p><code><a href="hier.vegclust.html">hier.vegclust</a></code>,<code><a href="incr.vegclust.html">incr.vegclust</a></code>,<code><a href="https://rdrr.io/r/stats/kmeans.html" class="external-link">kmeans</a></code>,<code><a href="vegclass.html">vegclass</a></code>,<code><a href="defuzzify.html">defuzzify</a></code>,<code><a href="clustvar.html">clustvar</a></code></p></div>
     </div>
 
     <div id="ref-examples">
@@ -213,61 +213,61 @@
 <span class="r-in"><span><span class="co">## Fuzzy membership matrix</span></span></span>
 <span class="r-in"><span><span class="va">wetland.nc</span><span class="op">$</span><span class="va">memb</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              M1           M2           M3            N</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  4.632478e-04 1.935926e-04 9.810914e-01 0.0182517131</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  3.853598e-03 2.697230e-03 7.381429e-01 0.2553063195</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13 7.855995e-06 4.051362e-06 9.995090e-01 0.0004790931</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  4.324658e-06 2.766023e-06 9.995817e-01 0.0004112429</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17 1.771440e-03 2.005228e-03 8.768742e-01 0.1193491358</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  4.506963e-03 3.372810e-03 2.316646e-01 0.7604556039</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  5.544836e-03 4.059327e-03 4.289559e-02 0.9475002474</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21 5.004623e-05 1.347981e-05 9.973096e-01 0.0026269144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16 4.777962e-03 1.738125e-03 7.256907e-01 0.2677931900</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14 3.768314e-04 1.440068e-04 9.776930e-01 0.0217861883</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  4.976617e-06 2.225175e-06 9.996401e-01 0.0003526811</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15 1.039506e-03 6.089588e-04 8.643688e-01 0.1339827485</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1.936060e-05 6.870466e-06 9.985536e-01 0.0014201786</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  8.934093e-03 4.170343e-03 2.817031e-01 0.7051924495</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 7.931892e-03 3.628333e-03 5.515536e-02 0.9332844143</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40 9.982437e-01 2.185096e-05 2.815414e-05 0.0017062507</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23 8.786213e-01 1.395220e-03 1.413505e-02 0.1058484758</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25 9.699634e-01 2.220837e-04 7.302980e-03 0.0225115656</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22 3.251920e-01 3.033615e-03 4.876545e-01 0.1841199289</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20 9.620324e-01 3.191743e-04 6.153060e-04 0.0370331435</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  9.950121e-01 1.033185e-04 5.122770e-05 0.0048333093</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18 9.975318e-01 2.702821e-05 1.727974e-05 0.0024238703</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12 9.995429e-01 5.008113e-06 3.719822e-06 0.0004483804</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39 9.844398e-01 2.759257e-04 2.090473e-04 0.0150752127</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19 9.972391e-01 3.987671e-05 1.619276e-04 0.0025590561</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 8.855507e-01 1.769812e-03 1.113274e-03 0.1115661935</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30 6.221205e-03 3.470343e-02 6.040188e-03 0.9530351796</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34 1.658260e-04 9.705496e-01 1.630169e-04 0.0291215345</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28 9.041407e-03 3.685850e-02 6.663515e-03 0.9474365732</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31 2.267397e-04 9.585307e-01 2.692844e-04 0.0409733099</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26 1.525083e-01 1.885086e-02 5.031339e-03 0.8236094686</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29 1.948997e-01 4.810745e-02 6.861962e-03 0.7501308990</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33 9.771189e-01 5.025008e-04 1.363715e-04 0.0222422220</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24 3.258861e-05 9.987285e-01 7.966058e-06 0.0012309234</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36 4.792917e-04 9.955969e-01 2.857875e-05 0.0038952015</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37 3.669459e-05 9.964580e-01 2.801163e-05 0.0034772777</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41 1.517910e-03 8.475248e-01 7.738207e-03 0.1432190761</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27 7.143435e-03 2.479176e-02 5.296790e-03 0.9627680116</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32 1.140418e-02 5.091648e-02 7.432330e-03 0.9302470125</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35 1.949697e-02 1.325458e-02 3.256936e-01 0.6415548418</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38 2.320793e-03 2.544538e-03 8.428810e-01 0.1522536648</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  1.934833e-04 4.631864e-04 9.810987e-01 0.0182446624</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  2.696016e-03 3.853221e-03 7.382241e-01 0.2552266544</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 4.053751e-06 7.865712e-06 9.995086e-01 0.0004795221</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  2.765752e-06 4.326970e-06 9.995816e-01 0.0004113253</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 2.004357e-03 1.771419e-03 8.769036e-01 0.1193206662</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  3.371871e-03 4.507251e-03 2.317352e-01 0.7603856504</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  4.058699e-03 5.545567e-03 4.289607e-02 0.9474996616</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21 1.348520e-05 5.009941e-05 9.973076e-01 0.0026287867</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 1.736641e-03 4.775446e-03 7.258784e-01 0.2676095053</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 1.438948e-04 3.767465e-04 9.777040e-01 0.0217753958</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2.224679e-06 4.978839e-06 9.996401e-01 0.0003527209</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 6.086833e-04 1.039580e-03 8.643937e-01 0.1339580337</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  6.868007e-06 1.936597e-05 9.985536e-01 0.0014201190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  4.168825e-03 8.933323e-03 2.818318e-01 0.7050660869</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 3.627787e-03 7.932144e-03 5.517929e-02 0.9332607830</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40 2.184367e-05 9.982442e-01 2.813695e-05 0.0017058376</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23 1.394113e-03 8.786915e-01 1.412074e-02 0.1057936176</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25 2.218466e-04 9.699912e-01 7.292948e-03 0.0224940365</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22 3.033491e-03 3.255426e-01 4.872402e-01 0.1841837220</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 3.191520e-04 9.620317e-01 6.151517e-04 0.0370340404</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  1.033901e-04 9.950086e-01 5.125551e-05 0.0048367780</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 2.704180e-05 9.975304e-01 1.728619e-05 0.0024252806</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 5.012099e-06 9.995425e-01 3.722295e-06 0.0004487599</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39 2.760235e-04 9.844345e-01 2.090842e-04 0.0150803631</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19 3.985921e-05 9.972399e-01 1.618344e-04 0.0025583691</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 1.770157e-03 8.855164e-01 1.113414e-03 0.1116000407</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30 3.470625e-02 6.221545e-03 6.039906e-03 0.9530322986</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34 9.705801e-01 1.656634e-04 1.628391e-04 0.0290913932</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28 3.684327e-02 9.042932e-03 6.661470e-03 0.9474523268</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31 9.585736e-01 2.265142e-04 2.690111e-04 0.0409308496</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26 1.885469e-02 1.525082e-01 5.030554e-03 0.8236065482</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29 4.811074e-02 1.948999e-01 6.861230e-03 0.7501281531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33 5.025572e-04 9.771151e-01 1.363604e-04 0.0222459615</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24 9.987283e-01 3.259726e-05 7.966467e-06 0.0012311664</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36 9.955968e-01 4.793146e-04 2.857473e-05 0.0038953457</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37 9.964571e-01 3.670534e-05 2.801767e-05 0.0034782193</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41 8.473369e-01 1.520135e-03 7.745332e-03 0.1433976698</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27 2.477735e-02 7.144456e-03 5.295694e-03 0.9627824991</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32 5.088582e-02 1.140545e-02 7.431254e-03 0.9302774767</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35 1.325175e-02 1.950790e-02 3.255268e-01 0.6417135505</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38 2.545506e-03 2.323664e-03 8.427431e-01 0.1523877677</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Cardinality of fuzzy clusters (i.e., the number of objects belonging to each cluster)</span></span></span>
 <span class="r-in"><span><span class="va">wetland.nc</span><span class="op">$</span><span class="va">size</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        M1        M2        M3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11.415270  6.027779 12.495438 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  6.027602 11.415688 12.495258 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Obtains hard membership vector, with 'N' for objects that are unclassified</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="defuzzify.html">defuzzify</a></span><span class="op">(</span><span class="va">wetland.nc</span><span class="op">$</span><span class="va">memb</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    5    8   13    4   17    3    9   21   16   14    2   15    1    7   10   40 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "M3" "M3" "M3" "M3" "M3"  "N"  "N" "M3" "M3" "M3" "M3" "M3" "M3"  "N"  "N" "M1" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "M3" "M3" "M3" "M3" "M3"  "N"  "N" "M3" "M3" "M3" "M3" "M3" "M3"  "N"  "N" "M2" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   23   25   22   20    6   18   12   39   19   11   30   34   28   31   26   29 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "M1" "M1" "M3" "M1" "M1" "M1" "M1" "M1" "M1" "M1"  "N" "M2"  "N" "M2"  "N"  "N" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "M2" "M2" "M3" "M2" "M2" "M2" "M2" "M2" "M2" "M2"  "N" "M1"  "N" "M1"  "N"  "N" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   33   24   36   37   41   27   32   35   38 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "M1" "M2" "M2" "M2" "M2"  "N"  "N"  "N" "M3" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "M2" "M1" "M1" "M1" "M1"  "N"  "N"  "N" "M3" </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## The same result is obtained with a matrix of chord distances</span></span></span>
 <span class="r-in"><span><span class="va">wetland.d</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/dist.html" class="external-link">dist</a></span><span class="op">(</span><span class="va">wetland.chord</span><span class="op">)</span></span></span>

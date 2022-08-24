@@ -220,13 +220,13 @@ We calculate the area (in square meters) of each tree:</p>
 <p>This specific data looks as follows:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##   plot species   height diameter          ba</span></span>
-<span><span class="co">## 1    1       2 7.547723       65 0.331830724</span></span>
-<span><span class="co">## 2    1       1 6.341659       42 0.138544236</span></span>
-<span><span class="co">## 3    1       2 5.385013       25 0.049087385</span></span>
-<span><span class="co">## 4    1       2 8.469616       72 0.407150408</span></span>
-<span><span class="co">## 5    1       1 2.723890        6 0.002827433</span></span>
-<span><span class="co">## 6    1       2 6.776116       45 0.159043128</span></span></code></pre>
+<pre><code><span><span class="co">##   plot species   height diameter         ba</span></span>
+<span><span class="co">## 1    1       1 5.962427       26 0.05309292</span></span>
+<span><span class="co">## 2    1       2 4.110676       27 0.05725553</span></span>
+<span><span class="co">## 3    1       1 5.722564       30 0.07068583</span></span>
+<span><span class="co">## 4    1       2 4.644556       26 0.05309292</span></span>
+<span><span class="co">## 5    1       2 7.206591       48 0.18095574</span></span>
+<span><span class="co">## 6    1       2 5.758056       40 0.12566371</span></span></code></pre>
 <p>We start our analysis by defining two sets of size classes, one for
 height and the other for diameter:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
@@ -264,14 +264,14 @@ This can be easily shown if we compare the marginal CAP for height:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/CAS.html">CASmargin</a></span><span class="op">(</span><span class="va">tree.CAS</span>, margin<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $`1`</span></span>
 <span><span class="co">##   [0,0.0625] (0.0625,0.25] (0.25,0.562] (0.562,1] (1,1.56] (1.56,2.25]</span></span>
-<span><span class="co">## 1   4.280263      4.280263     4.280263  4.280263 4.280263    4.280263</span></span>
-<span><span class="co">## 2   4.635027      4.635027     4.635027  4.635027 4.635027    4.635027</span></span>
-<span><span class="co">##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56] (7.56,9]  (9,10.6]</span></span>
-<span><span class="co">## 1    4.277435 4.234945 4.065299    3.624770    2.496702 1.117465 0.7542964</span></span>
-<span><span class="co">## 2    4.635027 4.614214 4.536931    4.212719    2.957338 1.665908 0.0000000</span></span>
+<span><span class="co">## 1   4.546749      4.546749     4.546749  4.546749 4.546749    4.546749</span></span>
+<span><span class="co">## 2   3.921886      3.921886     3.921886  3.921886 3.921886    3.921179</span></span>
+<span><span class="co">##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56]  (7.56,9]  (9,10.6]</span></span>
+<span><span class="co">## 1    4.546749 4.529077 4.262670    3.983382    3.342733 0.9428705 0.7542964</span></span>
+<span><span class="co">## 2    3.921179 3.921179 3.765513    3.301028    2.488770 0.9753860 0.0000000</span></span>
 <span><span class="co">##   (10.6,12.2] (12.2,14.1] (14.1,16] (16,18.1] (18.1,20.2] (20.2,22.6] (22.6,25]</span></span>
-<span><span class="co">## 1           0           0         0         0           0           0         0</span></span>
-<span><span class="co">## 2           0           0         0         0           0           0         0</span></span>
+<span><span class="co">## 1   0.7542964           0         0         0           0           0         0</span></span>
+<span><span class="co">## 2   0.0000000           0         0         0           0           0         0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"class")</span></span>
 <span><span class="co">## [1] "CAP"  "list"</span></span></code></pre>
@@ -283,14 +283,14 @@ This can be easily shown if we compare the marginal CAP for height:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/CAP.html">CAP</a></span><span class="op">(</span><span class="va">tree.S2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $`1`</span></span>
 <span><span class="co">##   [0,0.0625] (0.0625,0.25] (0.25,0.562] (0.562,1] (1,1.56] (1.56,2.25]</span></span>
-<span><span class="co">## 1   4.280263      4.280263     4.280263  4.280263 4.280263    4.280263</span></span>
-<span><span class="co">## 2   4.635027      4.635027     4.635027  4.635027 4.635027    4.635027</span></span>
-<span><span class="co">##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56] (7.56,9]  (9,10.6]</span></span>
-<span><span class="co">## 1    4.277435 4.234945 4.065299    3.624770    2.496702 1.117465 0.7542964</span></span>
-<span><span class="co">## 2    4.635027 4.614214 4.536931    4.212719    2.957338 1.665908 0.0000000</span></span>
+<span><span class="co">## 1   4.546749      4.546749     4.546749  4.546749 4.546749    4.546749</span></span>
+<span><span class="co">## 2   3.921886      3.921886     3.921886  3.921886 3.921886    3.921179</span></span>
+<span><span class="co">##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56]  (7.56,9]  (9,10.6]</span></span>
+<span><span class="co">## 1    4.546749 4.529077 4.262670    3.983382    3.342733 0.9428705 0.7542964</span></span>
+<span><span class="co">## 2    3.921179 3.921179 3.765513    3.301028    2.488770 0.9753860 0.0000000</span></span>
 <span><span class="co">##   (10.6,12.2] (12.2,14.1] (14.1,16] (16,18.1] (18.1,20.2] (20.2,22.6] (22.6,25]</span></span>
-<span><span class="co">## 1           0           0         0         0           0           0         0</span></span>
-<span><span class="co">## 2           0           0         0         0           0           0         0</span></span>
+<span><span class="co">## 1   0.7542964           0         0         0           0           0         0</span></span>
+<span><span class="co">## 2   0.0000000           0         0         0           0           0         0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attr(,"class")</span></span>
 <span><span class="co">## [1] "CAP"  "list"</span></span></code></pre>
@@ -375,7 +375,7 @@ of stands in <code>medreg</code>):</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">medoids</span><span class="op">&lt;-</span><span class="va">vc</span><span class="op">$</span><span class="va">mobileCenters</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">medoids</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 20 91 60 92 24 71</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 60 24 46 92 81 20</span></span></code></pre>
 <p>The number of stands belonging to each cluster can be found
 using:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
@@ -383,7 +383,7 @@ using:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">cluster</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## cluster</span></span>
 <span><span class="co">## M1 M2 M3 M4 M5 M6  N </span></span>
-<span><span class="co">## 21  6  9 10 28 15  7</span></span></code></pre>
+<span><span class="co">## 10 26  6  9 15 20 10</span></span></code></pre>
 <p>Note that, because of the model chosen (and with the parameter
 <code>dnoise</code>), there are a number of stands that are left
 unclassified (i.e. those assigned to class “N”). A useful way to display
