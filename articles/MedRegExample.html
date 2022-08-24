@@ -220,13 +220,13 @@ We calculate the area (in square meters) of each tree:</p>
 <p>This specific data looks as follows:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##   plot species   height diameter          ba</span></span>
-<span><span class="co">## 1    1       2 6.724549       45 0.159043128</span></span>
-<span><span class="co">## 2    1       2 3.537471        5 0.001963495</span></span>
-<span><span class="co">## 3    1       2 8.246093       63 0.311724531</span></span>
-<span><span class="co">## 4    1       2 3.875221       22 0.038013271</span></span>
-<span><span class="co">## 5    1       2 5.172696       26 0.053092916</span></span>
-<span><span class="co">## 6    1       2 2.623899       11 0.009503318</span></span></code></pre>
+<pre><code><span><span class="co">##   plot species   height diameter         ba</span></span>
+<span><span class="co">## 1    1       1 4.476201       23 0.04154756</span></span>
+<span><span class="co">## 2    1       1 5.889670       38 0.11341149</span></span>
+<span><span class="co">## 3    1       2 3.724288       13 0.01327323</span></span>
+<span><span class="co">## 4    1       2 6.223482       35 0.09621128</span></span>
+<span><span class="co">## 5    1       2 5.639315       34 0.09079203</span></span>
+<span><span class="co">## 6    1       1 3.494128       14 0.01539380</span></span></code></pre>
 <p>We start our analysis by defining two sets of size classes, one for
 height and the other for diameter:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
@@ -264,11 +264,11 @@ This can be easily shown if we compare the marginal CAP for height:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/CAS.html">CASmargin</a></span><span class="op">(</span><span class="va">tree.CAS</span>, margin<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $`1`</span></span>
 <span><span class="co">##   [0,0.0625] (0.0625,0.25] (0.25,0.562] (0.562,1] (1,1.56] (1.56,2.25]</span></span>
-<span><span class="co">## 1   4.585861      4.585861     4.585861  4.585861 4.585861    4.585861</span></span>
-<span><span class="co">## 2   5.013354      5.013354     5.013354  5.013354 5.013354    5.013354</span></span>
+<span><span class="co">## 1   4.576908      4.576908     4.576908  4.576908 4.576908    4.576908</span></span>
+<span><span class="co">## 2   4.293065      4.293065     4.293065  4.293065 4.293065    4.293065</span></span>
 <span><span class="co">##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56] (7.56,9] (9,10.6]</span></span>
-<span><span class="co">## 1    4.582641 4.576279 4.461611    4.186643    3.161542 2.857279 1.499875</span></span>
-<span><span class="co">## 2    5.013354 4.980131 4.850226    4.291573    2.724389 1.641482 0.000000</span></span>
+<span><span class="co">## 1    4.576908 4.548162 4.387234    3.902879    2.504399 1.294101 1.020703</span></span>
+<span><span class="co">## 2    4.293065 4.275158 4.116900    3.854970    3.001478 1.539616 0.000000</span></span>
 <span><span class="co">##   (10.6,12.2] (12.2,14.1] (14.1,16] (16,18.1] (18.1,20.2] (20.2,22.6] (22.6,25]</span></span>
 <span><span class="co">## 1           0           0         0         0           0           0         0</span></span>
 <span><span class="co">## 2           0           0         0         0           0           0         0</span></span>
@@ -283,11 +283,11 @@ This can be easily shown if we compare the marginal CAP for height:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/CAP.html">CAP</a></span><span class="op">(</span><span class="va">tree.S2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $`1`</span></span>
 <span><span class="co">##   [0,0.0625] (0.0625,0.25] (0.25,0.562] (0.562,1] (1,1.56] (1.56,2.25]</span></span>
-<span><span class="co">## 1   4.585861      4.585861     4.585861  4.585861 4.585861    4.585861</span></span>
-<span><span class="co">## 2   5.013354      5.013354     5.013354  5.013354 5.013354    5.013354</span></span>
+<span><span class="co">## 1   4.576908      4.576908     4.576908  4.576908 4.576908    4.576908</span></span>
+<span><span class="co">## 2   4.293065      4.293065     4.293065  4.293065 4.293065    4.293065</span></span>
 <span><span class="co">##   (2.25,3.06] (3.06,4] (4,5.06] (5.06,6.25] (6.25,7.56] (7.56,9] (9,10.6]</span></span>
-<span><span class="co">## 1    4.582641 4.576279 4.461611    4.186643    3.161542 2.857279 1.499875</span></span>
-<span><span class="co">## 2    5.013354 4.980131 4.850226    4.291573    2.724389 1.641482 0.000000</span></span>
+<span><span class="co">## 1    4.576908 4.548162 4.387234    3.902879    2.504399 1.294101 1.020703</span></span>
+<span><span class="co">## 2    4.293065 4.275158 4.116900    3.854970    3.001478 1.539616 0.000000</span></span>
 <span><span class="co">##   (10.6,12.2] (12.2,14.1] (14.1,16] (16,18.1] (18.1,20.2] (20.2,22.6] (22.6,25]</span></span>
 <span><span class="co">## 1           0           0         0         0           0           0         0</span></span>
 <span><span class="co">## 2           0           0         0         0           0           0         0</span></span>
@@ -375,7 +375,7 @@ of stands in <code>medreg</code>):</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">medoids</span><span class="op">&lt;-</span><span class="va">vc</span><span class="op">$</span><span class="va">mobileCenters</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">medoids</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 92 20 60 24 46 81</span></span></code></pre>
+<pre><code><span><span class="co">## [1]  4 60 24 20 92  7</span></span></code></pre>
 <p>The number of stands belonging to each cluster can be found
 using:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
@@ -383,7 +383,7 @@ using:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">cluster</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## cluster</span></span>
 <span><span class="co">## M1 M2 M3 M4 M5 M6  N </span></span>
-<span><span class="co">##  9 20 10 26  6 15 10</span></span></code></pre>
+<span><span class="co">## 10 10 24 20  9 11 12</span></span></code></pre>
 <p>Note that, because of the model chosen (and with the parameter
 <code>dnoise</code>), there are a number of stands that are left
 unclassified (i.e. those assigned to class “N”). A useful way to display
@@ -409,12 +409,12 @@ cumulative abundance profiles of the cluster medoids:</p>
 fourth group:</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">CAPm</span><span class="op">[[</span><span class="va">n</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span><span class="op">]</span><span class="op">]</span>, dig<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##                                1    2  3 4 5 6 7</span></span>
-<span><span class="co">## Pine trees                   0.0  0.0  0 0 0 0 0</span></span>
-<span><span class="co">## Quercus trees                0.0  0.0  0 0 0 0 0</span></span>
-<span><span class="co">## Tall shrubs and small trees 62.5 62.5 25 0 0 0 0</span></span>
-<span><span class="co">## Scrubs and small shrubs     25.0 25.0  0 0 0 0 0</span></span>
-<span><span class="co">## Grass                       37.5  0.0  0 0 0 0 0</span></span></code></pre>
+<pre><code><span><span class="co">##                                1    2 3 4 5 6 7</span></span>
+<span><span class="co">## Pine trees                   0.0  0.0 0 0 0 0 0</span></span>
+<span><span class="co">## Quercus trees               12.5 12.5 0 0 0 0 0</span></span>
+<span><span class="co">## Tall shrubs and small trees 37.5 37.5 0 0 0 0 0</span></span>
+<span><span class="co">## Scrubs and small shrubs     30.0 30.0 0 0 0 0 0</span></span>
+<span><span class="co">## Grass                       62.5  0.0 0 0 0 0 0</span></span></code></pre>
 <p>The following displays graphically the CAPs of all six groups of
 vegetation stands (code not shown):</p>
 <p><img src="MedRegExample_files/figure-html/unnamed-chunk-31-1.png" width="576"></p>

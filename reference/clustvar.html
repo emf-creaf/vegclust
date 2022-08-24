@@ -116,22 +116,22 @@
 <span class="r-in"><span><span class="co">## Gets cluster variance of fuzzy clusters</span></span></span>
 <span class="r-in"><span><span class="fu">clustvar</span><span class="op">(</span><span class="va">wetland.nc</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        M1        M2        M3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2612616 0.2556519 0.2924117 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2612909 0.2924090 0.2556577 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Gets cluster variance of fuzzy clusters after defuzzification</span></span></span>
 <span class="r-in"><span><span class="fu">clustvar</span><span class="op">(</span><span class="va">wetland.nc</span>, defuzzify<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        M1        M2        M3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2478261 0.2379073 0.2875035 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2478219 0.2875054 0.2379083 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Similar to the previous, this gets cluster variance of defuzzified (i.e. hard) clusters</span></span></span>
 <span class="r-in"><span><span class="fu">clustvar</span><span class="op">(</span><span class="va">wetland.chord</span>, cluster<span class="op">=</span><span class="fu"><a href="defuzzify.html">defuzzify</a></span><span class="op">(</span><span class="va">wetland.nc</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        M1        M2        M3         N </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2474883 0.2372548 0.2861120 0.7175326 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2474883 0.2861120 0.2372548 0.7175326 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Gets cluster variance of K-means (i.e. hard) clusters</span></span></span>
 <span class="r-in"><span><span class="fu">clustvar</span><span class="op">(</span><span class="va">wetland.chord</span>, cluster<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/kmeans.html" class="external-link">kmeans</a></span><span class="op">(</span><span class="va">wetland.chord</span>, centers<span class="op">=</span><span class="fl">3</span>, nstart<span class="op">=</span><span class="fl">10</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         1         2         3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.4099091 0.3215797 0.4684155 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.3215797 0.4099091 0.4684155 </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
