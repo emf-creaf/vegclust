@@ -80,7 +80,7 @@ Cáceres, CREAF, Barcelona, Spain</h4>
                         <h4 data-toc-skip class="author">Susan Wiser,
 Landcare Research, Lincoln, New Zealand</h4>
             
-            <h4 data-toc-skip class="date">2022-08-24</h4>
+            <h4 data-toc-skip class="date">2022-08-25</h4>
       
       
       <div class="hidden name"><code>VegetationClassification.Rmd</code></div>
@@ -573,13 +573,13 @@ because they cannot be calculated explicitly:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">wetland.kmdist</span><span class="op">$</span><span class="va">memb</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    5 8 13 4 17 3 9 21 16 14 2 15 1 7 10 40 23 25 22 20 6 18 12 39 19 11 30 34</span></span>
-<span><span class="co">#&gt; M1 0 0  0 0  0 0 0  0  0  0 0  0 0 0  0  1  1  1  1  1 1  1  1  1  1  1  0  0</span></span>
+<span><span class="co">#&gt; M1 1 1  1 1  1 1 1  1  1  1 1  1 1 1  1  0  0  0  0  0 0  0  0  0  0  0  0  0</span></span>
 <span><span class="co">#&gt; M2 0 0  0 0  0 0 0  0  0  0 0  0 0 0  0  0  0  0  0  0 0  0  0  0  0  0  1  1</span></span>
-<span><span class="co">#&gt; M3 1 1  1 1  1 1 1  1  1  1 1  1 1 1  1  0  0  0  0  0 0  0  0  0  0  0  0  0</span></span>
+<span><span class="co">#&gt; M3 0 0  0 0  0 0 0  0  0  0 0  0 0 0  0  1  1  1  1  1 1  1  1  1  1  1  0  0</span></span>
 <span><span class="co">#&gt;    28 31 26 29 33 24 36 37 41 27 32 35 38</span></span>
-<span><span class="co">#&gt; M1  0  0  1  1  1  0  0  0  0  0  0  0  0</span></span>
+<span><span class="co">#&gt; M1  0  0  0  0  0  0  0  0  0  0  0  1  1</span></span>
 <span><span class="co">#&gt; M2  1  1  0  0  0  1  1  1  1  1  1  0  0</span></span>
-<span><span class="co">#&gt; M3  0  0  0  0  0  0  0  0  0  0  0  1  1</span></span></code></pre></div>
+<span><span class="co">#&gt; M3  0  0  1  1  1  0  0  0  0  0  0  0  0</span></span></code></pre></div>
 <p>Because we used the same resemblance space (although in different
 form) in our examples, both <code>vegclust</code> and
 <code><a href="../reference/vegclust.html">vegclustdist()</a></code> should give the same result provided the
@@ -629,17 +629,17 @@ memberships to be obtained as an alternative to crisp memberships:</p>
 <span>                       method<span class="op">=</span><span class="st">"FCM"</span>, m<span class="op">=</span><span class="fl">1.2</span>, nstart<span class="op">=</span><span class="fl">20</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">wetland.fcm</span><span class="op">$</span><span class="va">memb</span><span class="op">)</span>, dig<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        5     8 13 4    17     3     9 21    16 14 2    15 1     7    10 40</span></span>
-<span><span class="co">#&gt; M1 0.001 0.007  0 0 0.007 0.011 0.086  0 0.003  0 0 0.001 0 0.009 0.036  0</span></span>
-<span><span class="co">#&gt; M2 0.998 0.985  1 1 0.990 0.981 0.844  1 0.993  1 1 0.999 1 0.981 0.920  0</span></span>
-<span><span class="co">#&gt; M3 0.001 0.007  0 0 0.004 0.009 0.070  0 0.004  0 0 0.001 0 0.011 0.044  1</span></span>
+<span><span class="co">#&gt; M1 0.001 0.007  0 0 0.004 0.009 0.070  0 0.004  0 0 0.001 0 0.011 0.044  1</span></span>
+<span><span class="co">#&gt; M2 0.001 0.007  0 0 0.007 0.011 0.086  0 0.003  0 0 0.001 0 0.009 0.036  0</span></span>
+<span><span class="co">#&gt; M3 0.998 0.985  1 1 0.990 0.981 0.844  1 0.993  1 1 0.999 1 0.981 0.920  0</span></span>
 <span><span class="co">#&gt;       23    25    22    20 6 18 12    39 19    11    30    34    28    31    26</span></span>
-<span><span class="co">#&gt; M1 0.004 0.001 0.014 0.001 0  0  0 0.001  0 0.005 0.928 0.996 0.971 0.993 0.141</span></span>
-<span><span class="co">#&gt; M2 0.016 0.007 0.405 0.001 0  0  0 0.000  0 0.003 0.031 0.002 0.013 0.003 0.017</span></span>
-<span><span class="co">#&gt; M3 0.980 0.992 0.581 0.998 1  1  1 0.999  1 0.992 0.040 0.002 0.016 0.003 0.841</span></span>
+<span><span class="co">#&gt; M1 0.980 0.992 0.581 0.998 1  1  1 0.999  1 0.992 0.040 0.002 0.016 0.003 0.842</span></span>
+<span><span class="co">#&gt; M2 0.004 0.001 0.014 0.001 0  0  0 0.001  0 0.005 0.928 0.996 0.971 0.993 0.141</span></span>
+<span><span class="co">#&gt; M3 0.016 0.007 0.405 0.001 0  0  0 0.000  0 0.003 0.031 0.002 0.013 0.003 0.017</span></span>
 <span><span class="co">#&gt;       29    33    24    36    37    41    27    32    35    38</span></span>
-<span><span class="co">#&gt; M1 0.241 0.001 0.998 0.978 0.999 0.995 0.973 0.980 0.160 0.024</span></span>
-<span><span class="co">#&gt; M2 0.017 0.000 0.000 0.001 0.001 0.004 0.012 0.008 0.783 0.970</span></span>
-<span><span class="co">#&gt; M3 0.742 0.999 0.002 0.020 0.001 0.001 0.015 0.011 0.057 0.006</span></span></code></pre></div>
+<span><span class="co">#&gt; M1 0.742 0.999 0.002 0.020 0.001 0.001 0.015 0.011 0.057 0.006</span></span>
+<span><span class="co">#&gt; M2 0.241 0.001 0.998 0.978 0.999 0.995 0.973 0.980 0.160 0.024</span></span>
+<span><span class="co">#&gt; M3 0.017 0.000 0.000 0.001 0.001 0.004 0.012 0.008 0.783 0.970</span></span></code></pre></div>
 <p>A comparison of these memberships with the distance to the clusters
 shown before will reveal that intermediate objects obtain fuzzier
 membership values than other objects.</p>
@@ -651,30 +651,30 @@ membership matrix to be converted into a crisp one:</p>
 <code class="sourceCode R"><span><span class="va">groups</span> <span class="op">=</span> <span class="fu"><a href="../reference/defuzzify.html">defuzzify</a></span><span class="op">(</span><span class="va">wetland.fcm</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span></span>
 <span><span class="va">groups</span></span>
 <span><span class="co">#&gt;    5    8   13    4   17    3    9   21   16   14    2   15    1    7   10   40 </span></span>
-<span><span class="co">#&gt; "M2" "M2" "M2" "M2" "M2" "M2" "M2" "M2" "M2" "M2" "M2" "M2" "M2" "M2" "M2" "M3" </span></span>
+<span><span class="co">#&gt; "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M1" </span></span>
 <span><span class="co">#&gt;   23   25   22   20    6   18   12   39   19   11   30   34   28   31   26   29 </span></span>
-<span><span class="co">#&gt; "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M1" "M1" "M1" "M1" "M3" "M3" </span></span>
+<span><span class="co">#&gt; "M1" "M1" "M1" "M1" "M1" "M1" "M1" "M1" "M1" "M1" "M2" "M2" "M2" "M2" "M1" "M1" </span></span>
 <span><span class="co">#&gt;   33   24   36   37   41   27   32   35   38 </span></span>
-<span><span class="co">#&gt; "M3" "M1" "M1" "M1" "M1" "M1" "M1" "M2" "M2"</span></span>
+<span><span class="co">#&gt; "M1" "M2" "M2" "M2" "M2" "M2" "M2" "M3" "M3"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">groups</span><span class="op">)</span></span>
 <span><span class="co">#&gt; groups</span></span>
 <span><span class="co">#&gt; M1 M2 M3 </span></span>
-<span><span class="co">#&gt; 10 17 14</span></span></code></pre></div>
+<span><span class="co">#&gt; 14 10 17</span></span></code></pre></div>
 <p>Another way of defuzzifying the membership matrix is by setting a
 threshold of minimum fuzzy membership:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">groups</span> <span class="op">=</span> <span class="fu"><a href="../reference/defuzzify.html">defuzzify</a></span><span class="op">(</span><span class="va">wetland.fcm</span>, method <span class="op">=</span> <span class="st">"cut"</span>, alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span></span>
 <span><span class="va">groups</span></span>
 <span><span class="co">#&gt;    5    8   13    4   17    3    9   21   16   14    2   15    1    7   10   40 </span></span>
-<span><span class="co">#&gt; "M2" "M2" "M2" "M2" "M2" "M2" "M2" "M2" "M2" "M2" "M2" "M2" "M2" "M2" "M2" "M3" </span></span>
+<span><span class="co">#&gt; "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M1" </span></span>
 <span><span class="co">#&gt;   23   25   22   20    6   18   12   39   19   11   30   34   28   31   26   29 </span></span>
-<span><span class="co">#&gt; "M3" "M3"   NA "M3" "M3" "M3" "M3" "M3" "M3" "M3" "M1" "M1" "M1" "M1" "M3"   NA </span></span>
+<span><span class="co">#&gt; "M1" "M1"   NA "M1" "M1" "M1" "M1" "M1" "M1" "M1" "M2" "M2" "M2" "M2" "M1"   NA </span></span>
 <span><span class="co">#&gt;   33   24   36   37   41   27   32   35   38 </span></span>
-<span><span class="co">#&gt; "M3" "M1" "M1" "M1" "M1" "M1" "M1"   NA "M2"</span></span>
+<span><span class="co">#&gt; "M1" "M2" "M2" "M2" "M2" "M2" "M2"   NA "M3"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">groups</span>, useNA <span class="op">=</span> <span class="st">"always"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; groups</span></span>
 <span><span class="co">#&gt;   M1   M2   M3 &lt;NA&gt; </span></span>
-<span><span class="co">#&gt;   10   16   12    3</span></span></code></pre></div>
+<span><span class="co">#&gt;   12   10   16    3</span></span></code></pre></div>
 <p>With this second defuzzification approach intermediate objects remain
 unclassified (indicated as missing values). It is important to recognise
 that FCM fuzzy membership values depend on the fuzziness exponent <span class="math inline">\(m\)</span>. In fact, if we run FCM with a very
@@ -685,21 +685,21 @@ uninformative results:</p>
 <span>                       method<span class="op">=</span><span class="st">"FCM"</span>, m<span class="op">=</span><span class="fl">10</span>, nstart<span class="op">=</span><span class="fl">20</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">wetland.fcm2</span><span class="op">$</span><span class="va">memb</span><span class="op">)</span>, dig<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        5     8    13     4    17     3     9    21    16    14     2    15</span></span>
-<span><span class="co">#&gt; M1 0.334 0.334 0.334 0.334 0.334 0.334 0.333 0.334 0.334 0.334 0.334 0.334</span></span>
-<span><span class="co">#&gt; M2 0.332 0.333 0.332 0.332 0.333 0.333 0.333 0.332 0.333 0.332 0.332 0.332</span></span>
-<span><span class="co">#&gt; M3 0.334 0.334 0.334 0.334 0.334 0.334 0.334 0.334 0.334 0.334 0.334 0.334</span></span>
+<span><span class="co">#&gt; M1 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333</span></span>
+<span><span class="co">#&gt; M2 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333</span></span>
+<span><span class="co">#&gt; M3 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333</span></span>
 <span><span class="co">#&gt;        1     7    10    40    23    25    22    20     6    18    12    39</span></span>
-<span><span class="co">#&gt; M1 0.334 0.334 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333</span></span>
-<span><span class="co">#&gt; M2 0.332 0.333 0.333 0.334 0.334 0.333 0.333 0.334 0.334 0.334 0.334 0.334</span></span>
-<span><span class="co">#&gt; M3 0.334 0.334 0.334 0.333 0.333 0.333 0.334 0.333 0.333 0.333 0.333 0.333</span></span>
+<span><span class="co">#&gt; M1 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333</span></span>
+<span><span class="co">#&gt; M2 0.333 0.333 0.333 0.334 0.333 0.333 0.333 0.334 0.334 0.334 0.334 0.334</span></span>
+<span><span class="co">#&gt; M3 0.333 0.333 0.333 0.333 0.333 0.334 0.334 0.333 0.333 0.333 0.333 0.333</span></span>
 <span><span class="co">#&gt;       19    11    30    34    28    31    26    29    33    24    36    37</span></span>
 <span><span class="co">#&gt; M1 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333</span></span>
-<span><span class="co">#&gt; M2 0.334 0.334 0.334 0.334 0.334 0.334 0.334 0.334 0.334 0.334 0.334 0.334</span></span>
+<span><span class="co">#&gt; M2 0.334 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.334 0.333 0.333 0.333</span></span>
 <span><span class="co">#&gt; M3 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333 0.333</span></span>
 <span><span class="co">#&gt;       41    27    32    35    38</span></span>
-<span><span class="co">#&gt; M1 0.333 0.333 0.333 0.333 0.334</span></span>
-<span><span class="co">#&gt; M2 0.333 0.334 0.334 0.333 0.333</span></span>
-<span><span class="co">#&gt; M3 0.333 0.333 0.333 0.334 0.334</span></span></code></pre></div>
+<span><span class="co">#&gt; M1 0.333 0.333 0.333 0.333 0.333</span></span>
+<span><span class="co">#&gt; M2 0.333 0.333 0.333 0.333 0.333</span></span>
+<span><span class="co">#&gt; M3 0.333 0.333 0.333 0.333 0.333</span></span></code></pre></div>
 <p>These uninformative results become obvious after defuzzification of
 the membership matrix:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
@@ -795,12 +795,12 @@ following distance matrices between cluster centroids:</p>
 <span><span class="co">#&gt; M3 0.9248370 0.8997438</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/dist.html" class="external-link">dist</a></span><span class="op">(</span><span class="va">wetland.fcm</span><span class="op">$</span><span class="va">mobileCenters</span><span class="op">)</span></span>
 <span><span class="co">#&gt;           M1        M2</span></span>
-<span><span class="co">#&gt; M2 0.9387336          </span></span>
-<span><span class="co">#&gt; M3 0.8852501 0.9280584</span></span>
+<span><span class="co">#&gt; M2 0.8852521          </span></span>
+<span><span class="co">#&gt; M3 0.9280567 0.9387376</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/dist.html" class="external-link">dist</a></span><span class="op">(</span><span class="va">wetland.nc</span><span class="op">$</span><span class="va">mobileCenters</span><span class="op">)</span></span>
 <span><span class="co">#&gt;           M1        M2</span></span>
-<span><span class="co">#&gt; M2 1.0666971          </span></span>
-<span><span class="co">#&gt; M3 0.9735264 1.0102709</span></span></code></pre></div>
+<span><span class="co">#&gt; M2 1.0666128          </span></span>
+<span><span class="co">#&gt; M3 0.9735357 1.0102142</span></span></code></pre></div>
 <p>However, this particular advantage can also be obtained (in partitive
 methods) if medoids are used as prototypes instead of centroids (see
 below).</p>
@@ -816,30 +816,30 @@ the K-medoids (the K-means analogue) would be:</p>
 <span>                      method<span class="op">=</span><span class="st">"KMdd"</span>, nstart<span class="op">=</span><span class="fl">20</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">wetland.kmdd</span><span class="op">$</span><span class="va">memb</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    5 8 13 4 17 3 9 21 16 14 2 15 1 7 10 40 23 25 22 20 6 18 12 39 19 11 30 34</span></span>
-<span><span class="co">#&gt; M1 0 0  0 0  0 0 0  0  0  0 0  0 0 0  0  1  1  1  0  1 1  1  1  1  1  1  0  0</span></span>
-<span><span class="co">#&gt; M2 1 1  1 1  1 1 1  1  1  1 1  1 1 1  1  0  0  0  1  0 0  0  0  0  0  0  0  0</span></span>
-<span><span class="co">#&gt; M3 0 0  0 0  0 0 0  0  0  0 0  0 0 0  0  0  0  0  0  0 0  0  0  0  0  0  1  1</span></span>
+<span><span class="co">#&gt; M1 0 0  0 0  0 0 0  0  0  0 0  0 0 0  0  0  0  0  0  0 0  0  0  0  0  0  1  1</span></span>
+<span><span class="co">#&gt; M2 0 0  0 0  0 0 0  0  0  0 0  0 0 0  0  1  1  1  0  1 1  1  1  1  1  1  0  0</span></span>
+<span><span class="co">#&gt; M3 1 1  1 1  1 1 1  1  1  1 1  1 1 1  1  0  0  0  1  0 0  0  0  0  0  0  0  0</span></span>
 <span><span class="co">#&gt;    28 31 26 29 33 24 36 37 41 27 32 35 38</span></span>
-<span><span class="co">#&gt; M1  0  0  1  1  1  0  0  0  0  0  0  0  0</span></span>
-<span><span class="co">#&gt; M2  0  0  0  0  0  0  0  0  0  0  0  1  1</span></span>
-<span><span class="co">#&gt; M3  1  1  0  0  0  1  1  1  1  1  1  0  0</span></span></code></pre></div>
+<span><span class="co">#&gt; M1  1  1  0  0  0  1  1  1  1  1  1  0  0</span></span>
+<span><span class="co">#&gt; M2  0  0  1  1  1  0  0  0  0  0  0  0  0</span></span>
+<span><span class="co">#&gt; M3  0  0  0  0  0  0  0  0  0  0  0  1  1</span></span></code></pre></div>
 <p>When ran using a site-by-species matrix as input,
 <code><a href="../reference/vegclust.html">vegclust()</a></code> returns the coordinates of medoids as the
 cluster centers:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">wetland.kmdd</span><span class="op">$</span><span class="va">mobileCenters</span>, dig<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    Abefic Merhed Alyvag Pancam Abemos Melcor Ludoct Eupvac Echpas Passcr Poa2</span></span>
-<span><span class="co">#&gt; M1      0      0      0  0.000      0  0.177      0  0.000      0  0.000    0</span></span>
-<span><span class="co">#&gt; M2      0      0      0  0.000      0  0.183      0  0.000      0  0.000    0</span></span>
-<span><span class="co">#&gt; M3      0      0      0  0.258      0  0.258      0  0.258      0  0.258    0</span></span>
+<span><span class="co">#&gt; M1      0      0      0  0.258      0  0.258      0  0.258      0  0.258    0</span></span>
+<span><span class="co">#&gt; M2      0      0      0  0.000      0  0.177      0  0.000      0  0.000    0</span></span>
+<span><span class="co">#&gt; M3      0      0      0  0.000      0  0.183      0  0.000      0  0.000    0</span></span>
 <span><span class="co">#&gt;    Carhal Dendio Casobt Aesind Cyprot Ipocop Cynarc Walind Sessp. Phynod Echell</span></span>
-<span><span class="co">#&gt; M1  0.177      0      0      0      0      0  0.000      0  0.000  0.884  0.177</span></span>
-<span><span class="co">#&gt; M2  0.000      0      0      0      0      0  0.000      0  0.000  0.000  0.000</span></span>
-<span><span class="co">#&gt; M3  0.000      0      0      0      0      0  0.775      0  0.258  0.258  0.000</span></span>
+<span><span class="co">#&gt; M1  0.000      0      0      0      0      0  0.775      0  0.258  0.258  0.000</span></span>
+<span><span class="co">#&gt; M2  0.177      0      0      0      0      0  0.000      0  0.000  0.884  0.177</span></span>
+<span><span class="co">#&gt; M3  0.000      0      0      0      0      0  0.000      0  0.000  0.000  0.000</span></span>
 <span><span class="co">#&gt;    Helind Ipoaqu Orysp. Elesp. Psespi Ludads Polatt Poa1 Helcri Physp. Goopur</span></span>
-<span><span class="co">#&gt; M1  0.177  0.177  0.000  0.177  0.177  0.000  0.000    0      0      0      0</span></span>
-<span><span class="co">#&gt; M2  0.000  0.000  0.913  0.183  0.183  0.183  0.183    0      0      0      0</span></span>
-<span><span class="co">#&gt; M3  0.000  0.000  0.000  0.000  0.000  0.000  0.000    0      0      0      0</span></span></code></pre></div>
+<span><span class="co">#&gt; M1  0.000  0.000  0.000  0.000  0.000  0.000  0.000    0      0      0      0</span></span>
+<span><span class="co">#&gt; M2  0.177  0.177  0.000  0.177  0.177  0.000  0.000    0      0      0      0</span></span>
+<span><span class="co">#&gt; M3  0.000  0.000  0.913  0.183  0.183  0.183  0.183    0      0      0      0</span></span></code></pre></div>
 <p>However, when using site-by-site dissimilarity matrices as input for
 <code><a href="../reference/vegclust.html">vegclustdist()</a></code>, the indices of objects are returned
 instead:</p>
@@ -847,7 +847,7 @@ instead:</p>
 <code class="sourceCode R"><span><span class="va">wetland.kmdd</span> <span class="op">=</span> <span class="fu"><a href="../reference/vegclust.html">vegclustdist</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">dchord</span>, mobileMemb<span class="op">=</span><span class="fl">3</span>, </span>
 <span>                      method<span class="op">=</span><span class="st">"KMdd"</span>, nstart<span class="op">=</span><span class="fl">20</span><span class="op">)</span></span>
 <span><span class="va">wetland.kmdd</span><span class="op">$</span><span class="va">mobileCenters</span></span>
-<span><span class="co">#&gt; [1] 23 34 11</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 11 34 23</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -878,7 +878,7 @@ from a K-means analysis (using function <code><a href="https://rdrr.io/r/stats/k
 <span><span class="va">groups</span> <span class="op">=</span> <span class="va">km</span><span class="op">$</span><span class="va">cluster</span></span>
 <span><span class="va">groups</span></span>
 <span><span class="co">#&gt;  5  8 13  4 17  3  9 21 16 14  2 15  1  7 10 40 23 25 22 20  6 18 12 39 19 11 </span></span>
-<span><span class="co">#&gt;  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  2  2  2  2  2  2  2  2  2  2  2 </span></span>
+<span><span class="co">#&gt;  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1 </span></span>
 <span><span class="co">#&gt; 30 34 28 31 26 </span></span>
 <span><span class="co">#&gt;  2  2  2  2  2</span></span></code></pre></div>
 <p>The idea is to know whether the ten objects of the second data set
@@ -907,7 +907,7 @@ model:</p>
 <code class="sourceCode R"><span><span class="va">wetland.10.km</span> <span class="op">=</span> <span class="fu"><a href="../reference/vegclass.html">vegclass</a></span><span class="op">(</span><span class="va">wetland.31.km</span>, <span class="va">wetland.10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/defuzzify.html">defuzzify</a></span><span class="op">(</span><span class="va">wetland.10.km</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span></span>
 <span><span class="co">#&gt;  29  33  24  36  37  41  27  32  35  38 </span></span>
-<span><span class="co">#&gt; "2" "2" "2" "2" "2" "2" "2" "2" "1" "1"</span></span></code></pre></div>
+<span><span class="co">#&gt; "2" "1" "2" "2" "2" "2" "2" "2" "1" "1"</span></span></code></pre></div>
 <p>The same procedure can be repeated using dissimilarity matrices.
 First, we call <code><a href="../reference/as.vegclust.html">as.vegclust()</a></code> to create a vegclust
 object:</p>
@@ -927,7 +927,7 @@ model:</p>
 <code class="sourceCode R"><span><span class="va">wetland.d.11.km</span> <span class="op">=</span> <span class="fu"><a href="../reference/vegclass.html">vegclass</a></span><span class="op">(</span><span class="va">wetland.31.km.d</span>,<span class="va">wetland.d.10.31</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/defuzzify.html">defuzzify</a></span><span class="op">(</span><span class="va">wetland.d.11.km</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span></span>
 <span><span class="co">#&gt;  29  33  24  36  37  41  27  32  35  38 </span></span>
-<span><span class="co">#&gt; "2" "2" "2" "2" "2" "2" "2" "2" "1" "1"</span></span></code></pre></div>
+<span><span class="co">#&gt; "2" "1" "2" "2" "2" "2" "2" "2" "1" "1"</span></span></code></pre></div>
 <p>Note that in both cases all the objects of the second set were
 assigned to the nearest cluster. What if we want to determine whether it
 is more appropriate for any of the objects to define a new vegetation
@@ -939,7 +939,7 @@ can choose, for example, the hard noise clustering (HNC) model:</p>
 <span><span class="va">wetland.10.nc</span> <span class="op">=</span> <span class="fu"><a href="../reference/vegclass.html">vegclass</a></span><span class="op">(</span><span class="va">wetland.31.nc</span>, <span class="va">wetland.10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/defuzzify.html">defuzzify</a></span><span class="op">(</span><span class="va">wetland.10.nc</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span></span>
 <span><span class="co">#&gt;  29  33  24  36  37  41  27  32  35  38 </span></span>
-<span><span class="co">#&gt; "2" "2" "N" "2" "N" "N" "N" "N" "N" "1"</span></span></code></pre></div>
+<span><span class="co">#&gt; "N" "N" "N" "N" "N" "N" "N" "N" "N" "1"</span></span></code></pre></div>
 <p>An additional parameter is needed: the distance to the noise class
 ‘dnoise’, <span class="math inline">\(\delta\)</span>. This can be set
 either conventionally (depending on the level of abstraction of
@@ -1011,7 +1011,7 @@ with the new data set (again, its conformed version):</p>
 <span>                      dnoise<span class="op">=</span><span class="va">wetland.31.nc</span><span class="op">$</span><span class="va">dnoise</span>, nstart<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/defuzzify.html">defuzzify</a></span><span class="op">(</span><span class="va">wetland.nc</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span></span>
 <span><span class="co">#&gt;   29   33   24   36   37   41   27   32   35   38 </span></span>
-<span><span class="co">#&gt; "F3" "F3" "M1" "M1" "M1" "M1"  "N"  "N"  "N" "F2"</span></span></code></pre></div>
+<span><span class="co">#&gt;  "N"  "N" "M1" "M1" "M1" "M1"  "N"  "N"  "N" "F2"</span></span></code></pre></div>
 <p>Here, the function <code><a href="../reference/vegclust.html">vegclust()</a></code> has renamed the original
 clusters as ‘F2’ and ‘F3’ (indicating that they are now fixed), while
 the new cluster is named ‘M1’.</p>
@@ -1024,7 +1024,7 @@ chosen to use the K-means model to extend the classification:</p>
 <span>                      nstart<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/defuzzify.html">defuzzify</a></span><span class="op">(</span><span class="va">wetland.km</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span></span>
 <span><span class="co">#&gt;   29   33   24   36   37   41   27   32   35   38 </span></span>
-<span><span class="co">#&gt; "F3" "F3" "M1" "M1" "M1" "M1" "M1" "M1" "F2" "F2"</span></span></code></pre></div>
+<span><span class="co">#&gt; "F3" "F2" "M1" "M1" "M1" "M1" "M1" "M1" "F2" "F2"</span></span></code></pre></div>
 <p>This avoids having objects in the Noise class. However, note that the
 noise clustering model allows objects in the Noise to be classified
 later on when new data becomes available, instead of forcing them to
@@ -1043,11 +1043,11 @@ observations:</p>
 <span>                      dnoise<span class="op">=</span><span class="va">wetland.31.nc</span><span class="op">$</span><span class="va">dnoise</span>, nstart<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/defuzzify.html">defuzzify</a></span><span class="op">(</span><span class="va">wetland.nc</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span></span>
 <span><span class="co">#&gt;    5    8   13    4   17    3    9   21   16   14    2   15    1    7   10   40 </span></span>
-<span><span class="co">#&gt; "F2" "F2" "F2" "F2" "F2" "F2"  "N" "F2" "F2" "F2" "F2" "F2" "F2" "F2"  "N" "F3" </span></span>
+<span><span class="co">#&gt; "F2" "F2" "F2" "F2" "F2"  "N"  "N" "F2" "F2" "F2" "F2" "F2" "F2" "F2"  "N" "M1" </span></span>
 <span><span class="co">#&gt;   23   25   22   20    6   18   12   39   19   11   30   34   28   31   26   29 </span></span>
-<span><span class="co">#&gt; "F3" "F3" "F3" "F3" "F3" "F3" "F3" "F3" "F3" "F3"  "N" "M1"  "N" "M1" "F3" "F3" </span></span>
+<span><span class="co">#&gt; "M1" "M1" "F2" "M1" "M1" "M1" "M1" "M1" "M1" "M1" "F3" "F3"  "N" "F3" "F3"  "N" </span></span>
 <span><span class="co">#&gt;   33   24   36   37   41   27   32   35   38 </span></span>
-<span><span class="co">#&gt; "F3" "M1" "M1" "M1" "M1"  "N"  "N"  "N" "F2"</span></span></code></pre></div>
+<span><span class="co">#&gt; "M1"  "N"  "N"  "N"  "N"  "N"  "N"  "N" "F2"</span></span></code></pre></div>
 <p>Note that some of the objects in the first data set may have been
 reassigned (to a different cluster or to the Noise class). While the
 centroids of the original classification are preserved, the membership
@@ -1077,7 +1077,7 @@ define a new cluster while accounting for the previous ones:</p>
 <span>                            nstart<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/defuzzify.html">defuzzify</a></span><span class="op">(</span><span class="va">wetland.km.d</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span></span>
 <span><span class="co">#&gt;   29   33   24   36   37   41   27   32   35   38 </span></span>
-<span><span class="co">#&gt; "F3" "F3" "M1" "M1" "M1" "M1" "M1" "M1" "F2" "F2"</span></span></code></pre></div>
+<span><span class="co">#&gt; "F3" "F2" "M1" "M1" "M1" "M1" "M1" "M1" "F2" "F2"</span></span></code></pre></div>
 <p>Analogously to <code>vegclust</code>, we could have chosen to use the
 set of all vegetation observations. In this case, we need to pool the
 distances to the centers:</p>
@@ -1092,11 +1092,11 @@ matrix:</p>
 <span>                            nstart<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/defuzzify.html">defuzzify</a></span><span class="op">(</span><span class="va">wetland.km.d</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span></span>
 <span><span class="co">#&gt;    5    8   13    4   17    3    9   21   16   14    2   15    1    7   10   40 </span></span>
-<span><span class="co">#&gt; "F2" "F2" "F2" "F2" "F2" "F2" "F2" "F2" "F2" "F2" "F2" "F2" "F2" "F2" "F2" "F3" </span></span>
+<span><span class="co">#&gt; "F2" "F2" "F2" "F2" "F2" "F2" "F2" "F2" "F2" "F2" "F2" "F2" "F2" "F2" "F2" "M1" </span></span>
 <span><span class="co">#&gt;   23   25   22   20    6   18   12   39   19   11   30   34   28   31   26   29 </span></span>
-<span><span class="co">#&gt; "F3" "F3" "F3" "F3" "F3" "F3" "F3" "F3" "F3" "F3" "M1" "M1" "M1" "M1" "F3" "F3" </span></span>
+<span><span class="co">#&gt; "F2" "F2" "F2" "M1" "M1" "M1" "M1" "M1" "M1" "M1" "F3" "F3" "F3" "F3" "F3" "M1" </span></span>
 <span><span class="co">#&gt;   33   24   36   37   41   27   32   35   38 </span></span>
-<span><span class="co">#&gt; "F3" "M1" "M1" "M1" "M1" "M1" "M1" "F2" "F2"</span></span></code></pre></div>
+<span><span class="co">#&gt; "M1" "F3" "F3" "F3" "F3" "F3" "F3" "F2" "F2"</span></span></code></pre></div>
 <p>As before, some objects may be reclassified in different clusters
 when using this option.</p>
 </div>
