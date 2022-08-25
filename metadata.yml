@@ -1,0 +1,24 @@
+id: vegclust
+title: vegclust
+emf_type: softwork
+emf_public: true
+emf_automatized: true
+emf_reproducible: false
+emf_draft: false
+nodes: ''
+authors:
+- mcaceres
+resource_link: softworks/vegclust
+thematic: statistics
+tags:
+- vegetation
+- R
+- statistics
+requirements:
+- 'R (>= 3.4.0)'
+description: A set of functions: (1) to perform fuzzy clustering of vegetation data; (2) to assess ecological community similarity on the basis of structure and composition.
+links:
+  url_docs: 'https://emf-creaf.github.io/vegclust/'
+  url_source: 'https://github.com/emf-creaf/vegclust'
+model_repository: ''
+data_repository: ''
