@@ -16,7 +16,7 @@ tags:
 - statistics
 requirements:
 - 'R (>= 3.4.0)'
-description: A set of functions: (1) to perform fuzzy clustering of vegetation data; (2) to assess ecological community similarity on the basis of structure and composition.
+description: A set of functions to perform fuzzy clustering of vegetation data and to assess ecological community similarity on the basis of structure and composition.
 links:
   url_docs: 'https://emf-creaf.github.io/vegclust/'
   url_source: 'https://github.com/emf-creaf/vegclust'
