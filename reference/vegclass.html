@@ -145,30 +145,30 @@
 <span class="r-in"><span><span class="co">## Cardinality of fuzzy clusters (i.e., the number of objects belonging to)</span></span></span>
 <span class="r-in"><span><span class="va">wetland.30.nc</span><span class="op">$</span><span class="va">size</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        M1        M2        M3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10.278142 11.368019  2.246545 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  4.434959  8.984941 10.188042 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Classifies the second set of sites according to the clustering of the first set</span></span></span>
 <span class="r-in"><span><span class="va">wetland.11.nc</span> <span class="op">=</span> <span class="fu">vegclass</span><span class="op">(</span><span class="va">wetland.30.nc</span>, <span class="va">wetland.11</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Fuzzy membership matrix</span></span></span>
 <span class="r-in"><span><span class="va">wetland.11.nc</span><span class="op">$</span><span class="va">memb</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             M1           M2           M3          N</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26 0.098000691 0.0044546974 0.0770856717 0.82045894</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29 0.145252338 0.0068789865 0.0425234907 0.80534518</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33 0.934392532 0.0003470795 0.0005024067 0.06475798</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24 0.010902288 0.0026450972 0.5038868156 0.48256580</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36 0.070069187 0.0038732337 0.3006858155 0.62537176</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37 0.005451702 0.0038450196 0.4324891356 0.55821414</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41 0.009217026 0.0330345351 0.0774751967 0.88027324</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27 0.006343003 0.0041767393 0.0046286747 0.98485158</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32 0.010539758 0.0059930108 0.0067101564 0.97675708</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35 0.028226896 0.2039029897 0.0039139404 0.76395617</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38 0.005869390 0.6602445265 0.0015611124 0.33232497</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              M1           M2          M3          N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26 0.0033673511 0.0045239406 0.105684691 0.88642402</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29 0.0045772700 0.0065398483 0.150973467 0.83790941</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33 0.0002398956 0.0003252266 0.935519998 0.06391488</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24 0.0037477028 0.0049613597 0.021753521 0.96953742</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36 0.0041764925 0.0050158401 0.099864332 0.89094334</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37 0.0049213273 0.0061171197 0.009533145 0.97942841</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41 0.0108996898 0.0340191148 0.009664379 0.94541682</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27 0.0033887808 0.0037324057 0.006260179 0.98661863</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32 0.0045334128 0.0054303845 0.010461258 0.97957494</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35 0.0203900965 0.2221883954 0.026080200 0.73134131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38 0.0137122659 0.7089957461 0.004622366 0.27266962</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Obtains hard membership vector, with 'N' for objects that are unclassified</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="defuzzify.html">defuzzify</a></span><span class="op">(</span><span class="va">wetland.11.nc</span><span class="op">$</span><span class="va">memb</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   26   29   33   24   36   37   41   27   32   35   38 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  "N"  "N" "M1" "M3"  "N"  "N"  "N"  "N"  "N"  "N" "M2" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  "N"  "N" "M3"  "N"  "N"  "N"  "N"  "N"  "N"  "N" "M2" </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
