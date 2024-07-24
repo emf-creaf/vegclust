@@ -9,4 +9,6 @@
 ^docs/*$
 ^\.github$
 featured.png
+metadata.yml
+^data-raw$
 ^pkgdown/favicon$
