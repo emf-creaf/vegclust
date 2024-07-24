@@ -11,6 +11,7 @@ Depends: R (>= 3.4.0)
 Imports: vegan
 License: GPL (>= 2)
 URL: https://emf-creaf.github.io/vegclust/
+BugReports: https://github.com/emf-creaf/vegclust/issues
 LazyLoad: yes
 Encoding: UTF-8
 NeedsCompilation: yes
