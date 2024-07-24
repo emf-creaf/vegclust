@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   MedRegExample: MedRegExample.html
   VegetationClassification: VegetationClassification.html
-last_built: 2024-07-24T10:30Z
+last_built: 2024-07-24T10:32Z
 urls:
   reference: https://emf-creaf.github.io/vegclust/reference
   article: https://emf-creaf.github.io/vegclust/articles
