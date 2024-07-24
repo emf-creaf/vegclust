@@ -1,114 +1,40 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/articles/MedRegExample.html</loc>
-  </url>
-  <url>
-    <loc>/articles/VegetationClassification.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/CAP.html</loc>
-  </url>
-  <url>
-    <loc>/reference/CAS.html</loc>
-  </url>
-  <url>
-    <loc>/reference/as.memb.html</loc>
-  </url>
-  <url>
-    <loc>/reference/as.vegclust.html</loc>
-  </url>
-  <url>
-    <loc>/reference/clustcentroid.html</loc>
-  </url>
-  <url>
-    <loc>/reference/clustconst.html</loc>
-  </url>
-  <url>
-    <loc>/reference/clustvar.html</loc>
-  </url>
-  <url>
-    <loc>/reference/concordance.html</loc>
-  </url>
-  <url>
-    <loc>/reference/conformveg.html</loc>
-  </url>
-  <url>
-    <loc>/reference/crossmemb.html</loc>
-  </url>
-  <url>
-    <loc>/reference/defuzzify.html</loc>
-  </url>
-  <url>
-    <loc>/reference/hcr.html</loc>
-  </url>
-  <url>
-    <loc>/reference/hier.vegclust.html</loc>
-  </url>
-  <url>
-    <loc>/reference/incr.vegclust.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/interclustdist.html</loc>
-  </url>
-  <url>
-    <loc>/reference/medreg.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot.CAP.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot.CAS.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot.mvegclust.html</loc>
-  </url>
-  <url>
-    <loc>/reference/relate.levels.html</loc>
-  </url>
-  <url>
-    <loc>/reference/stratifyvegdata.html</loc>
-  </url>
-  <url>
-    <loc>/reference/treedata.html</loc>
-  </url>
-  <url>
-    <loc>/reference/vegclass.html</loc>
-  </url>
-  <url>
-    <loc>/reference/vegclust-package.html</loc>
-  </url>
-  <url>
-    <loc>/reference/vegclust.html</loc>
-  </url>
-  <url>
-    <loc>/reference/vegclust2kmeans.html</loc>
-  </url>
-  <url>
-    <loc>/reference/vegclustIndex.html</loc>
-  </url>
-  <url>
-    <loc>/reference/vegdiststruct.html</loc>
-  </url>
-  <url>
-    <loc>/reference/wetland.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://emf-creaf.github.io/vegclust/404.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/articles/MedRegExample.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/articles/VegetationClassification.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/articles/index.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/authors.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/index.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/news/index.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/CAP.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/CAS.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/as.memb.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/as.vegclust.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/clustcentroid.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/clustconst.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/clustvar.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/concordance.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/conformveg.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/crossmemb.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/defuzzify.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/hcr.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/hier.vegclust.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/incr.vegclust.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/index.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/interclustdist.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/medreg.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/plot.CAP.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/plot.CAS.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/plot.mvegclust.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/relate.levels.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/stratifyvegdata.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/treedata.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/vegclass.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/vegclust-package.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/vegclust.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/vegclust2kmeans.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/vegclustIndex.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/vegdiststruct.html</loc></url>
+<url><loc>https://emf-creaf.github.io/vegclust/reference/wetland.html</loc></url>
 </urlset>
+
