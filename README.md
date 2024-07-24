@@ -4,7 +4,7 @@
 <!-- badges: start -->
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/vegclust)](https://cran.r-project.org/package=vegclust)
 [![](https://cranlogs.r-pkg.org/badges/vegclust)](https://cran.rstudio.com/web/packages/vegclust/index.html)
-[![R-CMD-check](https://github.com/emf-creaf/vegclust/workflows/R-CMD-check/badge.svg)](https://github.com/emf-creaf/vegclust/actions)
+[![R-CMD-check](https://github.com/emf-creaf/vegclust/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/emf-creaf/vegclust/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 ## Introduction
