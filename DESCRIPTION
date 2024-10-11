@@ -14,7 +14,7 @@ URL: https://emf-creaf.github.io/vegclust/
 BugReports: https://github.com/emf-creaf/vegclust/issues
 LazyLoad: yes
 Encoding: UTF-8
-NeedsCompilation: yes
+NeedsCompilation: no
 RoxygenNote: 7.1.1
 Suggests: knitr, rmarkdown
 VignetteBuilder: utils, knitr
