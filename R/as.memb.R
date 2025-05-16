@@ -1,5 +1,18 @@
-#Returns a membership matrix from a cluster
-#NA values will be unassigned objects (0 for all)
+#' Turns into membership matrix
+#'
+#' Attempts to turn its cluster vector argument into a membership matrix
+#' @param cluster A vector indicating the hard membership of each object in \code{x} to a set of groups. Can contain \code{NA} values.
+#'
+#' @returns
+#' An matrix with as many rows as the length of \code{cluster} and as many columns as different cluster levels. \code{NA} values will have zero membership to all clusters
+#' 
+#' @author Miquel De \enc{Cáceres}{Caceres}, CREAF.
+#' @seealso \code{\link{vegclust}}, \code{\link{vegclass}}
+#' 
+#' @export
+#'
+#' @examples
+#' as.memb(factor(c(1,2,NA)))
 as.memb<-function(cluster){
    cln =levels(as.factor(cluster))
    k = length(cln)

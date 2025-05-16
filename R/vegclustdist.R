@@ -102,8 +102,12 @@ function(d,mobileMemb, fixedDistToCenters=NULL, method="NC", m=2,dnoise=NULL, et
      if(method=="KM"||method=="PCM"||method=="NC"|| method=="HNC"||method=="FCM") {     
    	    vargeom = vector("numeric", kMov)
    	    for(k in 1:(kMov)) {
-			    vargeom[k] = sum((u[,k]^m) %*% (d^2) %*% (u[,k]^m))/(2*sum(u[,k]^m)^2)
-			    for(i in 1:n) {
+   	      vargeom[k] = sum((u[,k]^m) %*% (d^2) %*% (u[,k]^m))/(2*sum(u[,k]^m)^2)
+   	      if(is.nan(vargeom[k])) {
+   	        cat(paste0("cluster", k, " vargeom ", vargeom[k],"\n"))
+   	        stop(paste0("NaN vargeom for cluster ", k))
+   	      }
+   	      for(i in 1:n) {
 			      sqdist2cent[i,k] = (sum((u[,k]^m)*(d[i,]^2))/sum(u[,k]^m))-vargeom[k]
 			      if(sqdist2cent[i,k]<0) sqdist2cent[i,k]=0
 			    }
