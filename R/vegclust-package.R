@@ -28,3 +28,11 @@
 #'                        method="NC", nstart=10)
 #' 
 "_PACKAGE"
+
+## usethis namespace: start
+#' @importFrom grDevices colorRampPalette rainbow
+#' @importFrom graphics abline axis legend lines matlines persp arrows text
+#' @importFrom vegan decostand
+#' @importFrom stats as.dist cutree dist quantile model.matrix var cmdscale
+## usethis namespace: end
+NULL

@@ -75,6 +75,7 @@ CAP<-function(x, transform=NULL, verbose=FALSE) {
 #' @param CAP An object of class '\code{CAP}'.
 #' @param type The type of information that the resulting matrix should contain. Either \code{"profile"}, \code{"abundance"} or \code{"volume"}.
 #' @param classWeights A numerical vector containing the weight for size class. If \code{NULL}, then all classes are assumed to have the same weight.
+#' @export
 CAP2matrix<-function(CAP, type="cumulative", classWeights=NULL) {
   type= match.arg(type,c("cumulative","total","volume"))  
   n=length(CAP)
@@ -114,6 +115,7 @@ CAP2matrix<-function(CAP, type="cumulative", classWeights=NULL) {
 }
 
 #' @rdname CAP
+#' @export
 #' @param y A vector used as a factor to calculate average or quantile profiles per each level. Alternatively, an object of class \code{\link{vegclust}} for which CAP centroids or medoids are desired.
 CAPcenters<-function(CAP, y=NULL) {
   averageCAP<-function(x) {
@@ -165,6 +167,7 @@ CAPcenters<-function(CAP, y=NULL) {
 
 #' @rdname CAP
 #' @param q Probability value for which the quantile is desired. By default the median is given.
+#' @export
 CAPquantile<-function(CAP, q = 0.5, y = NULL) {
   quantileCAP<-function(x, q = 0.5) {
     res = x[[1]]

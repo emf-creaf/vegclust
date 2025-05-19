@@ -92,6 +92,7 @@ CAS<-function(x, transform=NULL, verbose=FALSE) {
 #' @param CAS An object of class '\code{CAS}'.
 #' @param type The type of information that the resulting matrix should contain (either \code{"cummulative"} or \code{"total"}).
 #' @param classWeights A numerical matrix containing the weight for each combination of size classes. If \code{NULL}, then all classes are assumed to have the same weight.
+#' @export
 CAS2matrix<-function(CAS, type="cumulative", classWeights=NULL) {
   if(!inherits(CAS,"CAS")) stop("Wrong input data. Use function CAS() first.")
   type= match.arg(type,c("cumulative","total"))  
@@ -129,6 +130,7 @@ CAS2matrix<-function(CAS, type="cumulative", classWeights=NULL) {
 
 #' @rdname CAS
 #' @param y A vector used as a factor to calculate average or quantile surfaces per each level. Alternatively, an object of class \code{\link{vegclust}} for which CAS centroids or medoids are desired.
+#' @export
 CAScenters<-function(CAS, y=NULL) {
   averageCAS<-function(x) {
     avccf = x[[1]]
@@ -177,6 +179,7 @@ CAScenters<-function(CAS, y=NULL) {
 }
 
 #' @rdname CAS
+#' @export
 #' @param margin Indicates whether marginalization should be done in primary (\code{margin = 1}) or secondary (\code{margin = 2}) size classes.
 CASmargin<-function(CAS, margin=1, verbose=FALSE) {
   if(!inherits(CAS,"CAS")) stop("Input should be of class 'CAS'")
@@ -202,6 +205,7 @@ CASmargin<-function(CAS, margin=1, verbose=FALSE) {
 
 #' @rdname CAS
 #' @param q Probability value for which the quantile is desired. By default the median is given.
+#' @export
 CASquantile<-function(CAS, q = 0.5, y = NULL) {
   quantileCAS<-function(x, q = 0.5) {
     res = x[[1]]
