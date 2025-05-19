@@ -12,3 +12,4 @@ featured.png
 metadata.yml
 ^data-raw$
 ^pkgdown/favicon$
+cran-comments.md
