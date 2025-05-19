@@ -3,7 +3,7 @@
 -------------------------------
 
 # Version 2.0.3
-- Documentation in Roxygen
+- Package documentation in Roxygen
 
 # Version 2.0.2
 - Bug corrected in medoid-based methods which allowed chosing the same object as medoid for different clusters. Issue was reported by Alexander Bauer (Department of Statistics LMU Munich).
