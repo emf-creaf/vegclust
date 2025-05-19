@@ -6,16 +6,16 @@
 #' @param y A vector indicating the cluster that each object in \code{x} belongs to. Alternatively, a fuzzy/hard site-by-group matrix of membership values.
 #' @param method A clustering model from which \code{y} was obtained (normally "KM"). Current accepted models are:
 #'   \itemize{
-#'     \item{\code{"KM"}:}{ K-means or hard c-means (MacQueen 1967)}
-#'     \item{\code{"KMdd"}:}{ Hard c-medoids (Krishnapuram et al. 1999)}
-#'     \item{\code{"FCM"}:}{ Fuzzy c-means (Bezdek 1981)}
-#'     \item{\code{"FCMdd"}:}{ Fuzzy c-medoids (Krishnapuram et al. 1999)}
-#'     \item{\code{"NC"}:}{ Noise clustering (Dave and Krishnapuram 1997)}
-#'     \item{\code{"NCdd"}:}{ Noise clustering with medoids}
-#'     \item{\code{"HNC"}:}{ Hard noise clustering}
-#'     \item{\code{"HNCdd"}:}{ Hard noise clustering with medoids}
-#'     \item{\code{"PCM"}:}{ Possibilistic c-means (Krishnapuram and Keller 1993)}
-#'     \item{\code{"PCMdd"}:}{ Possibilistic c-medoids}
+#'     \item{\code{"KM"}: K-means or hard c-means (MacQueen 1967)}
+#'     \item{\code{"KMdd"}: Hard c-medoids (Krishnapuram et al. 1999)}
+#'     \item{\code{"FCM"}: Fuzzy c-means (Bezdek 1981)}
+#'     \item{\code{"FCMdd"}: Fuzzy c-medoids (Krishnapuram et al. 1999)}
+#'     \item{\code{"NC"}: Noise clustering (Dave and Krishnapuram 1997)}
+#'     \item{\code{"NCdd"}: Noise clustering with medoids}
+#'     \item{\code{"HNC"}: Hard noise clustering}
+#'     \item{\code{"HNCdd"}: Hard noise clustering with medoids}
+#'     \item{\code{"PCM"}: Possibilistic c-means (Krishnapuram and Keller 1993)}
+#'     \item{\code{"PCMdd"}: Possibilistic c-medoids}
 #'   }
 #' @param m The fuzziness exponent to be used, relevant for all fuzzy models (FCM, FCMdd, NC, NCdd, PCM and PCMdd).
 #' @param dnoise The distance to the noise cluster, relevant for noise clustering models (NC, HNC, NCdd and HNCdd). 
