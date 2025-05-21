@@ -1,10 +1,10 @@
-pandoc: 3.1.11
-pkgdown: 2.1.0
+pandoc: '3.2'
+pkgdown: 2.1.2
 pkgdown_sha: ~
 articles:
   MedRegExample: MedRegExample.html
   VegetationClassification: VegetationClassification.html
-last_built: 2024-07-24T11:00Z
+last_built: 2025-05-21T07:27Z
 urls:
   reference: https://emf-creaf.github.io/vegclust/reference
   article: https://emf-creaf.github.io/vegclust/articles
